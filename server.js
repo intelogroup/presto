@@ -61,6 +61,59 @@ To generate the actual PowerPoint, please connect an OpenAI API key. For now, I'
     return await openai.chat.completions.create(params);
 }
 
+// Adapter loader for template modules to standardize generatePresentation
+async function loadTemplateAdapter(modulePath) {
+    // modulePath: absolute path to generator module
+    try {
+        const Mod = require(modulePath);
+        // If module exports a function that directly generates, wrap it
+        if (typeof Mod === 'function' && !Mod.prototype) {
+            return {
+                generatePresentation: async (data, outputPath) => {
+                    // try calling as function
+                    const res = await Mod(data, outputPath);
+                    return res || { success: true, path: outputPath };
+                }
+            };
+        }
+
+        // If it's a class or constructor
+        const instance = new Mod();
+        // If instance implements generatePresentation directly
+        if (typeof instance.generatePresentation === 'function') {
+            return {
+                generatePresentation: async (data, outputPath) => {
+                    return await instance.generatePresentation(data, outputPath);
+                }
+            };
+        }
+
+        // If it implements generateDemo that populates instance.pptx
+        if (typeof instance.generateDemo === 'function') {
+            return {
+                generatePresentation: async (data, outputPath) => {
+                    // try calling demo method; some demo methods accept no args
+                    await instance.generateDemo(data).catch(() => {});
+                    if (instance.pptx) {
+                        await instance.pptx.writeFile({ fileName: outputPath });
+                        return { success: true, path: outputPath };
+                    }
+                    return { success: false, error: 'Template demo executed but did not expose pptx instance' };
+                }
+            };
+        }
+
+        // As a last resort, check for a static generate function
+        if (typeof Mod.generatePresentation === 'function') {
+            return { generatePresentation: async (data, outputPath) => await Mod.generatePresentation(data, outputPath) };
+        }
+
+        return null;
+    } catch (err) {
+        return null;
+    }
+}
+
 // PowerPoint Generator Class
 class PrestoSlidesGenerator {
     constructor() {
