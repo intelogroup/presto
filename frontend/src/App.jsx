@@ -29,6 +29,8 @@ export default function App() {
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [pptxLoading, setPptxLoading] = useState(false)
+  const [lastPptxData, setLastPptxData] = useState(null)
   const listRef = useRef(null)
 
   const canSend = input.trim().length > 0 && !loading
