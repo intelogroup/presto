@@ -6,7 +6,7 @@
  * to ensure the generator can handle real-world scenarios robustly.
  */
 
-const DynamicPresentationGenerator = require('./dynamic_presentation_generator');
+const DynamicPresentationGenerator = require('../core/dynamic_presentation_generator');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -557,7 +557,7 @@ class BattleTestSuite {
         
         console.log('\n📋 Detailed Results:');
         this.testResults.forEach((test, index) => {
-            const status = test.status === 'passed' ? '✅' : '❌';
+            const status = test.status === 'passed' ? '✅' : '��';
             const duration = `${test.duration}ms`;
             const slides = test.stats?.slideCount ? `(${test.stats.slideCount} slides)` : '';
             
