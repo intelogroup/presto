@@ -311,20 +311,57 @@ class PrestoSlidesGenerator {
     }
 }
 
-// Chat endpoint for PowerPoint generation
+// Chat endpoint for PowerPoint generation with intelligent routing
 app.post('/chat', async (req, res) => {
     try {
         const { messages, model, temperature, max_tokens } = req.body || {};
-        
+
         if (!Array.isArray(messages) || messages.length === 0) {
             return res.status(400).json({ error: 'messages array is required' });
         }
 
+        // Get the last user message for analysis
+        const lastUserMessage = messages.slice().reverse().find(m => m.role === 'user');
+        const userInput = lastUserMessage?.content || '';
+
+        // Check if this looks like a presentation request
+        const isPresentationRequest = userInput.toLowerCase().includes('presentation') ||
+                                    userInput.toLowerCase().includes('powerpoint') ||
+                                    userInput.toLowerCase().includes('pptx') ||
+                                    userInput.toLowerCase().includes('slides');
+
+        let enhancedMessages = messages;
+
+        if (isPresentationRequest) {
+            console.log('🎯 Detected presentation request, using intelligent routing...');
+
+            // Use intelligent routing to get enhanced prompt
+            const routingResult = await routePresentationRequest(userInput);
+
+            if (routingResult.success) {
+                console.log('📊 Template analysis:', routingResult.analysis);
+
+                // Replace the last user message with enhanced prompt
+                enhancedMessages = [...messages];
+                const lastMessageIndex = enhancedMessages.length - 1;
+                enhancedMessages[lastMessageIndex] = {
+                    role: 'user',
+                    content: routingResult.enhancedPrompt
+                };
+
+                // Add system context
+                enhancedMessages.unshift({
+                    role: 'system',
+                    content: `You are an expert PowerPoint presentation generator with deep knowledge of effective presentation design and content structure. You understand various presentation types and can adapt your responses accordingly. Always respond with properly formatted JSON when generating presentations.`
+                });
+            }
+        }
+
         const response = await callOpenAIChat({
             model: model || 'gpt-4o-mini',
-            messages,
+            messages: enhancedMessages,
             temperature: typeof temperature === 'number' ? temperature : 0.7,
-            max_tokens: typeof max_tokens === 'number' ? max_tokens : 1000,
+            max_tokens: typeof max_tokens === 'number' ? max_tokens : 1500,
         });
 
         const result = {
