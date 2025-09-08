@@ -152,7 +152,7 @@ class PrestoSlidesGenerator {
 
     createContentSlide(pptx, title, content, colorScheme = 'professional') {
         const slide = pptx.addSlide();
-        const colors = this.colorSchemes[colorScheme];
+        const colors = this.colorSchemes[colorScheme] || this.colorSchemes['professional'];
 
         // Background
         slide.background = { color: colors.white };
@@ -185,7 +185,7 @@ class PrestoSlidesGenerator {
 
     createBulletSlide(pptx, title, bullets, colorScheme = 'professional') {
         const slide = pptx.addSlide();
-        const colors = this.colorSchemes[colorScheme];
+        const colors = this.colorSchemes[colorScheme] || this.colorSchemes['professional'];
 
         // Background
         slide.background = { color: colors.white };
