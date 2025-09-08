@@ -480,8 +480,8 @@ app.post('/chat', async (req, res) => {
             }
         }
 
-        const response = await callOpenAIChat({
-            model: model || 'gpt-4o-mini',
+        const response = await callAIChat({
+            model: model || (USE_OPENROUTER ? 'google/gemini-2.0-flash-exp:free' : 'gpt-4o-mini'),
             messages: enhancedMessages,
             temperature: typeof temperature === 'number' ? temperature : 0.7,
             max_tokens: typeof max_tokens === 'number' ? max_tokens : 1500,
