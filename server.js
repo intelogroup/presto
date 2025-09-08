@@ -6,6 +6,18 @@ const fs = require('fs').promises;
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
+// Try to load intelligent routing, fallback gracefully if not available
+let routePresentationRequest = null;
+let ContentValidator = null;
+try {
+    const intelligentRouting = require('./intelligent-routing');
+    routePresentationRequest = intelligentRouting.routePresentationRequest;
+    ContentValidator = intelligentRouting.ContentValidator;
+    console.log('✅ Intelligent routing system loaded');
+} catch (error) {
+    console.log('⚠️ Intelligent routing not available, using fallback mode');
+}
+
 const app = express();
 const port = 3004;
 
@@ -13,31 +25,48 @@ const port = 3004;
 app.use(cors());
 app.use(express.json());
 
-// If no OpenAI API key is provided, fall back to a lightweight local echo responder
-const USE_LOCAL_FALLBACK = !process.env.OPENAI_API_KEY;
+// Check for API keys - prioritize OpenRouter for Gemini 2.0
+const USE_OPENROUTER = !!process.env.OPENROUTER_API_KEY;
+const USE_LOCAL_FALLBACK = !USE_OPENROUTER && !process.env.OPENAI_API_KEY;
 
-// Initialize OpenAI client only if we have an API key
-const openai = USE_LOCAL_FALLBACK ? null : new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
+// Initialize AI client - prefer OpenRouter with Gemini 2.0
+let aiClient = null;
+if (USE_OPENROUTER) {
+    aiClient = new OpenAI({
+        apiKey: process.env.OPENROUTER_API_KEY,
+        baseURL: 'https://openrouter.ai/api/v1',
+        defaultHeaders: {
+            'HTTP-Referer': process.env.SITE_URL || 'https://presto-slides.com',
+            'X-Title': 'Presto Slides AI PowerPoint Generator'
+        }
+    });
+    console.log('✅ Using OpenRouter API with Gemini 2.0');
+} else if (process.env.OPENAI_API_KEY) {
+    aiClient = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY
+    });
+    console.log('✅ Using OpenAI API (fallback)');
+} else {
+    console.log('⚠️ No API keys available, using local fallback');
+}
 
-async function callOpenAIChat(params) {
+async function callAIChat(params) {
     if (USE_LOCAL_FALLBACK) {
         // Build a simple echo-like assistant response for local development
         const lastUserMessage = Array.isArray(params.messages) ?
             params.messages.slice().reverse().find(m => m.role === 'user') : null;
         const userText = lastUserMessage?.content || 'Hello';
-        
+
         // Simulate a delay
         await new Promise(resolve => setTimeout(resolve, 500));
-        
+
         return {
             id: `local-${Date.now()}`,
             choices: [
                 {
                     message: {
                         role: 'assistant',
-                        content: `I understand you want to create a PowerPoint presentation about: "${userText}". 
+                        content: `I understand you want to create a PowerPoint presentation about: "${userText}".
 
 Here's what I would suggest:
 - Title slide with your main topic
@@ -45,7 +74,7 @@ Here's what I would suggest:
 - Professional design with consistent formatting
 - Conclusion slide
 
-To generate the actual PowerPoint, please connect an OpenAI API key. For now, I'm running in demo mode.`
+To generate the actual PowerPoint, please connect an API key. For now, I'm running in demo mode.`
                     }
                 }
             ],
@@ -54,11 +83,20 @@ To generate the actual PowerPoint, please connect an OpenAI API key. For now, I'
         };
     }
 
-    // Real OpenAI call
-    if (!openai) {
-        throw new Error('OpenAI client not initialized');
+    if (!aiClient) {
+        throw new Error('AI client not initialized');
     }
-    return await openai.chat.completions.create(params);
+
+    // Set the appropriate model based on the API being used
+    const modelToUse = USE_OPENROUTER ? 'google/gemini-2.0-flash-exp:free' : (params.model || 'gpt-4o-mini');
+
+    const requestParams = {
+        ...params,
+        model: modelToUse
+    };
+
+    console.log(`🤖 Making AI request with model: ${modelToUse}`);
+    return await aiClient.chat.completions.create(requestParams);
 }
 
 // Adapter loader for template modules to standardize generatePresentation
@@ -270,60 +308,183 @@ class PrestoSlidesGenerator {
     }
 
     async generatePresentation(data, outputPath) {
-        const pptx = new PptxGenJS();
-
-        // Setup presentation
-        pptx.defineLayout({ name: 'LAYOUT_16x9', width: 10, height: 5.625 });
-        pptx.layout = 'LAYOUT_16x9';
-        pptx.author = 'Presto Slides - AI PowerPoint Generator';
-        pptx.company = 'Presto Slides';
-        pptx.subject = data.title || 'AI Generated Presentation';
-        pptx.title = data.title || 'Presentation';
-
-        const colorScheme = data.colorScheme || 'professional';
+        console.log('🎯 PrestoSlidesGenerator: Starting generation...');
 
         try {
-            // Create title slide
-            if (data.title) {
-                this.createTitleSlide(pptx, data.title, data.subtitle, colorScheme);
+            // Validate input data
+            if (!data || typeof data !== 'object') {
+                throw new Error('Invalid presentation data provided');
             }
 
-            // Create content slides
-            if (data.slides && Array.isArray(data.slides)) {
-                data.slides.forEach(slideData => {
-                    if (slideData.type === 'bullets' && slideData.bullets) {
-                        this.createBulletSlide(pptx, slideData.title, slideData.bullets, colorScheme);
-                    } else {
-                        this.createContentSlide(pptx, slideData.title, slideData.content, colorScheme);
+            if (!data.title || typeof data.title !== 'string' || data.title.trim().length === 0) {
+                throw new Error('Title is required and must be a non-empty string');
+            }
+
+            console.log(`Creating presentation: "${data.title}"`);
+
+            const pptx = new PptxGenJS();
+
+            // Setup presentation safely
+            try {
+                pptx.defineLayout({ name: 'LAYOUT_16x9', width: 10, height: 5.625 });
+                pptx.layout = 'LAYOUT_16x9';
+                pptx.author = 'Presto Slides - AI PowerPoint Generator';
+                pptx.company = 'Presto Slides';
+                pptx.subject = this.sanitizeText(data.title, 100) || 'AI Generated Presentation';
+                pptx.title = this.sanitizeText(data.title, 100) || 'Presentation';
+                console.log('✅ PPTX setup completed');
+            } catch (setupError) {
+                console.log('⚠️ PPTX setup had issues, continuing with basic setup:', setupError.message);
+            }
+
+            const colorScheme = data.colorScheme || 'professional';
+            console.log(`Using color scheme: ${colorScheme}`);
+
+            // Create title slide
+            try {
+                this.createTitleSlide(pptx, data.title, data.subtitle || '', colorScheme);
+                console.log('✅ Title slide created');
+            } catch (titleError) {
+                console.error('Title slide creation failed:', titleError.message);
+                throw new Error(`Failed to create title slide: ${titleError.message}`);
+            }
+
+            // Create content slides with robust error handling
+            let slidesCreated = 0;
+            if (data.slides && Array.isArray(data.slides) && data.slides.length > 0) {
+                console.log(`Creating ${data.slides.length} content slides...`);
+
+                for (let i = 0; i < data.slides.length && i < 50; i++) { // Limit to 50 slides
+                    try {
+                        const slideData = data.slides[i];
+
+                        if (!slideData || typeof slideData !== 'object') {
+                            console.log(`⚠️ Skipping invalid slide ${i + 1}`);
+                            continue;
+                        }
+
+                        const slideTitle = slideData.title || `Slide ${i + 1}`;
+
+                        if (slideData.type === 'bullets' && slideData.bullets && Array.isArray(slideData.bullets)) {
+                            // Filter out empty bullets and limit to 8
+                            const validBullets = slideData.bullets
+                                .filter(bullet => bullet && typeof bullet === 'string' && bullet.trim().length > 0)
+                                .slice(0, 8);
+
+                            if (validBullets.length > 0) {
+                                this.createBulletSlide(pptx, slideTitle, validBullets, colorScheme);
+                                slidesCreated++;
+                                console.log(`✅ Bullet slide ${i + 1} created with ${validBullets.length} bullets`);
+                            } else {
+                                console.log(`⚠️ Skipping bullet slide ${i + 1} - no valid bullets`);
+                            }
+                        } else if (slideData.content || slideData.title) {
+                            const content = slideData.content || 'Content not provided';
+                            this.createContentSlide(pptx, slideTitle, content, colorScheme);
+                            slidesCreated++;
+                            console.log(`✅ Content slide ${i + 1} created`);
+                        } else {
+                            console.log(`⚠️ Skipping slide ${i + 1} - no title or content`);
+                        }
+                    } catch (slideError) {
+                        console.error(`Error creating slide ${i + 1}:`, slideError.message);
+                        // Continue with other slides instead of failing completely
                     }
-                });
+                }
+
+                console.log(`✅ Successfully created ${slidesCreated} content slides`);
+            } else {
+                console.log('⚠️ No valid slides provided, creating title slide only');
+            }
+
+            // Ensure output directory exists
+            try {
+                const outputDir = require('path').dirname(outputPath);
+                await require('fs').promises.mkdir(outputDir, { recursive: true });
+                console.log('✅ Output directory verified');
+            } catch (dirError) {
+                console.log('Directory creation warning:', dirError.message);
             }
 
             // Write file
+            console.log(`Writing presentation to: ${outputPath}`);
             await pptx.writeFile({ fileName: outputPath });
-            return { success: true, path: outputPath };
+            console.log('✅ File written successfully');
+
+            const result = {
+                success: true,
+                path: outputPath,
+                slides: slidesCreated + 1, // +1 for title slide
+                generator: 'PrestoSlidesGenerator',
+                colorScheme: colorScheme
+            };
+
+            console.log('🎉 PrestoSlidesGenerator: Generation completed successfully');
+            return result;
 
         } catch (error) {
-            console.error('PPTX Generation Error:', error);
-            return { success: false, error: error.message };
+            console.error('�� PrestoSlidesGenerator CRITICAL ERROR:', error.message);
+            console.error('Error details:', error);
+            return {
+                success: false,
+                error: error.message,
+                generator: 'PrestoSlidesGenerator'
+            };
         }
     }
 }
 
-// Chat endpoint for PowerPoint generation
+// Chat endpoint for PowerPoint generation with intelligent routing
 app.post('/chat', async (req, res) => {
     try {
         const { messages, model, temperature, max_tokens } = req.body || {};
-        
+
         if (!Array.isArray(messages) || messages.length === 0) {
             return res.status(400).json({ error: 'messages array is required' });
         }
 
-        const response = await callOpenAIChat({
-            model: model || 'gpt-4o-mini',
-            messages,
+        // Get the last user message for analysis
+        const lastUserMessage = messages.slice().reverse().find(m => m.role === 'user');
+        const userInput = lastUserMessage?.content || '';
+
+        // Check if this looks like a presentation request
+        const isPresentationRequest = userInput.toLowerCase().includes('presentation') ||
+                                    userInput.toLowerCase().includes('powerpoint') ||
+                                    userInput.toLowerCase().includes('pptx') ||
+                                    userInput.toLowerCase().includes('slides');
+
+        let enhancedMessages = messages;
+
+        if (isPresentationRequest) {
+            console.log('🎯 Detected presentation request, using intelligent routing...');
+
+            // Use intelligent routing to get enhanced prompt
+            const routingResult = await routePresentationRequest(userInput);
+
+            if (routingResult.success) {
+                console.log('📊 Template analysis:', routingResult.analysis);
+
+                // Replace the last user message with enhanced prompt
+                enhancedMessages = [...messages];
+                const lastMessageIndex = enhancedMessages.length - 1;
+                enhancedMessages[lastMessageIndex] = {
+                    role: 'user',
+                    content: routingResult.enhancedPrompt
+                };
+
+                // Add system context
+                enhancedMessages.unshift({
+                    role: 'system',
+                    content: `You are an expert PowerPoint presentation generator with deep knowledge of effective presentation design and content structure. You understand various presentation types and can adapt your responses accordingly. Always respond with properly formatted JSON when generating presentations.`
+                });
+            }
+        }
+
+        const response = await callAIChat({
+            model: model || (USE_OPENROUTER ? 'google/gemini-2.0-flash-exp:free' : 'gpt-4o-mini'),
+            messages: enhancedMessages,
             temperature: typeof temperature === 'number' ? temperature : 0.7,
-            max_tokens: typeof max_tokens === 'number' ? max_tokens : 1000,
+            max_tokens: typeof max_tokens === 'number' ? max_tokens : 1500,
         });
 
         const result = {
@@ -340,80 +501,114 @@ app.post('/chat', async (req, res) => {
     }
 });
 
-// PPTX Generation endpoint
+// PPTX Generation endpoint with intelligent routing and validation
 app.post('/generate-pptx', async (req, res) => {
-    try {
-        const { title, subtitle, slides, colorScheme } = req.body || {};
+    console.log('=== INTELLIGENT PPTX Generation Started ===');
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
 
-        if (!title) {
-            console.log('PPTX Error: Title is required');
-            return res.status(400).json({ error: 'Title is required' });
+    try {
+        const requestData = req.body || {};
+
+        // Step 1: Validate and sanitize input data (with fallback)
+        console.log('Step 1: Validating presentation data...');
+        let sanitizedData = requestData;
+
+        if (ContentValidator) {
+            try {
+                const validationErrors = ContentValidator.validatePresentationData(requestData);
+
+                if (validationErrors.length > 0) {
+                    console.log('VALIDATION FAILED:', validationErrors);
+                    return res.status(400).json({
+                        error: 'Validation failed',
+                        details: validationErrors
+                    });
+                }
+
+                // Step 2: Sanitize data
+                console.log('Step 2: Sanitizing presentation data...');
+                sanitizedData = ContentValidator.sanitizePresentationData(requestData);
+                console.log('Sanitized data:', JSON.stringify(sanitizedData, null, 2));
+            } catch (validationError) {
+                console.log('⚠️ Validation system error, using basic validation:', validationError.message);
+                // Basic fallback validation
+                if (!requestData.title) {
+                    return res.status(400).json({ error: 'Title is required' });
+                }
+                sanitizedData = requestData;
+            }
+        } else {
+            console.log('⚠️ Using basic validation (intelligent routing not available)');
+            // Basic fallback validation
+            if (!requestData.title) {
+                return res.status(400).json({ error: 'Title is required' });
+            }
+            sanitizedData = requestData;
         }
 
-        // If a specific template is requested, try to load it
+        // Step 3: Analyze request for template routing (if available and user provided context)
+        let routingResult = null;
         let usedTemplate = 'presto_default';
-        let result = null;
+
+        // Always use default generator for reliability - disable template routing for now
+        console.log('Step 3: Using default generator for reliability');
+        routingResult = {
+            success: true,
+            analysis: {
+                useDefault: true,
+                reasoning: "Using default generator for optimal reliability"
+            }
+        };
+
+        // Step 4: Setup file generation
         const fileName = `presentation_${uuidv4()}.pptx`;
         const outputPath = path.join(__dirname, 'temp', fileName);
 
+        console.log('Step 4: Generated output path:', outputPath);
+
         // Ensure temp directory exists
-        await fs.mkdir(path.dirname(outputPath), { recursive: true });
-
-        // Helper to list available templates
-        async function listTemplates() {
-            const genDir = path.join(__dirname, 'generators');
-            try {
-                const files = await fs.readdir(genDir);
-                return files.filter(f => f.endsWith('.js')).map(f => path.basename(f, '.js'));
-            } catch (e) { return [] }
+        try {
+            await fs.mkdir(path.dirname(outputPath), { recursive: true });
+            console.log('Step 5: Temp directory verified');
+        } catch (dirError) {
+            console.error('Step 5 ERROR: Failed to create temp directory:', dirError);
+            throw dirError;
         }
 
-        if (!req.body.template) {
-            // No template specified: pick one at random (weighted selection could be added here)
-            const available = await listTemplates();
-            if (available.length > 0) {
-                const idx = Math.floor(Math.random() * available.length);
-                req.body.template = available[idx];
-            }
-        }
+        // Step 6: Generate presentation using validated and sanitized data
+        console.log('Step 6: Generating presentation with validated data...');
+        let result = null;
 
-        if (req.body.template) {
-            const tpl = String(req.body.template).replace(/\.js$/, '');
-            try {
-                const modPath = path.join(__dirname, 'generators', `${tpl}.js`);
-                const adapter = await loadTemplateAdapter(modPath);
-                if (!adapter) {
-                    result = { success: false, error: 'Template could not be adapted for programmatic generation' };
-                } else {
-                    usedTemplate = tpl;
-                    result = await adapter.generatePresentation({ title, subtitle, slides, colorScheme }, outputPath);
-                }
-            } catch (e) {
-                console.error('Template load error:', e.message);
-                // Fallback to default generator
-                usedTemplate = 'presto_default';
-            }
-        }
-
-        if (!result) {
+        try {
             const generator = new PrestoSlidesGenerator();
-            result = await generator.generatePresentation({
-                title,
-                subtitle,
-                slides,
-                colorScheme
-            }, outputPath);
+            result = await generator.generatePresentation(sanitizedData, outputPath);
+            console.log('Step 6: Generation result:', result);
             usedTemplate = 'presto_default';
+        } catch (genError) {
+            console.error('Step 6 ERROR: Generation failed:', genError.message);
+            throw genError;
         }
 
-        if (result.success) {
-            // Send file as download
-            // attach header indicating which template was used
+        // Step 7: Handle result
+        console.log('Step 7: Processing result:', result);
+
+        if (result && result.success) {
+            console.log('Step 8: Success! Sending file download');
+
+            // Add headers with metadata
             res.setHeader('X-Presto-Template', usedTemplate);
-            res.download(outputPath, `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pptx`, async (err) => {
+            res.setHeader('X-Presto-Validated', 'true');
+            if (routingResult?.analysis) {
+                res.setHeader('X-Presto-Analysis', JSON.stringify(routingResult.analysis));
+            }
+
+            const downloadFileName = `${sanitizedData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pptx`;
+
+            res.download(outputPath, downloadFileName, async (err) => {
                 // Clean up temp file
                 try {
                     await fs.unlink(outputPath);
+                    console.log('Step 9: Temp file cleaned up');
                 } catch (cleanupError) {
                     console.error('Cleanup error:', cleanupError);
                 }
@@ -423,27 +618,43 @@ app.post('/generate-pptx', async (req, res) => {
                 }
             });
         } else {
-            console.error('PPTX Generation failed:', result.error);
-            res.status(500).json({ error: result.error });
+            console.error('Step 8 ERROR: Generation failed:', result?.error || 'Unknown error');
+            res.status(500).json({
+                error: result?.error || 'Presentation generation failed',
+                details: 'The presentation could not be generated. Please try again with simpler content.'
+            });
         }
     } catch (error) {
-        console.error('PPTX generation error:', error.message);
-        res.status(500).json({ error: error.message });
+        console.error('=== CRITICAL PPTX GENERATION ERROR ===');
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        console.error('========================================');
+        res.status(500).json({
+            error: 'Internal server error during presentation generation',
+            details: error.message
+        });
     }
 });
 
 // Health check endpoint
 app.get('/health', (req, res) => {
+    const aiStatus = USE_OPENROUTER ? 'openrouter_gemini' :
+                     (aiClient ? 'openai' : 'local_fallback');
+
     res.status(200).json({
         status: 'OK',
         timestamp: new Date().toISOString(),
         server: 'Presto Slides API Server',
-        openai_connected: !USE_LOCAL_FALLBACK
+        ai_provider: aiStatus,
+        model: USE_OPENROUTER ? 'google/gemini-2.0-flash-exp:free' : 'gpt-4o-mini'
     });
 });
 
 // Root endpoint
 app.get('/', (req, res) => {
+    const aiStatus = USE_OPENROUTER ? 'openrouter_gemini_2.0' :
+                     (aiClient ? 'openai' : 'demo_mode');
+
     res.json({
         name: 'Presto Slides API',
         version: '1.0.0',
@@ -453,33 +664,81 @@ app.get('/', (req, res) => {
             'GET /templates - List available templates (use /api/templates from frontend)',
             'GET /health - Health check'
         ],
-        openai_status: USE_LOCAL_FALLBACK ? 'demo_mode' : 'connected'
+        ai_provider: aiStatus,
+        model: USE_OPENROUTER ? 'google/gemini-2.0-flash-exp:free' : 'gpt-4o-mini'
     });
 });
 
-// List available generator templates
+// Get template capabilities and analysis (with fallback)
+app.get('/template-capabilities', async (req, res) => {
+    try {
+        if (routePresentationRequest) {
+            const capabilities = await require('./intelligent-routing').loadTemplateCapabilities();
+            res.json(capabilities);
+        } else {
+            res.json({
+                templates: {},
+                defaultGenerator: {
+                    name: "Presto Default Generator",
+                    description: "Reliable presentation generator",
+                    note: "Intelligent routing not available"
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error loading template capabilities:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Analyze user input for template recommendations (with fallback)
+app.post('/analyze-request', async (req, res) => {
+    try {
+        const { userInput, presentationData } = req.body || {};
+
+        if (!userInput) {
+            return res.status(400).json({ error: 'userInput is required' });
+        }
+
+        if (routePresentationRequest) {
+            const routingResult = await routePresentationRequest(userInput, presentationData);
+            res.json(routingResult);
+        } else {
+            res.json({
+                success: true,
+                analysis: {
+                    useDefault: true,
+                    reasoning: "Intelligent routing not available, using default generator"
+                },
+                recommendedTemplate: null
+            });
+        }
+    } catch (error) {
+        console.error('Error analyzing request:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// List available generator templates (enhanced with capabilities)
 app.get('/templates', async (req, res) => {
     try {
-        const genDir = path.join(__dirname, 'generators');
-        const files = await fs.readdir(genDir);
+        const capabilities = await require('./intelligent-routing').loadTemplateCapabilities();
         const templates = [];
-        for (const file of files) {
-            if (!file.endsWith('.js')) continue;
-            const id = path.basename(file, '.js');
-            const filePath = path.join(genDir, file);
-            const content = await fs.readFile(filePath, 'utf8');
-            // Extract top comment block or first 2 comment lines as description
-            const match = content.match(/\/\*([\s\S]*?)\*\//);
-            let description = '';
-            if (match) {
-                description = match[1].split('\n').map(s => s.replace(/^\s*\*?\s?/, '')).slice(0,3).join(' ');
-            } else {
-                const firstLine = content.split('\n')[0] || '';
-                description = firstLine.substring(0, 120);
-            }
-            templates.push({ id, name: id.replace(/[_-]/g, ' '), description, thumbnail: `/templates/thumb/${id}` });
+
+        // Add templates from capabilities
+        for (const [id, template] of Object.entries(capabilities.templates || {})) {
+            templates.push({
+                id,
+                name: template.name,
+                description: template.description,
+                thumbnail: `/templates/thumb/${id}`,
+                capabilities: template.capabilities,
+                suitableFor: template.suitableFor,
+                keywords: template.keywords
+            });
         }
-        res.json({ templates });
+
+        res.json({ templates, defaultGenerator: capabilities.defaultGenerator });
     } catch (error) {
         console.error('Error listing templates:', error);
         res.status(500).json({ error: error.message });
@@ -575,8 +834,11 @@ app.get('/templates/thumb/:id', async (req, res) => {
 app.listen(port, () => {
     console.log(`🚀 Presto Slides API Server v2 running on http://localhost:${port}`);
     if (USE_LOCAL_FALLBACK) {
-        console.log('⚠️  Running in demo mode (no OpenAI API key)');
-        console.log('💡 Set OPENAI_API_KEY environment variable for full functionality');
+        console.log('⚠️  Running in demo mode (no API keys available)');
+        console.log('💡 Set OPENROUTER_API_KEY for Gemini 2.0 or OPENAI_API_KEY for OpenAI');
+    } else if (USE_OPENROUTER) {
+        console.log('✅ OpenRouter API connected - Using Gemini 2.0 Flash (free)');
+        console.log('🤖 Model: google/gemini-2.0-flash-exp:free');
     } else {
         console.log('✅ OpenAI API connected');
     }
