@@ -47,6 +47,14 @@ export default function App() {
     scrollToBottom()
   }, [messages])
 
+  useEffect(() => {
+    // load templates
+    fetch('/api/templates')
+      .then(r => r.json())
+      .then(j => setTemplates(j.templates || []))
+      .catch(() => setTemplates([]))
+  }, [])
+
   const generatePPTX = async (presentationData) => {
     setPptxLoading(true)
     try {
