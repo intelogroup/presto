@@ -61,6 +61,202 @@ To generate the actual PowerPoint, please connect an OpenAI API key. For now, I'
     return await openai.chat.completions.create(params);
 }
 
+// PowerPoint Generator Class
+class PrestoSlidesGenerator {
+    constructor() {
+        // Color schemes inspired by the enhanced generator
+        this.colorSchemes = {
+            professional: {
+                primary: '1f4e79',
+                secondary: '70ad47',
+                accent: 'ffc000',
+                text: '2f2f2f',
+                lightGray: 'f2f2f2',
+                white: 'ffffff'
+            },
+            modern: {
+                primary: '2e86ab',
+                secondary: 'a23b72',
+                accent: '4caf50',
+                text: '333333',
+                lightGray: 'f5f5f5',
+                white: 'ffffff'
+            }
+        };
+
+        // Font settings
+        this.fonts = {
+            title: { face: 'Segoe UI', size: 44, bold: true },
+            subtitle: { face: 'Segoe UI', size: 24 },
+            heading: { face: 'Segoe UI', size: 32, bold: true },
+            body: { face: 'Segoe UI', size: 18 },
+            caption: { face: 'Segoe UI', size: 14 }
+        };
+
+        // Safe layout areas (from content constraint system)
+        this.safeArea = { x: 0.5, y: 0.5, width: 9, height: 4.625 };
+    }
+
+    sanitizeText(text, maxLength = 1000) {
+        if (!text) return '';
+
+        let sanitized = String(text)
+            .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remove control characters
+            .trim();
+
+        if (sanitized.length > maxLength) {
+            sanitized = sanitized.substring(0, maxLength - 3) + '...';
+        }
+
+        return sanitized;
+    }
+
+    createTitleSlide(pptx, title, subtitle = '', colorScheme = 'professional') {
+        const slide = pptx.addSlide();
+        const colors = this.colorSchemes[colorScheme];
+
+        // Background
+        slide.background = { color: colors.white };
+
+        // Title
+        slide.addText(this.sanitizeText(title, 100), {
+            x: 1, y: 2, w: 8, h: 1.5,
+            fontSize: this.fonts.title.size,
+            fontFace: this.fonts.title.face,
+            bold: this.fonts.title.bold,
+            color: colors.primary,
+            align: 'center',
+            valign: 'middle'
+        });
+
+        // Subtitle
+        if (subtitle) {
+            slide.addText(this.sanitizeText(subtitle, 200), {
+                x: 1, y: 3.5, w: 8, h: 1,
+                fontSize: this.fonts.subtitle.size,
+                fontFace: this.fonts.subtitle.face,
+                color: colors.text,
+                align: 'center',
+                valign: 'middle'
+            });
+        }
+
+        // Decorative line
+        slide.addShape('line', {
+            x: 2, y: 4.8, w: 6, h: 0,
+            line: { color: colors.accent, width: 3 }
+        });
+
+        return slide;
+    }
+
+    createContentSlide(pptx, title, content, colorScheme = 'professional') {
+        const slide = pptx.addSlide();
+        const colors = this.colorSchemes[colorScheme];
+
+        // Background
+        slide.background = { color: colors.white };
+
+        // Title
+        slide.addText(this.sanitizeText(title, 80), {
+            x: this.safeArea.x, y: 0.5, w: this.safeArea.width, h: 0.8,
+            fontSize: this.fonts.heading.size,
+            fontFace: this.fonts.heading.face,
+            bold: this.fonts.heading.bold,
+            color: colors.primary,
+            align: 'left',
+            valign: 'middle'
+        });
+
+        // Content
+        const contentText = this.sanitizeText(content, 2000);
+        slide.addText(contentText, {
+            x: this.safeArea.x, y: 1.5, w: this.safeArea.width, h: 3.5,
+            fontSize: this.fonts.body.size,
+            fontFace: this.fonts.body.face,
+            color: colors.text,
+            align: 'left',
+            valign: 'top',
+            wrap: true
+        });
+
+        return slide;
+    }
+
+    createBulletSlide(pptx, title, bullets, colorScheme = 'professional') {
+        const slide = pptx.addSlide();
+        const colors = this.colorSchemes[colorScheme];
+
+        // Background
+        slide.background = { color: colors.white };
+
+        // Title
+        slide.addText(this.sanitizeText(title, 80), {
+            x: this.safeArea.x, y: 0.5, w: this.safeArea.width, h: 0.8,
+            fontSize: this.fonts.heading.size,
+            fontFace: this.fonts.heading.face,
+            bold: this.fonts.heading.bold,
+            color: colors.primary,
+            align: 'left',
+            valign: 'middle'
+        });
+
+        // Bullet points
+        const bulletText = bullets.map(bullet => `• ${this.sanitizeText(bullet, 200)}`).join('\n');
+        slide.addText(bulletText, {
+            x: this.safeArea.x + 0.2, y: 1.5, w: this.safeArea.width - 0.4, h: 3.5,
+            fontSize: this.fonts.body.size,
+            fontFace: this.fonts.body.face,
+            color: colors.text,
+            align: 'left',
+            valign: 'top',
+            wrap: true
+        });
+
+        return slide;
+    }
+
+    async generatePresentation(data, outputPath) {
+        const pptx = new PptxGenJS();
+
+        // Setup presentation
+        pptx.defineLayout({ name: 'LAYOUT_16x9', width: 10, height: 5.625 });
+        pptx.layout = 'LAYOUT_16x9';
+        pptx.author = 'Presto Slides - AI PowerPoint Generator';
+        pptx.company = 'Presto Slides';
+        pptx.subject = data.title || 'AI Generated Presentation';
+        pptx.title = data.title || 'Presentation';
+
+        const colorScheme = data.colorScheme || 'professional';
+
+        try {
+            // Create title slide
+            if (data.title) {
+                this.createTitleSlide(pptx, data.title, data.subtitle, colorScheme);
+            }
+
+            // Create content slides
+            if (data.slides && Array.isArray(data.slides)) {
+                data.slides.forEach(slideData => {
+                    if (slideData.type === 'bullets' && slideData.bullets) {
+                        this.createBulletSlide(pptx, slideData.title, slideData.bullets, colorScheme);
+                    } else {
+                        this.createContentSlide(pptx, slideData.title, slideData.content, colorScheme);
+                    }
+                });
+            }
+
+            // Write file
+            await pptx.writeFile({ fileName: outputPath });
+            return { success: true, path: outputPath };
+
+        } catch (error) {
+            console.error('PPTX Generation Error:', error);
+            return { success: false, error: error.message };
+        }
+    }
+}
+
 // Chat endpoint for PowerPoint generation
 app.post('/chat', async (req, res) => {
     try {
