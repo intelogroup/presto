@@ -565,20 +565,164 @@ export default function App() {
             </div>
           </div>
 
+          {/* Selected Images Display */}
+          {selectedImages.length > 0 && (
+            <div style={{ padding: '8px 16px' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {selectedImages.map(image => (
+                  <div key={image.id} style={{ position: 'relative', display: 'inline-block' }}>
+                    <img
+                      src={image.url}
+                      alt={image.name}
+                      style={{
+                        width: '80px',
+                        height: '60px',
+                        objectFit: 'cover',
+                        borderRadius: '6px',
+                        border: '2px solid var(--primary)'
+                      }}
+                    />
+                    <button
+                      onClick={() => removeImage(image.id)}
+                      style={{
+                        position: 'absolute',
+                        top: '-6px',
+                        right: '-6px',
+                        background: 'var(--primary)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '20px',
+                        height: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        fontSize: '12px'
+                      }}
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Image URL Input */}
+          {showImageInput && (
+            <div style={{ padding: '8px 16px', background: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <input
+                  type="text"
+                  placeholder="Paste image URL..."
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && addImageUrl()}
+                  style={{
+                    flex: 1,
+                    padding: '8px 12px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '6px',
+                    fontSize: '14px'
+                  }}
+                />
+                <button
+                  onClick={addImageUrl}
+                  disabled={!imageUrl.trim()}
+                  style={{
+                    padding: '8px 16px',
+                    background: imageUrl.trim() ? 'var(--primary)' : '#9ca3af',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: imageUrl.trim() ? 'pointer' : 'not-allowed',
+                    fontSize: '14px'
+                  }}
+                >
+                  Add
+                </button>
+                <button
+                  onClick={() => setShowImageInput(false)}
+                  style={{
+                    padding: '8px',
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="input-row">
-            <textarea
-              className="input"
-              rows={1}
-              placeholder="Describe your presentation..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={onKey}
-              aria-label="Message"
-            />
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <textarea
+                className="input"
+                rows={1}
+                placeholder="Describe your presentation or analyze images..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={onKey}
+                aria-label="Message"
+              />
+              <div style={{ display: 'flex', gap: '8px', padding: '4px 0' }}>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '4px 8px',
+                    background: 'transparent',
+                    border: '1px solid var(--primary)',
+                    borderRadius: '4px',
+                    color: 'var(--primary)',
+                    cursor: 'pointer',
+                    fontSize: '12px'
+                  }}
+                  title="Upload image"
+                >
+                  <Upload size={14} />
+                  Upload
+                </button>
+                <button
+                  onClick={() => setShowImageInput(!showImageInput)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '4px 8px',
+                    background: showImageInput ? 'var(--primary)' : 'transparent',
+                    border: '1px solid var(--primary)',
+                    borderRadius: '4px',
+                    color: showImageInput ? 'white' : 'var(--primary)',
+                    cursor: 'pointer',
+                    fontSize: '12px'
+                  }}
+                  title="Add image URL"
+                >
+                  <Image size={14} />
+                  URL
+                </button>
+              </div>
+            </div>
             <button className="button" onClick={send} disabled={!canSend} aria-disabled={!canSend}>
               {loading ? 'Sending…' : 'Send'}
             </button>
           </div>
+
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFileUpload}
+            style={{ display: 'none' }}
+          />
           <div className="small" style={{ padding: '0 12px 12px' }}>
             Tip: Press Enter to send, Shift+Enter for new line.
           </div>
