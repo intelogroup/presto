@@ -7,10 +7,41 @@ const OpenAI = require('openai');
 const app = express();
 const port = 3000;
 
-// Initialize OpenAI client
-const openai = new OpenAI({
+// If no OpenAI API key is provided, fall back to a lightweight local echo responder
+const USE_LOCAL_FALLBACK = !process.env.OPENAI_API_KEY;
+
+// Initialize OpenAI client only if we have an API key
+const openai = USE_LOCAL_FALLBACK ? null : new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 });
+
+async function callOpenAIChat(params) {
+    if (USE_LOCAL_FALLBACK) {
+        // Build a simple echo-like assistant response for local development
+        const lastUserMessage = Array.isArray(params.messages) ?
+            params.messages.slice().reverse().find(m => m.role === 'user') : null;
+        const userText = lastUserMessage?.content || 'Hello';
+        return {
+            id: `local-${Date.now()}`,
+            choices: [
+                {
+                    message: {
+                        role: 'assistant',
+                        content: `Local echo (no OPENAI_API_KEY): ${userText}`
+                    }
+                }
+            ],
+            usage: null,
+            created: Math.floor(Date.now() / 1000)
+        };
+    }
+
+    // Real OpenAI call
+    if (!openai) {
+        throw new Error('OpenAI client not initialized');
+    }
+    return await openai.chat.completions.create(params);
+}
 
 // Helper function to create directory if it doesn't exist
 function ensureDirectoryExists(dirPath) {
@@ -78,7 +109,7 @@ async function analyzeImage(filePath, filename) {
         else if (ext === '.webp') mimeType = 'image/webp';
 
         // Call OpenAI Vision API
-        const response = await openai.chat.completions.create({
+        const response = await callOpenAIChat({
             model: "gpt-4o",
             messages: [
                 {
@@ -315,6 +346,31 @@ app.get('/profesional-blanco', (req, res) => {
             count: files.length,
             description: 'Professional white theme presentation templates'
         });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Simple chat completion endpoint
+app.post('/chat', async (req, res) => {
+    try {
+        const { messages, model, temperature, max_tokens } = req.body || {};
+        if (!Array.isArray(messages) || messages.length === 0) {
+            return res.status(400).json({ error: 'messages array is required' });
+        }
+        const response = await callOpenAIChat({
+            model: model || 'gpt-4o-mini',
+            messages,
+            temperature: typeof temperature === 'number' ? temperature : 0.7,
+            max_tokens: typeof max_tokens === 'number' ? max_tokens : 800,
+        });
+        const out = {
+            id: response.id,
+            message: response.choices?.[0]?.message,
+            usage: response.usage || null,
+            created: response.created,
+        };
+        res.status(200).json(out);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

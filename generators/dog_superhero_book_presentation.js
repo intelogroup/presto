@@ -126,37 +126,40 @@ class DogSuperheroBookGenerator {
     
     addTitleSlide(pres, data) {
         const slide = pres.addSlide();
-        
+
         // Superhero-themed background
         slide.background = { color: this.colorScheme.lightBlue };
-        
+
         // Main title with superhero styling
         slide.addText(ContentConstraintSystem.constrainTitle(data.title), {
             x: 1, y: 1.5, w: 8, h: 1.2,
             fontSize: 44, bold: true, color: this.colorScheme.primary,
             align: 'center', fontFace: 'Calibri'
         });
-        
+
         // Subtitle
         slide.addText(ContentConstraintSystem.constrainText(data.subtitle), {
             x: 1, y: 2.8, w: 8, h: 0.8,
             fontSize: 24, color: this.colorScheme.secondary,
             align: 'center', fontFace: 'Calibri'
         });
-        
+
         // Heroic accent elements (no outline)
         slide.addShape('rect', {
             x: 2, y: 4, w: 6, h: 0.15,
             fill: { color: this.colorScheme.accent }
         });
-        
-        // Add decorative image on the right
+
+        // Add decorative image on the right if available, otherwise draw placeholder
         try {
-            slide.addImage({
-                path: path.join(__dirname, 'assets-images', 'laboratory.jpg'),
-                x: 8.5, y: 1.5, w: 1.2, h: 1.2,
-                transparency: 30
-            });
+            const imgPath = path.join(__dirname, 'assets-images', 'laboratory.jpg');
+            if (fs.existsSync(imgPath)) {
+                slide.addImage({ path: imgPath, x: 8.5, y: 1.5, w: 1.2, h: 1.2, transparency: 30 });
+            } else {
+                // Draw placeholder box
+                slide.addShape('rect', { x: 8.5, y: 1.5, w: 1.2, h: 1.2, fill: { color: this.colorScheme.lightBlue }, line: { color: this.colorScheme.primary } });
+                slide.addText('Image', { x: 8.5, y: 1.9, w: 1.2, h: 0.4, fontSize: 10, color: this.colorScheme.primary, align: 'center' });
+            }
         } catch (error) {
             console.warn('Could not add title slide image:', error.message);
         }
@@ -177,40 +180,42 @@ class DogSuperheroBookGenerator {
     
     addContentSlide(pres, data) {
         const slide = pres.addSlide();
-        
+
         // Light themed background
         slide.background = { color: this.colorScheme.background };
-        
+
         // Title with superhero accent
         slide.addText(ContentConstraintSystem.constrainTitle(data.title), {
             x: 0.5, y: 0.5, w: 9, h: 0.8,
             fontSize: 36, bold: true, color: this.colorScheme.primary,
             align: 'left', fontFace: 'Calibri'
         });
-        
+
         // Accent line under title (no outline)
         slide.addShape('rect', {
             x: 0.5, y: 1.4, w: 3, h: 0.08,
             fill: { color: this.colorScheme.accent }
         });
-        
-        // Add decorative image on the right
+
+        // Add decorative image on the right if available
         try {
-            slide.addImage({
-                path: path.join(__dirname, 'assets-images', 'scientific_research.jpg'),
-                x: 7.5, y: 1.5, w: 2, h: 2.5,
-                transparency: 25
-            });
+            const imgPath = path.join(__dirname, 'assets-images', 'scientific_research.jpg');
+            if (fs.existsSync(imgPath)) {
+                slide.addImage({ path: imgPath, x: 7.5, y: 1.5, w: 2, h: 2.5, transparency: 25 });
+            } else {
+                slide.addShape('rect', { x: 7.5, y: 1.5, w: 2, h: 2.5, fill: { color: this.colorScheme.lightBlue }, line: { color: this.colorScheme.primary } });
+                slide.addText('Image', { x: 7.5, y: 2.3, w: 2, h: 0.3, fontSize: 12, color: this.colorScheme.primary, align: 'center' });
+            }
         } catch (error) {
             console.warn('Could not add content slide image:', error.message);
         }
-        
+
         // Content bullets with constraint system
         const constrainedContent = ContentConstraintSystem.constrainBulletPoints(data.content);
-        
+
         constrainedContent.forEach((point, index) => {
             const yPos = 2 + (index * 0.5);
-            
+
             // Bullet point circle
             slide.addShape('ellipse', {
                 x: 0.7, y: yPos + 0.1, w: 0.15, h: 0.15,
