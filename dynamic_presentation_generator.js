@@ -499,7 +499,20 @@ class DynamicPresentationGenerator extends EventEmitter {
 
     addIconGrid(slide, icons, area) {
         if (!area) area = { x: 1, y: 2, w: 8, h: 3.5 };
-        
+
+        // Validate icons input
+        if (!icons || !Array.isArray(icons) || icons.length === 0) {
+            // Add placeholder if no valid icons
+            slide.addText('🎯 Icons Area', {
+                x: area.x, y: area.y + area.h/2 - 0.3, w: area.w, h: 0.6,
+                fontSize: 24,
+                color: this.colors.darkGray,
+                align: 'center',
+                valign: 'middle'
+            });
+            return;
+        }
+
         const maxIcons = 9; // 3x3 grid
         const displayIcons = icons.slice(0, maxIcons);
         const cols = Math.min(3, displayIcons.length);
@@ -885,7 +898,7 @@ if (require.main === module) {
                     icons: [
                         { symbol: '🎯', label: 'Precision' },
                         { symbol: '⚡', label: 'Speed' },
-                        { symbol: '��️', label: 'Reliability' },
+                        { symbol: '🛡️', label: 'Reliability' },
                         { symbol: '🎨', label: 'Design' },
                         { symbol: '📊', label: 'Analytics' },
                         { symbol: '🔧', label: 'Tools' }
