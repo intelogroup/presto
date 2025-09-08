@@ -1,8 +1,8 @@
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 function Message({ role, content }) {
   return (
-    <div className={`msg ${role}`}>
+    <div className={`msg ${role}`} aria-live={role === 'assistant' ? 'polite' : 'off'}>
       <div style={{ whiteSpace: 'pre-wrap' }}>{content}</div>
     </div>
   )
@@ -23,7 +23,7 @@ export default function App() {
     if (el) el.scrollTop = el.scrollHeight
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     scrollToBottom()
   }, [messages])
 
@@ -56,7 +56,6 @@ export default function App() {
       ])
     } finally {
       setLoading(false)
-      setTimeout(scrollToBottom, 0)
     }
   }
 
@@ -68,37 +67,40 @@ export default function App() {
   }
 
   return (
-    <div className="container">
-      <div className="card" role="group" aria-label="Chat">
-        <div className="header">
-          <div style={{ width: 10, height: 10, background: 'var(--primary)', borderRadius: 999 }} />
-          <div>
-            <h1>Minimal Chat</h1>
-            <div className="sub">Light UI • React + Vite</div>
+    <div className="app-wrap">
+      <div className="container">
+        <div className="card" role="group" aria-label="Chat">
+          <div className="header">
+            <div style={{ width: 10, height: 10, background: 'var(--primary)', borderRadius: 999 }} />
+            <div>
+              <h1>Minimal Chat</h1>
+              <div className="sub">Light UI • React + Vite</div>
+            </div>
           </div>
-        </div>
 
-        <div className="messages" ref={listRef}>
-          {messages.map((m, i) => (
-            <Message key={i} role={m.role} content={m.content} />
-          ))}
-        </div>
+          <div className="messages" ref={listRef}>
+            {messages.map((m, i) => (
+              <Message key={i} role={m.role} content={m.content} />
+            ))}
+          </div>
 
-        <div className="input-row">
-          <textarea
-            className="input"
-            rows={1}
-            placeholder="Type a message..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={onKey}
-          />
-          <button className="button" onClick={send} disabled={!canSend}>
-            {loading ? 'Sending…' : 'Send'}
-          </button>
-        </div>
-        <div className="small" style={{ padding: '0 12px 12px' }}>
-          Tip: Press Enter to send, Shift+Enter for new line.
+          <div className="input-row">
+            <textarea
+              className="input"
+              rows={1}
+              placeholder="Type a message..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={onKey}
+              aria-label="Message"
+            />
+            <button className="button" onClick={send} disabled={!canSend} aria-disabled={!canSend}>
+              {loading ? 'Sending���' : 'Send'}
+            </button>
+          </div>
+          <div className="small" style={{ padding: '0 12px 12px' }}>
+            Tip: Press Enter to send, Shift+Enter for new line.
+          </div>
         </div>
       </div>
     </div>
