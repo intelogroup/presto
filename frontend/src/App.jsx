@@ -53,7 +53,20 @@ export default function App() {
       .then(r => r.json())
       .then(j => setTemplates(j.templates || []))
       .catch(() => setTemplates([]))
+
+    // restore selected template from localStorage
+    try {
+      const saved = localStorage.getItem('presto_selected_template')
+      if (saved) setSelectedTemplate(saved)
+    } catch (e) {}
   }, [])
+
+  useEffect(() => {
+    try {
+      if (selectedTemplate) localStorage.setItem('presto_selected_template', selectedTemplate)
+      else localStorage.removeItem('presto_selected_template')
+    } catch (e) {}
+  }, [selectedTemplate])
 
   const generatePPTX = async (presentationData) => {
     setPptxLoading(true)
