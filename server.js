@@ -326,12 +326,11 @@ app.post('/generate-pptx', async (req, res) => {
                 }
             });
         } else {
-            console.log('Generation failed:', result.error);
+            console.error('PPTX Generation failed:', result.error);
             res.status(500).json({ error: result.error });
         }
     } catch (error) {
-        console.error('PPTX generation error:', error);
-        console.error('Stack trace:', error.stack);
+        console.error('PPTX generation error:', error.message);
         res.status(500).json({ error: error.message });
     }
 });
