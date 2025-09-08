@@ -550,24 +550,15 @@ app.post('/generate-pptx', async (req, res) => {
         let routingResult = null;
         let usedTemplate = 'presto_default';
 
-        if (routePresentationRequest && requestData.userInput) {
-            try {
-                console.log('Step 3: Analyzing request for template routing...');
-                routingResult = await routePresentationRequest(requestData.userInput, sanitizedData);
-                console.log('Routing analysis:', routingResult?.analysis);
-
-                if (routingResult?.success && routingResult.recommendedTemplate) {
-                    console.log(`Recommended template: ${routingResult.recommendedTemplate}`);
-                    // For now, still use default generator but log the recommendation
-                    console.log('Note: Template system available but using default for reliability');
-                }
-            } catch (routingError) {
-                console.log('⚠️ Template routing error, using default generator:', routingError.message);
-                routingResult = null;
+        // Always use default generator for reliability - disable template routing for now
+        console.log('Step 3: Using default generator for reliability');
+        routingResult = {
+            success: true,
+            analysis: {
+                useDefault: true,
+                reasoning: "Using default generator for optimal reliability"
             }
-        } else {
-            console.log('Step 3: Using default generator (no routing available or no user input)');
-        }
+        };
 
         // Step 4: Setup file generation
         const fileName = `presentation_${uuidv4()}.pptx`;
