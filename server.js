@@ -573,7 +573,7 @@ app.get('/templates/thumb/:id', async (req, res) => {
 
 // Start server
 app.listen(port, () => {
-    console.log(`🚀 Presto Slides API Server running on http://localhost:${port}`);
+    console.log(`🚀 Presto Slides API Server v2 running on http://localhost:${port}`);
     if (USE_LOCAL_FALLBACK) {
         console.log('⚠️  Running in demo mode (no OpenAI API key)');
         console.log('💡 Set OPENAI_API_KEY environment variable for full functionality');
