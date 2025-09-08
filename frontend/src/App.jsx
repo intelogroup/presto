@@ -23,6 +23,41 @@ function TopBar() {
   )
 }
 
+function formatPresentationOutline(pptxData) {
+  const slideIcons = ['📋', '🎯', '📚', '🤝', '⭐', '💡', '🔥', '✨', '🚀', '💪']
+
+  let formatted = `🎯 **${pptxData.title}**\n`
+  if (pptxData.subtitle) {
+    formatted += `*${pptxData.subtitle}*\n\n`
+  } else {
+    formatted += '\n'
+  }
+
+  formatted += `📊 **Presentation Outline** (${pptxData.slides?.length || 0} slides)\n\n`
+
+  pptxData.slides?.forEach((slide, index) => {
+    const icon = slideIcons[index] || '▫️'
+    formatted += `${icon} **Slide ${index + 1}: ${slide.title}**\n`
+
+    if (slide.type === 'bullets' && slide.bullets) {
+      slide.bullets.forEach(bullet => {
+        formatted += `   • ${bullet}\n`
+      })
+    } else if (slide.content) {
+      const preview = slide.content.length > 80 ?
+        slide.content.substring(0, 80) + '...' :
+        slide.content
+      formatted += `   ${preview}\n`
+    }
+    formatted += '\n'
+  })
+
+  formatted += `🎨 Theme: ${pptxData.colorScheme || 'professional'}\n\n`
+  formatted += '✅ Your presentation is ready! Click "Generate PowerPoint" below to download it.'
+
+  return formatted
+}
+
 export default function App() {
   const [messages, setMessages] = useState([
     { role: 'assistant', content: 'Hi! I\'m here to help you create amazing PowerPoint presentations. Just describe what you need and I\'ll generate it for you!' }
