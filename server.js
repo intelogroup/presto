@@ -350,6 +350,8 @@ app.post('/generate-pptx', async (req, res) => {
 
         if (result.success) {
             // Send file as download
+            // attach header indicating which template was used
+            res.setHeader('X-Presto-Template', usedTemplate);
             res.download(outputPath, `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pptx`, async (err) => {
                 // Clean up temp file
                 try {
