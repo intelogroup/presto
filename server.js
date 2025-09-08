@@ -517,67 +517,25 @@ app.get('/templates/thumb/:id', async (req, res) => {
         res.setHeader('Content-Type', 'image/jpeg');
         res.send(data);
     } catch (error) {
-        // Generate sophisticated thumbnails
+        // Generate diverse thumbnails
         try {
             const { id } = req.params;
             const title = id.replace(/[_-]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
             let hash = 0;
             for (let i = 0; i < id.length; i++) hash = ((hash << 5) - hash) + id.charCodeAt(i);
 
-            // Create varied color schemes
+            // More distinct color schemes
             const colorSchemes = [
-                { bg: '#667eea', accent: '#764ba2', pattern: '#8b5cf6' },
-                { bg: '#f093fb', accent: '#f5576c', pattern: '#ff6b6b' },
-                { bg: '#4facfe', accent: '#00f2fe', pattern: '#17a2b8' },
-                { bg: '#43e97b', accent: '#38f9d7', pattern: '#20c997' },
-                { bg: '#fa709a', accent: '#fee140', pattern: '#ffc107' },
-                { bg: '#a8edea', accent: '#fed6e3', pattern: '#d1ecf1' },
-                { bg: '#ff9a9e', accent: '#fecfef', pattern: '#f8d7da' },
-                { bg: '#667eea', accent: '#764ba2', pattern: '#6f42c1' },
-                { bg: '#ffecd2', accent: '#fcb69f', pattern: '#fd7e14' }
+                ['#667eea', '#764ba2'], ['#f093fb', '#f5576c'], ['#4facfe', '#00f2fe'],
+                ['#43e97b', '#38f9d7'], ['#fa709a', '#fee140'], ['#a8edea', '#fed6e3'],
+                ['#ff9a9e', '#fecfef'], ['#330867', '#30cfd0'], ['#ff6b6b', '#ffa726']
             ];
 
             const schemeIndex = Math.abs(hash) % colorSchemes.length;
-            const scheme = colorSchemes[schemeIndex];
-
-            // Create different layouts
-            const layoutType = Math.abs(hash >> 4) % 4;
-
-            let svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240' viewBox='0 0 400 240'>
-  <defs>
-    <linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'>
-      <stop offset='0%' stop-color='${scheme.bg}' />
-      <stop offset='100%' stop-color='${scheme.accent}' />
-    </linearGradient>
-    <pattern id='dots' patternUnits='userSpaceOnUse' width='20' height='20'>
-      <circle cx='10' cy='10' r='2' fill='${scheme.pattern}' opacity='0.3'/>
-    </pattern>
-    <pattern id='lines' patternUnits='userSpaceOnUse' width='4' height='4'>
-      <path d='M0,4 L4,0' stroke='${scheme.pattern}' stroke-width='1' opacity='0.2'/>
-    </pattern>
-  </defs>
-
-  <rect width='400' height='240' fill='url(#bg)' rx='12'/>`;
-
-            // Add different patterns based on layout type
-            if (layoutType === 0) {
-                // Dots pattern
-                svg += `<rect width='400' height='240' fill='url(#dots)' rx='12'/>`;
-            } else if (layoutType === 1) {
-                // Lines pattern
-                svg += `<rect width='400' height='240' fill='url(#lines)' rx='12'/>`;
-            } else if (layoutType === 2) {
-                // Geometric shapes
-                svg += `<circle cx='320' cy='60' r='40' fill='${scheme.pattern}' opacity='0.3'/>
-                       <rect x='50' y='150' width='60' height='60' fill='${scheme.pattern}' opacity='0.2' rx='8'/>`;
-            } else {
-                // Abstract waves
-                svg += `<path d='M0,120 Q100,80 200,120 T400,120 L400,240 L0,240 Z' fill='${scheme.pattern}' opacity='0.2'/>`;
-            }
+            const [color1, color2] = colorSchemes[schemeIndex];
 
             // Add icon/symbol based on template name
-            let icon = '📊'; // default
+            let icon = '📊';
             if (id.includes('dog')) icon = '🐕';
             else if (id.includes('mice') || id.includes('mouse')) icon = '🐭';
             else if (id.includes('robot') || id.includes('tech')) icon = '🤖';
@@ -589,11 +547,20 @@ app.get('/templates/thumb/:id', async (req, res) => {
             else if (id.includes('sustainable') || id.includes('green')) icon = '🌱';
             else if (id.includes('enhanced') || id.includes('advanced')) icon = '⚡';
 
-            // Add title and icon
-            svg += `
-  <text x='50%' y='45%' font-size='32' text-anchor='middle' dominant-baseline='middle'>${icon}</text>
-  <text x='50%' y='70%' font-size='14' font-family='Segoe UI, system-ui, sans-serif' font-weight='600' fill='white' text-anchor='middle' dominant-baseline='middle' opacity='0.95'>${title}</text>
-  <text x='50%' y='85%' font-size='10' font-family='Segoe UI, system-ui, sans-serif' fill='white' text-anchor='middle' dominant-baseline='middle' opacity='0.7'>PowerPoint Template</text>
+            const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240' viewBox='0 0 400 240'>
+  <defs>
+    <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0' stop-color='${color1}' />
+      <stop offset='1' stop-color='${color2}' />
+    </linearGradient>
+  </defs>
+  <rect width='400' height='240' fill='url(#g)' rx='16' />
+  <circle cx='320' cy='60' r='30' fill='white' opacity='0.15'/>
+  <rect x='50' y='170' width='50' height='50' fill='white' opacity='0.1' rx='8'/>
+  <text x='200' y='100' font-size='36' text-anchor='middle' dominant-baseline='middle'>${icon}</text>
+  <text x='200' y='140' font-size='16' font-family='system-ui, sans-serif' font-weight='600' fill='white' text-anchor='middle' opacity='0.95'>${title}</text>
+  <text x='200' y='160' font-size='11' font-family='system-ui, sans-serif' fill='white' text-anchor='middle' opacity='0.7'>PowerPoint Template</text>
 </svg>`;
 
             res.setHeader('Content-Type', 'image/svg+xml');
