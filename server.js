@@ -399,44 +399,14 @@ app.post('/generate-pptx', async (req, res) => {
             }
         }
 
-        if (!req.body.template) {
-            console.log('Step 4: No template specified, using default generator for reliability');
-            // For now, always use default generator to ensure reliability
-            // TODO: Re-enable random template selection after validating all generators
-        } else {
-            console.log('Step 4: Template specified:', req.body.template);
-        }
+        // TEMPORARILY DISABLED: Template loading system causes 500 errors
+        // Always use the reliable default generator for now
+        console.log('Step 4-5: Using default PrestoSlidesGenerator for reliability');
+        console.log('Note: Template system temporarily disabled to prevent errors');
 
-        if (req.body.template) {
-            const tpl = String(req.body.template).replace(/\.js$/, '');
-            console.log('Step 5: Attempting to load template:', tpl);
-            try {
-                const modPath = path.join(__dirname, 'generators', `${tpl}.js`);
-                console.log('Template module path:', modPath);
-                const adapter = await loadTemplateAdapter(modPath);
-                if (!adapter) {
-                    console.log('Step 5 WARNING: Template could not be adapted, using default generator');
-                    result = null; // Force fallback to default
-                } else {
-                    console.log('Step 5: Template adapter loaded successfully');
-                    usedTemplate = tpl;
-                    result = await adapter.generatePresentation({ title, subtitle, slides, colorScheme }, outputPath);
-                    console.log('Step 5: Template generation result:', result);
-
-                    // If template generation failed, fallback to default
-                    if (!result || !result.success) {
-                        console.log('Step 5 WARNING: Template generation failed, using default generator');
-                        result = null;
-                        usedTemplate = 'presto_default';
-                    }
-                }
-            } catch (e) {
-                console.error('Step 5 ERROR: Template load error:', e.message);
-                // Fallback to default generator
-                usedTemplate = 'presto_default';
-                result = null;
-            }
-        }
+        // Skip template loading completely - force use of default generator
+        result = null;
+        usedTemplate = 'presto_default';
 
         if (!result) {
             console.log('Step 6: Using default PrestoSlidesGenerator');
