@@ -397,22 +397,42 @@ app.post('/generate-pptx', async (req, res) => {
     try {
         const requestData = req.body || {};
 
-        // Step 1: Validate and sanitize input data
+        // Step 1: Validate and sanitize input data (with fallback)
         console.log('Step 1: Validating presentation data...');
-        const validationErrors = ContentValidator.validatePresentationData(requestData);
+        let sanitizedData = requestData;
 
-        if (validationErrors.length > 0) {
-            console.log('VALIDATION FAILED:', validationErrors);
-            return res.status(400).json({
-                error: 'Validation failed',
-                details: validationErrors
-            });
+        if (ContentValidator) {
+            try {
+                const validationErrors = ContentValidator.validatePresentationData(requestData);
+
+                if (validationErrors.length > 0) {
+                    console.log('VALIDATION FAILED:', validationErrors);
+                    return res.status(400).json({
+                        error: 'Validation failed',
+                        details: validationErrors
+                    });
+                }
+
+                // Step 2: Sanitize data
+                console.log('Step 2: Sanitizing presentation data...');
+                sanitizedData = ContentValidator.sanitizePresentationData(requestData);
+                console.log('Sanitized data:', JSON.stringify(sanitizedData, null, 2));
+            } catch (validationError) {
+                console.log('⚠️ Validation system error, using basic validation:', validationError.message);
+                // Basic fallback validation
+                if (!requestData.title) {
+                    return res.status(400).json({ error: 'Title is required' });
+                }
+                sanitizedData = requestData;
+            }
+        } else {
+            console.log('⚠️ Using basic validation (intelligent routing not available)');
+            // Basic fallback validation
+            if (!requestData.title) {
+                return res.status(400).json({ error: 'Title is required' });
+            }
+            sanitizedData = requestData;
         }
-
-        // Step 2: Sanitize data
-        console.log('Step 2: Sanitizing presentation data...');
-        const sanitizedData = ContentValidator.sanitizePresentationData(requestData);
-        console.log('Sanitized data:', JSON.stringify(sanitizedData, null, 2));
 
         // Step 3: Analyze request for template routing (if user provided context)
         let routingResult = null;
