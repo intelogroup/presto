@@ -113,7 +113,7 @@ class PrestoSlidesGenerator {
 
     createTitleSlide(pptx, title, subtitle = '', colorScheme = 'professional') {
         const slide = pptx.addSlide();
-        const colors = this.colorSchemes[colorScheme];
+        const colors = this.colorSchemes[colorScheme] || this.colorSchemes['professional'];
 
         // Background
         slide.background = { color: colors.white };
