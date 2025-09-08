@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Target, Presentation, BookOpen, Users, Star, Lightbulb, Zap, Sparkles, Rocket, CheckCircle, Palette, FileText, ChevronRight } from 'lucide-react'
+import { Target, Presentation, BookOpen, Users, Star, Lightbulb, Zap, Sparkles, Rocket, CheckCircle, Palette, FileText, ChevronRight, Image, Upload, X } from 'lucide-react'
 
 function Message({ role, content, isFormatted }) {
   return (
