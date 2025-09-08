@@ -25,13 +25,30 @@ const port = 3004;
 app.use(cors());
 app.use(express.json());
 
-// If no OpenAI API key is provided, fall back to a lightweight local echo responder
-const USE_LOCAL_FALLBACK = !process.env.OPENAI_API_KEY;
+// Check for API keys - prioritize OpenRouter for Gemini 2.0
+const USE_OPENROUTER = !!process.env.OPENROUTER_API_KEY;
+const USE_LOCAL_FALLBACK = !USE_OPENROUTER && !process.env.OPENAI_API_KEY;
 
-// Initialize OpenAI client only if we have an API key
-const openai = USE_LOCAL_FALLBACK ? null : new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
+// Initialize AI client - prefer OpenRouter with Gemini 2.0
+let aiClient = null;
+if (USE_OPENROUTER) {
+    aiClient = new OpenAI({
+        apiKey: process.env.OPENROUTER_API_KEY,
+        baseURL: 'https://openrouter.ai/api/v1',
+        defaultHeaders: {
+            'HTTP-Referer': process.env.SITE_URL || 'https://presto-slides.com',
+            'X-Title': 'Presto Slides AI PowerPoint Generator'
+        }
+    });
+    console.log('✅ Using OpenRouter API with Gemini 2.0');
+} else if (process.env.OPENAI_API_KEY) {
+    aiClient = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY
+    });
+    console.log('✅ Using OpenAI API (fallback)');
+} else {
+    console.log('⚠️ No API keys available, using local fallback');
+}
 
 async function callOpenAIChat(params) {
     if (USE_LOCAL_FALLBACK) {
