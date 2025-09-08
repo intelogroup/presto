@@ -37,6 +37,9 @@ async function callOpenAIChat(params) {
     }
 
     // Real OpenAI call
+    if (!openai) {
+        throw new Error('OpenAI client not initialized');
+    }
     return await openai.chat.completions.create(params);
 }
 
