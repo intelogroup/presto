@@ -378,101 +378,92 @@ app.post('/chat', async (req, res) => {
     }
 });
 
-// PPTX Generation endpoint
+// PPTX Generation endpoint with intelligent routing and validation
 app.post('/generate-pptx', async (req, res) => {
-    console.log('=== PPTX Generation Request Started ===');
+    console.log('=== INTELLIGENT PPTX Generation Started ===');
     console.log('Request body:', JSON.stringify(req.body, null, 2));
 
     try {
-        const { title, subtitle, slides, colorScheme } = req.body || {};
+        const requestData = req.body || {};
 
-        if (!title) {
-            console.log('PPTX Error: Title is required');
-            return res.status(400).json({ error: 'Title is required' });
+        // Step 1: Validate and sanitize input data
+        console.log('Step 1: Validating presentation data...');
+        const validationErrors = ContentValidator.validatePresentationData(requestData);
+
+        if (validationErrors.length > 0) {
+            console.log('VALIDATION FAILED:', validationErrors);
+            return res.status(400).json({
+                error: 'Validation failed',
+                details: validationErrors
+            });
         }
 
-        console.log('Step 1: Validations passed, title:', title);
+        // Step 2: Sanitize data
+        console.log('Step 2: Sanitizing presentation data...');
+        const sanitizedData = ContentValidator.sanitizePresentationData(requestData);
+        console.log('Sanitized data:', JSON.stringify(sanitizedData, null, 2));
 
-        // If a specific template is requested, try to load it
+        // Step 3: Analyze request for template routing (if user provided context)
+        let routingResult = null;
         let usedTemplate = 'presto_default';
-        let result = null;
+
+        if (requestData.userInput) {
+            console.log('Step 3: Analyzing request for template routing...');
+            routingResult = await routePresentationRequest(requestData.userInput, sanitizedData);
+            console.log('Routing analysis:', routingResult.analysis);
+
+            if (routingResult.success && routingResult.recommendedTemplate) {
+                console.log(`Recommended template: ${routingResult.recommendedTemplate}`);
+                // For now, still use default generator but log the recommendation
+                console.log('Note: Template system available but using default for reliability');
+            }
+        }
+
+        // Step 4: Setup file generation
         const fileName = `presentation_${uuidv4()}.pptx`;
         const outputPath = path.join(__dirname, 'temp', fileName);
 
-        console.log('Step 2: Generated output path:', outputPath);
+        console.log('Step 4: Generated output path:', outputPath);
 
         // Ensure temp directory exists
         try {
             await fs.mkdir(path.dirname(outputPath), { recursive: true });
-            console.log('Step 3: Temp directory created/verified');
+            console.log('Step 5: Temp directory verified');
         } catch (dirError) {
-            console.error('Step 3 ERROR: Failed to create temp directory:', dirError);
+            console.error('Step 5 ERROR: Failed to create temp directory:', dirError);
             throw dirError;
         }
 
-        // Helper to list available templates (filter to only working generators)
-        async function listTemplates() {
-            const genDir = path.join(__dirname, 'generators');
-            try {
-                const files = await fs.readdir(genDir);
-                const jsFiles = files.filter(f => f.endsWith('.js'));
+        // Step 6: Generate presentation using validated and sanitized data
+        console.log('Step 6: Generating presentation with validated data...');
+        let result = null;
 
-                // Filter to only include known working generators
-                const workingGenerators = [
-                    'fixed_positioning_generator',
-                    'enhanced_pptx_generator',
-                    'demo_enhanced_generator',
-                    'flower_presentation_example',
-                    'methodology_slide_generator',
-                    'modern_sustainable_tech_presentation',
-                    'overflow_safe_generator'
-                ];
-
-                return jsFiles
-                    .map(f => path.basename(f, '.js'))
-                    .filter(name => workingGenerators.includes(name));
-            } catch (e) {
-                console.error('listTemplates error:', e);
-                return []
-            }
+        try {
+            const generator = new PrestoSlidesGenerator();
+            result = await generator.generatePresentation(sanitizedData, outputPath);
+            console.log('Step 6: Generation result:', result);
+            usedTemplate = 'presto_default';
+        } catch (genError) {
+            console.error('Step 6 ERROR: Generation failed:', genError.message);
+            throw genError;
         }
 
-        // TEMPORARILY DISABLED: Template loading system causes 500 errors
-        // Always use the reliable default generator for now
-        console.log('Step 4-5: Using default PrestoSlidesGenerator for reliability');
-        console.log('Note: Template system temporarily disabled to prevent errors');
-
-        // Skip template loading completely - force use of default generator
-        result = null;
-        usedTemplate = 'presto_default';
-
-        if (!result) {
-            console.log('Step 6: Using default PrestoSlidesGenerator');
-            try {
-                const generator = new PrestoSlidesGenerator();
-                console.log('Step 6: Generator instance created');
-                result = await generator.generatePresentation({
-                    title,
-                    subtitle,
-                    slides,
-                    colorScheme
-                }, outputPath);
-                console.log('Step 6: Default generation result:', result);
-                usedTemplate = 'presto_default';
-            } catch (genError) {
-                console.error('Step 6 ERROR: Default generator failed:', genError.message, genError.stack);
-                throw genError;
-            }
-        }
-
-        console.log('Step 7: Final result:', result);
+        // Step 7: Handle result
+        console.log('Step 7: Processing result:', result);
 
         if (result && result.success) {
             console.log('Step 8: Success! Sending file download');
-            // Send file as download
-            // attach header indicating which template was used
+
+            // Add headers with metadata
             res.setHeader('X-Presto-Template', usedTemplate);
-            res.download(outputPath, `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pptx`, async (err) => {
+            res.setHeader('X-Presto-Validated', 'true');
+            if (routingResult?.analysis) {
+                res.setHeader('X-Presto-Analysis', JSON.stringify(routingResult.analysis));
+            }
+
+            const downloadFileName = `${sanitizedData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pptx`;
+
+            res.download(outputPath, downloadFileName, async (err) => {
                 // Clean up temp file
                 try {
                     await fs.unlink(outputPath);
@@ -486,15 +477,21 @@ app.post('/generate-pptx', async (req, res) => {
                 }
             });
         } else {
-            console.error('Step 8 ERROR: PPTX Generation failed:', result?.error || 'Unknown error');
-            res.status(500).json({ error: result?.error || 'Unknown generation error' });
+            console.error('Step 8 ERROR: Generation failed:', result?.error || 'Unknown error');
+            res.status(500).json({
+                error: result?.error || 'Presentation generation failed',
+                details: 'The presentation could not be generated. Please try again with simpler content.'
+            });
         }
     } catch (error) {
         console.error('=== CRITICAL PPTX GENERATION ERROR ===');
         console.error('Error message:', error.message);
         console.error('Error stack:', error.stack);
         console.error('========================================');
-        res.status(500).json({ error: error.message });
+        res.status(500).json({
+            error: 'Internal server error during presentation generation',
+            details: error.message
+        });
     }
 });
 
