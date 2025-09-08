@@ -8,6 +8,21 @@ function Message({ role, content }) {
   )
 }
 
+function TopBar() {
+  return (
+    <div className="topbar" role="banner">
+      <div className="brand">
+        <div className="dot" />
+        <span>Fusion Builder</span>
+      </div>
+      <div className="top-actions">
+        <a href="https://www.builder.io/c/docs/projects" target="_blank" rel="noreferrer" className="link">Docs</a>
+        <a href="#" className="link">Contact</a>
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   const [messages, setMessages] = useState([
     { role: 'assistant', content: 'Hi! Ask me anything.' }
@@ -67,9 +82,11 @@ export default function App() {
   }
 
   return (
-    <div className="app-wrap">
-      <div className="container">
-        <div className="card" role="group" aria-label="Chat">
+    <>
+      <TopBar />
+      <div className="app-wrap">
+        <div className="container">
+          <div className="card" role="group" aria-label="Chat">
           <div className="header">
             <div style={{ width: 10, height: 10, background: 'var(--primary)', borderRadius: 999 }} />
             <div>
@@ -95,14 +112,19 @@ export default function App() {
               aria-label="Message"
             />
             <button className="button" onClick={send} disabled={!canSend} aria-disabled={!canSend}>
-              {loading ? 'Sending���' : 'Send'}
+              {loading ? 'Sending…' : 'Send'}
             </button>
           </div>
           <div className="small" style={{ padding: '0 12px 12px' }}>
             Tip: Press Enter to send, Shift+Enter for new line.
           </div>
         </div>
+
+        <section className="pptx-area" aria-label="Presentation preview">
+          <div className="pptx-placeholder">Presentation preview will appear here after generation.</div>
+        </section>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
