@@ -1,0 +1,1523 @@
+{
+  "total_analyzed": 12,
+  "total_failed": 0,
+  "successful_analyses": [
+    {
+      "filename": "1.png",
+      "ai_analysis": {
+        "success": true,
+        "filename": "1.png",
+        "analysis": "```json\n{\n  \"slideType\": \"Title Slide\",\n  \"layout\": \"Two Column\",\n  \"colorPalette\": {\n    \"background\": \"#FFFFFF\",\n    \"text\": \"#000000\",\n    \"accent\": \"#FFA500\"\n  },\n  \"typography\": {\n    \"fontFamily\": \"Sans-serif\",\n    \"titleFontSize\": \"48px\",\n    \"subtitleFontSize\": \"32px\",\n    \"bodyFontSize\": \"20px\"\n  },\n  \"shapesAndGraphics\": [\n    {\n      \"type\": \"logo\",\n      \"position\": {\n        \"x\": \"5%\",\n        \"y\": \"5%\"\n      },\n      \"size\": {\n        \"width\": \"10%\",\n        \"height\": \"15%\"\n      },\n      \"properties\": {\n        \"color\": \"#000000\"\n      }\n    },\n    {\n      \"type\": \"image\",\n      \"position\": {\n        \"x\": \"60%\",\n        \"y\": \"5%\"\n      },\n      \"size\": {\n        \"width\": \"35%\",\n        \"height\": \"90%\"\n      },\n      \"properties\": {\n        \"style\": \"artistic painting\"\n      }\n    },\n    {\n      \"type\": \"banner\",\n      \"position\": {\n        \"x\": \"65%\",\n        \"y\": \"85%\"\n      },\n      \"size\": {\n        \"width\": \"25%\",\n        \"height\": \"7%\"\n      },\n      \"properties\": {\n        \"text\": \"www.unsitiogenial.es\",\n        \"textColor\": \"#000000\",\n        \"backgroundColor\": \"#FFFFFF\",\n        \"borderRadius\": \"20px\"\n      }\n    }\n  ],\n  \"contentPlaceholders\": [\n    {\n      \"type\": \"text\",\n      \"position\": {\n        \"x\": \"5%\",\n        \"y\": \"25%\"\n      },\n      \"size\": {\n        \"width\": \"55%\",\n        \"height\": \"10%\"\n      },\n      \"properties\": {\n        \"text\": \"Portafolio Artístico\",\n        \"fontSize\": \"48px\",\n        \"fontWeight\": \"bold\",\n        \"color\": \"#000000\"\n      }\n    },\n    {\n      \"type\": \"text\",\n      \"position\": {\n        \"x\": \"5%\",\n        \"y\": \"38%\"\n      },\n      \"size\": {\n        \"width\": \"55%\",\n        \"height\": \"10%\"\n      },\n      \"properties\": {\n        \"text\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n        \"fontSize\": \"20px\",\n        \"fontWeight\": \"normal\",\n        \"color\": \"#000000\"\n      }\n    }\n  ]\n}\n```",
+        "timestamp": "2025-09-07T22:01:47.518Z"
+      },
+      "powerpoint_description": {
+        "slideType": "Title Slide",
+        "layout": "Two Column",
+        "colorPalette": {
+          "background": "#FFFFFF",
+          "text": "#000000",
+          "accent": "#FFA500"
+        },
+        "typography": {
+          "fontFamily": "Sans-serif",
+          "titleFontSize": "48px",
+          "subtitleFontSize": "32px",
+          "bodyFontSize": "20px"
+        },
+        "shapesAndGraphics": [
+          {
+            "type": "logo",
+            "position": {
+              "x": "5%",
+              "y": "5%"
+            },
+            "size": {
+              "width": "10%",
+              "height": "15%"
+            },
+            "properties": {
+              "color": "#000000"
+            }
+          },
+          {
+            "type": "image",
+            "position": {
+              "x": "60%",
+              "y": "5%"
+            },
+            "size": {
+              "width": "35%",
+              "height": "90%"
+            },
+            "properties": {
+              "style": "artistic painting"
+            }
+          },
+          {
+            "type": "banner",
+            "position": {
+              "x": "65%",
+              "y": "85%"
+            },
+            "size": {
+              "width": "25%",
+              "height": "7%"
+            },
+            "properties": {
+              "text": "www.unsitiogenial.es",
+              "textColor": "#000000",
+              "backgroundColor": "#FFFFFF",
+              "borderRadius": "20px"
+            }
+          }
+        ],
+        "contentPlaceholders": [
+          {
+            "type": "text",
+            "position": {
+              "x": "5%",
+              "y": "25%"
+            },
+            "size": {
+              "width": "55%",
+              "height": "10%"
+            },
+            "properties": {
+              "text": "Portafolio Artístico",
+              "fontSize": "48px",
+              "fontWeight": "bold",
+              "color": "#000000"
+            }
+          },
+          {
+            "type": "text",
+            "position": {
+              "x": "5%",
+              "y": "38%"
+            },
+            "size": {
+              "width": "55%",
+              "height": "10%"
+            },
+            "properties": {
+              "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+              "fontSize": "20px",
+              "fontWeight": "normal",
+              "color": "#000000"
+            }
+          }
+        ]
+      },
+      "timestamp": "2025-09-07T22:01:47.546Z"
+    },
+    {
+      "filename": "10.png",
+      "ai_analysis": {
+        "success": true,
+        "filename": "10.png",
+        "analysis": "```json\n{\n  \"slideType\": \"Title and Content\",\n  \"layout\": \"vertical\",\n  \"colorPalette\": {\n    \"background\": \"#FFFFFF\",\n    \"text\": \"#333333\",\n    \"icons\": \"#000000\",\n    \"frame\": \"imageColor\"\n  },\n  \"typography\": {\n    \"header\": {\n      \"font\": \"Sans Serif\",\n      \"size\": \"32px\",\n      \"color\": \"#333333\",\n      \"align\": \"center\"\n    },\n    \"body\": {\n      \"font\": \"Sans Serif\",\n      \"size\": \"14px\",\n      \"color\": \"#333333\",\n      \"align\": \"center\"\n    }\n  },\n  \"shapesAndGraphics\": [\n    {\n      \"type\": \"rectangle\",\n      \"position\": {\n        \"x\": \"5%\",\n        \"y\": \"5%\"\n      },\n      \"size\": {\n        \"width\": \"90%\",\n        \"height\": \"25%\"\n      },\n      \"color\": \"imageColor\",\n      \"imageFrame\": \"roundedRectangle\"\n    }\n  ],\n  \"contentPlaceholders\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"Propuesta de Arte\",\n      \"position\": {\n        \"x\": \"0%\",\n        \"y\": \"35%\"\n      },\n      \"size\": {\n        \"width\": \"100%\",\n        \"height\": \"10%\"\n      }\n    },\n    {\n      \"type\": \"iconWithText\",\n      \"icon\": {\n        \"shape\": \"splash\",\n        \"number\": \"1\"\n      },\n      \"text\": \"Lorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\n        \"x\": \"5%\",\n        \"y\": \"55%\"\n      },\n      \"size\": {\n        \"width\": \"28%\",\n        \"height\": \"30%\"\n      }\n    },\n    {\n      \"type\": \"iconWithText\",\n      \"icon\": {\n        \"shape\": \"splash\",\n        \"number\": \"2\"\n      },\n      \"text\": \"Lorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\n        \"x\": \"36%\",\n        \"y\": \"55%\"\n      },\n      \"size\": {\n        \"width\": \"28%\",\n        \"height\": \"30%\"\n      }\n    },\n    {\n      \"type\": \"iconWithText\",\n      \"icon\": {\n        \"shape\": \"splash\",\n        \"number\": \"3\"\n      },\n      \"text\": \"Lorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\n        \"x\": \"67%\",\n        \"y\": \"55%\"\n      },\n      \"size\": {\n        \"width\": \"28%\",\n        \"height\": \"30%\"\n      }\n    }\n  ]\n}\n```",
+        "timestamp": "2025-09-07T22:02:07.927Z"
+      },
+      "powerpoint_description": {
+        "slideType": "Title and Content",
+        "layout": "vertical",
+        "colorPalette": {
+          "background": "#FFFFFF",
+          "text": "#333333",
+          "icons": "#000000",
+          "frame": "imageColor"
+        },
+        "typography": {
+          "header": {
+            "font": "Sans Serif",
+            "size": "32px",
+            "color": "#333333",
+            "align": "center"
+          },
+          "body": {
+            "font": "Sans Serif",
+            "size": "14px",
+            "color": "#333333",
+            "align": "center"
+          }
+        },
+        "shapesAndGraphics": [
+          {
+            "type": "rectangle",
+            "position": {
+              "x": "5%",
+              "y": "5%"
+            },
+            "size": {
+              "width": "90%",
+              "height": "25%"
+            },
+            "color": "imageColor",
+            "imageFrame": "roundedRectangle"
+          }
+        ],
+        "contentPlaceholders": [
+          {
+            "type": "text",
+            "text": "Propuesta de Arte",
+            "position": {
+              "x": "0%",
+              "y": "35%"
+            },
+            "size": {
+              "width": "100%",
+              "height": "10%"
+            }
+          },
+          {
+            "type": "iconWithText",
+            "icon": {
+              "shape": "splash",
+              "number": "1"
+            },
+            "text": "Lorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "5%",
+              "y": "55%"
+            },
+            "size": {
+              "width": "28%",
+              "height": "30%"
+            }
+          },
+          {
+            "type": "iconWithText",
+            "icon": {
+              "shape": "splash",
+              "number": "2"
+            },
+            "text": "Lorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "36%",
+              "y": "55%"
+            },
+            "size": {
+              "width": "28%",
+              "height": "30%"
+            }
+          },
+          {
+            "type": "iconWithText",
+            "icon": {
+              "shape": "splash",
+              "number": "3"
+            },
+            "text": "Lorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "67%",
+              "y": "55%"
+            },
+            "size": {
+              "width": "28%",
+              "height": "30%"
+            }
+          }
+        ]
+      },
+      "timestamp": "2025-09-07T22:02:07.932Z"
+    },
+    {
+      "filename": "11.png",
+      "ai_analysis": {
+        "success": true,
+        "filename": "11.png",
+        "analysis": "```json\n{\n  \"slideType\": \"conclusion\",\n  \"layout\": \"two-column\",\n  \"colorPalette\": {\n    \"background\": \"#FFFFFF\",\n    \"text\": \"#333333\"\n  },\n  \"typography\": {\n    \"title\": {\n      \"font\": \"Sans Serif\",\n      \"size\": \"32px\",\n      \"weight\": \"bold\",\n      \"color\": \"#333333\"\n    },\n    \"body\": {\n      \"font\": \"Sans Serif\",\n      \"size\": \"16px\",\n      \"weight\": \"normal\",\n      \"color\": \"#555555\"\n    }\n  },\n  \"shapesAndGraphics\": [\n    {\n      \"type\": \"image\",\n      \"position\": {\"x\": \"50%\", \"y\": \"10%\"},\n      \"size\": {\"width\": \"20%\", \"height\": \"40%\"},\n      \"style\": \"slightly rotated\",\n      \"description\": \"Abstract colorful painting\"\n    },\n    {\n      \"type\": \"image\",\n      \"position\": {\"x\": \"65%\", \"y\": \"5%\"},\n      \"size\": {\"width\": \"20%\", \"height\": \"30%\"},\n      \"style\": \"slightly rotated\",\n      \"description\": \"Close-up of paint on a palette\"\n    },\n    {\n      \"type\": \"image\",\n      \"position\": {\"x\": \"60%\", \"y\": \"45%\"},\n      \"size\": {\"width\": \"20%\", \"height\": \"30%\"},\n      \"style\": \"slightly rotated\",\n      \"description\": \"Painter at work with circular canvas\"\n    },\n    {\n      \"type\": \"image\",\n      \"position\": {\"x\": \"70%\", \"y\": \"35%\"},\n      \"size\": {\"width\": \"20%\", \"height\": \"30%\"},\n      \"style\": \"slightly rotated\",\n      \"description\": \"Watercolor brush in green paint\"\n    }\n  ],\n  \"contentPlaceholders\": [\n    {\n      \"type\": \"text\",\n      \"position\": {\"x\": \"10%\", \"y\": \"15%\"},\n      \"size\": {\"width\": \"35%\", \"height\": \"10%\"},\n      \"content\": \"Conclusiones Finales\",\n      \"style\": \"title\"\n    },\n    {\n      \"type\": \"text\",\n      \"position\": {\"x\": \"10%\", \"y\": \"30%\"},\n      \"size\": {\"width\": \"35%\", \"height\": \"20%\"},\n      \"content\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"style\": \"body\"\n    },\n    {\n      \"type\": \"shape\",\n      \"shapeType\": \"roundedRectangle\",\n      \"position\": {\"x\": \"10%\", \"y\": \"55%\"},\n      \"size\": {\"width\": \"25%\", \"height\": \"5%\"},\n      \"color\": \"#333333\",\n      \"text\": {\n        \"content\": \"www.unsitiogenial.es\",\n        \"color\": \"#FFFFFF\",\n        \"font\": \"Sans Serif\",\n        \"size\": \"14px\",\n        \"weight\": \"normal\"\n      }\n    }\n  ]\n}\n```",
+        "timestamp": "2025-09-07T22:02:32.070Z"
+      },
+      "powerpoint_description": {
+        "slideType": "conclusion",
+        "layout": "two-column",
+        "colorPalette": {
+          "background": "#FFFFFF",
+          "text": "#333333"
+        },
+        "typography": {
+          "title": {
+            "font": "Sans Serif",
+            "size": "32px",
+            "weight": "bold",
+            "color": "#333333"
+          },
+          "body": {
+            "font": "Sans Serif",
+            "size": "16px",
+            "weight": "normal",
+            "color": "#555555"
+          }
+        },
+        "shapesAndGraphics": [
+          {
+            "type": "image",
+            "position": {
+              "x": "50%",
+              "y": "10%"
+            },
+            "size": {
+              "width": "20%",
+              "height": "40%"
+            },
+            "style": "slightly rotated",
+            "description": "Abstract colorful painting"
+          },
+          {
+            "type": "image",
+            "position": {
+              "x": "65%",
+              "y": "5%"
+            },
+            "size": {
+              "width": "20%",
+              "height": "30%"
+            },
+            "style": "slightly rotated",
+            "description": "Close-up of paint on a palette"
+          },
+          {
+            "type": "image",
+            "position": {
+              "x": "60%",
+              "y": "45%"
+            },
+            "size": {
+              "width": "20%",
+              "height": "30%"
+            },
+            "style": "slightly rotated",
+            "description": "Painter at work with circular canvas"
+          },
+          {
+            "type": "image",
+            "position": {
+              "x": "70%",
+              "y": "35%"
+            },
+            "size": {
+              "width": "20%",
+              "height": "30%"
+            },
+            "style": "slightly rotated",
+            "description": "Watercolor brush in green paint"
+          }
+        ],
+        "contentPlaceholders": [
+          {
+            "type": "text",
+            "position": {
+              "x": "10%",
+              "y": "15%"
+            },
+            "size": {
+              "width": "35%",
+              "height": "10%"
+            },
+            "content": "Conclusiones Finales",
+            "style": "title"
+          },
+          {
+            "type": "text",
+            "position": {
+              "x": "10%",
+              "y": "30%"
+            },
+            "size": {
+              "width": "35%",
+              "height": "20%"
+            },
+            "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "style": "body"
+          },
+          {
+            "type": "shape",
+            "shapeType": "roundedRectangle",
+            "position": {
+              "x": "10%",
+              "y": "55%"
+            },
+            "size": {
+              "width": "25%",
+              "height": "5%"
+            },
+            "color": "#333333",
+            "text": {
+              "content": "www.unsitiogenial.es",
+              "color": "#FFFFFF",
+              "font": "Sans Serif",
+              "size": "14px",
+              "weight": "normal"
+            }
+          }
+        ]
+      },
+      "timestamp": "2025-09-07T22:02:32.083Z"
+    },
+    {
+      "filename": "12.png",
+      "ai_analysis": {
+        "success": true,
+        "filename": "12.png",
+        "analysis": "```json\n{\n  \"slideType\": \"thankYou\",\n  \"layout\": \"twoColumn\",\n  \"colorPalette\": {\n    \"background\": \"#FFFFFF\",\n    \"textPrimary\": \"#000000\",\n    \"textSecondary\": \"#555555\",\n    \"accent\": \"#000000\"\n  },\n  \"typography\": {\n    \"heading\": {\n      \"fontFamily\": \"Sans-serif\",\n      \"fontSize\": \"36px\",\n      \"color\": \"#000000\"\n    },\n    \"bodyText\": {\n      \"fontFamily\": \"Sans-serif\",\n      \"fontSize\": \"16px\",\n      \"color\": \"#555555\"\n    },\n    \"contactText\": {\n      \"fontFamily\": \"Sans-serif\",\n      \"fontSize\": \"14px\",\n      \"color\": \"#000000\"\n    }\n  },\n  \"shapesAndGraphics\": [\n    {\n      \"type\": \"rectangle\",\n      \"position\": {\n        \"x\": \"55%\",\n        \"y\": \"0%\"\n      },\n      \"size\": {\n        \"width\": \"45%\",\n        \"height\": \"100%\"\n      },\n      \"image\": \"Colorful abstract painting\"\n    },\n    {\n      \"type\": \"image\",\n      \"position\": {\n        \"x\": \"60%\",\n        \"y\": \"25%\"\n      },\n      \"size\": {\n        \"width\": \"30%\",\n        \"height\": \"50%\"\n      },\n      \"shape\": \"none\"\n    },\n    {\n      \"type\": \"icon\",\n      \"position\": {\n        \"x\": \"10%\",\n        \"y\": \"65%\"\n      },\n      \"size\": {\n        \"width\": \"3%\",\n        \"height\": \"3%\"\n      },\n      \"iconType\": \"phone\",\n      \"color\": \"#000000\"\n    },\n    {\n      \"type\": \"icon\",\n      \"position\": {\n        \"x\": \"10%\",\n        \"y\": \"72%\"\n      },\n      \"size\": {\n        \"width\": \"3%\",\n        \"height\": \"3%\"\n      },\n      \"iconType\": \"email\",\n      \"color\": \"#000000\"\n    },\n    {\n      \"type\": \"icon\",\n      \"position\": {\n        \"x\": \"10%\",\n        \"y\": \"79%\"\n      },\n      \"size\": {\n        \"width\": \"3%\",\n        \"height\": \"3%\"\n      },\n      \"iconType\": \"web\",\n      \"color\": \"#000000\"\n    }\n  ],\n  \"contentPlaceholders\": [\n    {\n      \"type\": \"text\",\n      \"position\": {\n        \"x\": \"10%\",\n        \"y\": \"25%\"\n      },\n      \"size\": {\n        \"width\": \"45%\",\n        \"height\": \"10%\"\n      },\n      \"content\": \"Muchas Gracias\",\n      \"textType\": \"heading\"\n    },\n    {\n      \"type\": \"text\",\n      \"position\": {\n        \"x\": \"10%\",\n        \"y\": \"35%\"\n      },\n      \"size\": {\n        \"width\": \"45%\",\n        \"height\": \"20%\"\n      },\n      \"content\": \"Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"textType\": \"bodyText\"\n    },\n    {\n      \"type\": \"text\",\n      \"position\": {\n        \"x\": \"15%\",\n        \"y\": \"65%\"\n      },\n      \"size\": {\n        \"width\": \"30%\",\n        \"height\": \"5%\"\n      },\n      \"content\": \"911-234-5678\",\n      \"textType\": \"contactText\"\n    },\n    {\n      \"type\": \"text\",\n      \"position\": {\n        \"x\": \"15%\",\n        \"y\": \"72%\"\n      },\n      \"size\": {\n        \"width\": \"30%\",\n        \"height\": \"5%\"\n      },\n      \"content\": \"hola@unsitiogenial.es\",\n      \"textType\": \"contactText\"\n    },\n    {\n      \"type\": \"text\",\n      \"position\": {\n        \"x\": \"15%\",\n        \"y\": \"79%\"\n      },\n      \"size\": {\n        \"width\": \"30%\",\n        \"height\": \"5%\"\n      },\n      \"content\": \"www.unsitiogenial.es\",\n      \"textType\": \"contactText\"\n    }\n  ]\n}\n```",
+        "timestamp": "2025-09-07T22:02:55.727Z"
+      },
+      "powerpoint_description": {
+        "slideType": "thankYou",
+        "layout": "twoColumn",
+        "colorPalette": {
+          "background": "#FFFFFF",
+          "textPrimary": "#000000",
+          "textSecondary": "#555555",
+          "accent": "#000000"
+        },
+        "typography": {
+          "heading": {
+            "fontFamily": "Sans-serif",
+            "fontSize": "36px",
+            "color": "#000000"
+          },
+          "bodyText": {
+            "fontFamily": "Sans-serif",
+            "fontSize": "16px",
+            "color": "#555555"
+          },
+          "contactText": {
+            "fontFamily": "Sans-serif",
+            "fontSize": "14px",
+            "color": "#000000"
+          }
+        },
+        "shapesAndGraphics": [
+          {
+            "type": "rectangle",
+            "position": {
+              "x": "55%",
+              "y": "0%"
+            },
+            "size": {
+              "width": "45%",
+              "height": "100%"
+            },
+            "image": "Colorful abstract painting"
+          },
+          {
+            "type": "image",
+            "position": {
+              "x": "60%",
+              "y": "25%"
+            },
+            "size": {
+              "width": "30%",
+              "height": "50%"
+            },
+            "shape": "none"
+          },
+          {
+            "type": "icon",
+            "position": {
+              "x": "10%",
+              "y": "65%"
+            },
+            "size": {
+              "width": "3%",
+              "height": "3%"
+            },
+            "iconType": "phone",
+            "color": "#000000"
+          },
+          {
+            "type": "icon",
+            "position": {
+              "x": "10%",
+              "y": "72%"
+            },
+            "size": {
+              "width": "3%",
+              "height": "3%"
+            },
+            "iconType": "email",
+            "color": "#000000"
+          },
+          {
+            "type": "icon",
+            "position": {
+              "x": "10%",
+              "y": "79%"
+            },
+            "size": {
+              "width": "3%",
+              "height": "3%"
+            },
+            "iconType": "web",
+            "color": "#000000"
+          }
+        ],
+        "contentPlaceholders": [
+          {
+            "type": "text",
+            "position": {
+              "x": "10%",
+              "y": "25%"
+            },
+            "size": {
+              "width": "45%",
+              "height": "10%"
+            },
+            "content": "Muchas Gracias",
+            "textType": "heading"
+          },
+          {
+            "type": "text",
+            "position": {
+              "x": "10%",
+              "y": "35%"
+            },
+            "size": {
+              "width": "45%",
+              "height": "20%"
+            },
+            "content": "Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "textType": "bodyText"
+          },
+          {
+            "type": "text",
+            "position": {
+              "x": "15%",
+              "y": "65%"
+            },
+            "size": {
+              "width": "30%",
+              "height": "5%"
+            },
+            "content": "911-234-5678",
+            "textType": "contactText"
+          },
+          {
+            "type": "text",
+            "position": {
+              "x": "15%",
+              "y": "72%"
+            },
+            "size": {
+              "width": "30%",
+              "height": "5%"
+            },
+            "content": "hola@unsitiogenial.es",
+            "textType": "contactText"
+          },
+          {
+            "type": "text",
+            "position": {
+              "x": "15%",
+              "y": "79%"
+            },
+            "size": {
+              "width": "30%",
+              "height": "5%"
+            },
+            "content": "www.unsitiogenial.es",
+            "textType": "contactText"
+          }
+        ]
+      },
+      "timestamp": "2025-09-07T22:02:55.740Z"
+    },
+    {
+      "filename": "2.png",
+      "ai_analysis": {
+        "success": true,
+        "filename": "2.png",
+        "analysis": "```json\n{\n  \"slideType\": \"contentWithImage\",\n  \"layout\": {\n    \"background\": \"#FFFFFF\",\n    \"sections\": [\n      {\n        \"position\": {\n          \"x\": \"0%\",\n          \"y\": \"0%\"\n        },\n        \"size\": {\n          \"width\": \"100%\",\n          \"height\": \"45%\"\n        },\n        \"type\": \"image\",\n        \"description\": \"A close-up of a paintbrush and paint palette.\",\n        \"imageFrame\": \"rectangle\"\n      },\n      {\n        \"position\": {\n          \"x\": \"0%\",\n          \"y\": \"45%\"\n        },\n        \"size\": {\n          \"width\": \"100%\",\n          \"height\": \"55%\"\n        },\n        \"type\": \"text\",\n        \"content\": {\n          \"title\": \"Tabla de contenido\",\n          \"items\": [\n            \"01 Bienvenida e introducción del artista\",\n            \"02 Inspiración y estilo personal\",\n            \"03 Proceso creativo y técnicas utilizadas\",\n            \"04 Selección de obras destacadas\",\n            \"05 Ilustraciones temáticas\",\n            \"06 Proyectos colaborativos y por encargo\",\n            \"07 Diseños gráficos y piezas digitales\",\n            \"08 Bocetos y evolución artística\",\n            \"09 Logros, publicaciones y reconocimientos\",\n            \"10 Contacto y redes sociales\"\n          ]\n        }\n      },\n      {\n        \"position\": {\n          \"x\": \"85%\",\n          \"y\": \"75%\"\n        },\n        \"size\": {\n          \"width\": \"10%\",\n          \"height\": \"10%\"\n        },\n        \"type\": \"shape\",\n        \"description\": \"Arrow icon pointing to the right\",\n        \"shapeFrame\": \"ellipse\",\n        \"color\": \"#000000\"\n      }\n    ]\n  },\n  \"colorPalette\": {\n    \"primary\": \"#FFFFFF\",\n    \"secondary\": \"#000000\",\n    \"highlight\": \"#000000\"\n  },\n  \"typography\": {\n    \"titleFont\": {\n      \"fontFamily\": \"Sans-Serif\",\n      \"fontSize\": \"1.5em\",\n      \"fontWeight\": \"bold\",\n      \"color\": \"#000000\"\n    },\n    \"itemFont\": {\n      \"fontFamily\": \"Sans-Serif\",\n      \"fontSize\": \"1em\",\n      \"fontWeight\": \"normal\",\n      \"color\": \"#000000\"\n    }\n  },\n  \"shapesAndGraphics\": [\n    {\n      \"type\": \"arrow\",\n      \"position\": {\n        \"x\": \"85%\",\n        \"y\": \"75%\"\n      },\n      \"size\": {\n        \"width\": \"10%\",\n        \"height\": \"10%\"\n      },\n      \"color\": \"#000000\"\n    }\n  ],\n  \"contentPlaceholders\": [\n    {\n      \"type\": \"text\",\n      \"position\": {\n        \"x\": \"5%\",\n        \"y\": \"50%\"\n      },\n      \"size\": {\n        \"width\": \"90%\",\n        \"height\": \"40%\"\n      },\n      \"content\": \"Texto de tabla de contenidos\"\n    }\n  ]\n}\n```",
+        "timestamp": "2025-09-07T22:03:15.684Z"
+      },
+      "powerpoint_description": {
+        "slideType": "contentWithImage",
+        "layout": {
+          "background": "#FFFFFF",
+          "sections": [
+            {
+              "position": {
+                "x": "0%",
+                "y": "0%"
+              },
+              "size": {
+                "width": "100%",
+                "height": "45%"
+              },
+              "type": "image",
+              "description": "A close-up of a paintbrush and paint palette.",
+              "imageFrame": "rectangle"
+            },
+            {
+              "position": {
+                "x": "0%",
+                "y": "45%"
+              },
+              "size": {
+                "width": "100%",
+                "height": "55%"
+              },
+              "type": "text",
+              "content": {
+                "title": "Tabla de contenido",
+                "items": [
+                  "01 Bienvenida e introducción del artista",
+                  "02 Inspiración y estilo personal",
+                  "03 Proceso creativo y técnicas utilizadas",
+                  "04 Selección de obras destacadas",
+                  "05 Ilustraciones temáticas",
+                  "06 Proyectos colaborativos y por encargo",
+                  "07 Diseños gráficos y piezas digitales",
+                  "08 Bocetos y evolución artística",
+                  "09 Logros, publicaciones y reconocimientos",
+                  "10 Contacto y redes sociales"
+                ]
+              }
+            },
+            {
+              "position": {
+                "x": "85%",
+                "y": "75%"
+              },
+              "size": {
+                "width": "10%",
+                "height": "10%"
+              },
+              "type": "shape",
+              "description": "Arrow icon pointing to the right",
+              "shapeFrame": "ellipse",
+              "color": "#000000"
+            }
+          ]
+        },
+        "colorPalette": {
+          "primary": "#FFFFFF",
+          "secondary": "#000000",
+          "highlight": "#000000"
+        },
+        "typography": {
+          "titleFont": {
+            "fontFamily": "Sans-Serif",
+            "fontSize": "1.5em",
+            "fontWeight": "bold",
+            "color": "#000000"
+          },
+          "itemFont": {
+            "fontFamily": "Sans-Serif",
+            "fontSize": "1em",
+            "fontWeight": "normal",
+            "color": "#000000"
+          }
+        },
+        "shapesAndGraphics": [
+          {
+            "type": "arrow",
+            "position": {
+              "x": "85%",
+              "y": "75%"
+            },
+            "size": {
+              "width": "10%",
+              "height": "10%"
+            },
+            "color": "#000000"
+          }
+        ],
+        "contentPlaceholders": [
+          {
+            "type": "text",
+            "position": {
+              "x": "5%",
+              "y": "50%"
+            },
+            "size": {
+              "width": "90%",
+              "height": "40%"
+            },
+            "content": "Texto de tabla de contenidos"
+          }
+        ]
+      },
+      "timestamp": "2025-09-07T22:03:15.702Z"
+    },
+    {
+      "filename": "3.png",
+      "ai_analysis": {
+        "success": true,
+        "filename": "3.png",
+        "analysis": "```json\n{\n  \"slideType\": \"title and content\",\n  \"layout\": \"horizontal split\",\n  \"colorPalette\": {\n    \"background\": \"#FFFFFF\",\n    \"text\": \"#000000\",\n    \"buttonBackground\": \"#000000\",\n    \"buttonText\": \"#FFFFFF\"\n  },\n  \"typography\": {\n    \"title\": {\n      \"font\": \"Sans Serif\",\n      \"size\": \"48px\",\n      \"weight\": \"bold\"\n    },\n    \"body\": {\n      \"font\": \"Sans Serif\",\n      \"size\": \"16px\",\n      \"weight\": \"normal\"\n    }\n  },\n  \"shapesAndGraphics\": [\n    {\n      \"type\": \"rectangle\",\n      \"position\": {\n        \"x\": \"0%\",\n        \"y\": \"0%\"\n      },\n      \"size\": {\n        \"width\": \"100%\",\n        \"height\": \"30%\"\n      },\n      \"graphic\": \"abstract colorful painting\",\n      \"cornerRadius\": \"small\"\n    },\n    {\n      \"type\": \"image\",\n      \"position\": {\n        \"x\": \"55%\",\n        \"y\": \"35%\"\n      },\n      \"size\": {\n        \"width\": \"40%\",\n        \"height\": \"60%\"\n      },\n      \"graphic\": \"person with tattoos and brown top\"\n    },\n    {\n      \"type\": \"button\",\n      \"position\": {\n        \"x\": \"5%\",\n        \"y\": \"90%\"\n      },\n      \"size\": {\n        \"width\": \"30%\",\n        \"height\": \"5%\"\n      },\n      \"color\": \"#000000\",\n      \"text\": \"www.unsitio.genial.es\",\n      \"textColor\": \"#FFFFFF\",\n      \"cornerRadius\": \"round\"\n    }\n  ],\n  \"contentPlaceholders\": {\n    \"title\": {\n      \"text\": \"Bienvenida\",\n      \"position\": {\n        \"x\": \"5%\",\n        \"y\": \"35%\"\n      },\n      \"size\": {\n        \"width\": \"50%\",\n        \"height\": \"10%\"\n      }\n    },\n    \"body\": {\n      \"text\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\n        \"x\": \"5%\",\n        \"y\": \"45%\"\n      },\n      \"size\": {\n        \"width\": \"50%\",\n        \"height\": \"40%\"\n      }\n    }\n  }\n}\n```",
+        "timestamp": "2025-09-07T22:03:31.249Z"
+      },
+      "powerpoint_description": {
+        "slideType": "title and content",
+        "layout": "horizontal split",
+        "colorPalette": {
+          "background": "#FFFFFF",
+          "text": "#000000",
+          "buttonBackground": "#000000",
+          "buttonText": "#FFFFFF"
+        },
+        "typography": {
+          "title": {
+            "font": "Sans Serif",
+            "size": "48px",
+            "weight": "bold"
+          },
+          "body": {
+            "font": "Sans Serif",
+            "size": "16px",
+            "weight": "normal"
+          }
+        },
+        "shapesAndGraphics": [
+          {
+            "type": "rectangle",
+            "position": {
+              "x": "0%",
+              "y": "0%"
+            },
+            "size": {
+              "width": "100%",
+              "height": "30%"
+            },
+            "graphic": "abstract colorful painting",
+            "cornerRadius": "small"
+          },
+          {
+            "type": "image",
+            "position": {
+              "x": "55%",
+              "y": "35%"
+            },
+            "size": {
+              "width": "40%",
+              "height": "60%"
+            },
+            "graphic": "person with tattoos and brown top"
+          },
+          {
+            "type": "button",
+            "position": {
+              "x": "5%",
+              "y": "90%"
+            },
+            "size": {
+              "width": "30%",
+              "height": "5%"
+            },
+            "color": "#000000",
+            "text": "www.unsitio.genial.es",
+            "textColor": "#FFFFFF",
+            "cornerRadius": "round"
+          }
+        ],
+        "contentPlaceholders": {
+          "title": {
+            "text": "Bienvenida",
+            "position": {
+              "x": "5%",
+              "y": "35%"
+            },
+            "size": {
+              "width": "50%",
+              "height": "10%"
+            }
+          },
+          "body": {
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "5%",
+              "y": "45%"
+            },
+            "size": {
+              "width": "50%",
+              "height": "40%"
+            }
+          }
+        }
+      },
+      "timestamp": "2025-09-07T22:03:31.260Z"
+    },
+    {
+      "filename": "4.png",
+      "ai_analysis": {
+        "success": true,
+        "filename": "4.png",
+        "analysis": "```json\n{\n  \"slideType\": \"content\",\n  \"layout\": \"horizontalSplit\",\n  \"colorPalette\": {\n    \"background\": \"#FFFFFF\",\n    \"textPrimary\": \"#000000\",\n    \"textSecondary\": \"#757575\",\n    \"highlight\": \"#000000\",\n    \"frame\": \"#DDDDDD\"\n  },\n  \"typography\": {\n    \"heading\": {\n      \"fontName\": \"Arial\",\n      \"fontSize\": \"200%\",\n      \"fontWeight\": \"bold\",\n      \"color\": \"#000000\"\n    },\n    \"body\": {\n      \"fontName\": \"Arial\",\n      \"fontSize\": \"100%\",\n      \"fontWeight\": \"normal\",\n      \"color\": \"#757575\"\n    }\n  },\n  \"shapesAndGraphics\": [\n    {\n      \"type\": \"image\",\n      \"position\": {\n        \"x\": \"60%\",\n        \"y\": \"10%\"\n      },\n      \"size\": {\n        \"width\": \"35%\",\n        \"height\": \"35%\"\n      },\n      \"style\": \"roundedRectangle\"\n    }\n  ],\n  \"contentPlaceholders\": [\n    {\n      \"type\": \"text\",\n      \"content\": \"Proyectos Profesionales\",\n      \"position\": {\n        \"x\": \"5%\",\n        \"y\": \"10%\"\n      },\n      \"size\": {\n        \"width\": \"50%\",\n        \"height\": \"15%\"\n      },\n      \"style\": \"heading\"\n    },\n    {\n      \"type\": \"text\",\n      \"content\": \"Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\n        \"x\": \"5%\",\n        \"y\": \"25%\"\n      },\n      \"size\": {\n        \"width\": \"50%\",\n        \"height\": \"20%\"\n      },\n      \"style\": \"bodyText\"\n    },\n    {\n      \"type\": \"textBox\",\n      \"content\": [\n        {\n          \"type\": \"title\",\n          \"text\": \"Sociedad Martínez\"\n        },\n        {\n          \"type\": \"body\",\n          \"text\": \"Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\"\n        }\n      ],\n      \"position\": {\n        \"x\": \"5%\",\n        \"y\": \"60%\"\n      },\n      \"size\": {\n        \"width\": \"30%\",\n        \"height\": \"25%\"\n      },\n      \"style\": \"frame\"\n    },\n    {\n      \"type\": \"textBox\",\n      \"content\": [\n        {\n          \"type\": \"title\",\n          \"text\": \"Borcelle\"\n        },\n        {\n          \"type\": \"body\",\n          \"text\": \"Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\"\n        }\n      ],\n      \"position\": {\n        \"x\": \"35%\",\n        \"y\": \"60%\"\n      },\n      \"size\": {\n        \"width\": \"30%\",\n        \"height\": \"25%\"\n      },\n      \"style\": \"frame\"\n    },\n    {\n      \"type\": \"textBox\",\n      \"content\": [\n        {\n          \"type\": \"title\",\n          \"text\": \"Estudio Shonos\"\n        },\n        {\n          \"type\": \"body\",\n          \"text\": \"Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\"\n        }\n      ],\n      \"position\": {\n        \"x\": \"65%\",\n        \"y\": \"60%\"\n      },\n      \"size\": {\n        \"width\": \"30%\",\n        \"height\": \"25%\"\n      },\n      \"style\": \"frame\"\n    }\n  ]\n}\n```",
+        "timestamp": "2025-09-07T22:03:48.979Z"
+      },
+      "powerpoint_description": {
+        "slideType": "content",
+        "layout": "horizontalSplit",
+        "colorPalette": {
+          "background": "#FFFFFF",
+          "textPrimary": "#000000",
+          "textSecondary": "#757575",
+          "highlight": "#000000",
+          "frame": "#DDDDDD"
+        },
+        "typography": {
+          "heading": {
+            "fontName": "Arial",
+            "fontSize": "200%",
+            "fontWeight": "bold",
+            "color": "#000000"
+          },
+          "body": {
+            "fontName": "Arial",
+            "fontSize": "100%",
+            "fontWeight": "normal",
+            "color": "#757575"
+          }
+        },
+        "shapesAndGraphics": [
+          {
+            "type": "image",
+            "position": {
+              "x": "60%",
+              "y": "10%"
+            },
+            "size": {
+              "width": "35%",
+              "height": "35%"
+            },
+            "style": "roundedRectangle"
+          }
+        ],
+        "contentPlaceholders": [
+          {
+            "type": "text",
+            "content": "Proyectos Profesionales",
+            "position": {
+              "x": "5%",
+              "y": "10%"
+            },
+            "size": {
+              "width": "50%",
+              "height": "15%"
+            },
+            "style": "heading"
+          },
+          {
+            "type": "text",
+            "content": "Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "5%",
+              "y": "25%"
+            },
+            "size": {
+              "width": "50%",
+              "height": "20%"
+            },
+            "style": "bodyText"
+          },
+          {
+            "type": "textBox",
+            "content": [
+              {
+                "type": "title",
+                "text": "Sociedad Martínez"
+              },
+              {
+                "type": "body",
+                "text": "Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium."
+              }
+            ],
+            "position": {
+              "x": "5%",
+              "y": "60%"
+            },
+            "size": {
+              "width": "30%",
+              "height": "25%"
+            },
+            "style": "frame"
+          },
+          {
+            "type": "textBox",
+            "content": [
+              {
+                "type": "title",
+                "text": "Borcelle"
+              },
+              {
+                "type": "body",
+                "text": "Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium."
+              }
+            ],
+            "position": {
+              "x": "35%",
+              "y": "60%"
+            },
+            "size": {
+              "width": "30%",
+              "height": "25%"
+            },
+            "style": "frame"
+          },
+          {
+            "type": "textBox",
+            "content": [
+              {
+                "type": "title",
+                "text": "Estudio Shonos"
+              },
+              {
+                "type": "body",
+                "text": "Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium."
+              }
+            ],
+            "position": {
+              "x": "65%",
+              "y": "60%"
+            },
+            "size": {
+              "width": "30%",
+              "height": "25%"
+            },
+            "style": "frame"
+          }
+        ]
+      },
+      "timestamp": "2025-09-07T22:03:48.989Z"
+    },
+    {
+      "filename": "5.png",
+      "ai_analysis": {
+        "success": true,
+        "filename": "5.png",
+        "analysis": "```json\n{\n  \"slideType\": \"content\",\n  \"layout\": \"two-row\",\n  \"colorPalette\": {\n    \"background\": \"#FFFFFF\",\n    \"text\": \"#000000\",\n    \"heading\": \"#000000\"\n  },\n  \"typography\": {\n    \"heading\": {\n      \"font\": \"sans-serif\",\n      \"size\": \"24px\",\n      \"weight\": \"bold\",\n      \"align\": \"center\"\n    },\n    \"subheading\": {\n      \"font\": \"sans-serif\",\n      \"size\": \"14px\",\n      \"weight\": \"bold\",\n      \"align\": \"center\"\n    },\n    \"body\": {\n      \"font\": \"sans-serif\",\n      \"size\": \"12px\",\n      \"weight\": \"normal\",\n      \"align\": \"left\"\n    }\n  },\n  \"shapesAndGraphics\": [\n    {\n      \"type\": \"rounded-rectangle\",\n      \"position\": {\"x\": \"10%\", \"y\": \"35%\"},\n      \"size\": {\"width\": \"18%\", \"height\": \"25%\"},\n      \"image\": true,\n      \"description\": \"Artistic image with abstract design\"\n    },\n    {\n      \"type\": \"rounded-rectangle\",\n      \"position\": {\"x\": \"30%\", \"y\": \"35%\"},\n      \"size\": {\"width\": \"18%\", \"height\": \"25%\"},\n      \"image\": true,\n      \"description\": \"Artistic image with abstract design\"\n    },\n    {\n      \"type\": \"rounded-rectangle\",\n      \"position\": {\"x\": \"50%\", \"y\": \"35%\"},\n      \"size\": {\"width\": \"18%\", \"height\": \"25%\"},\n      \"image\": true,\n      \"description\": \"Artistic image with floral design\"\n    },\n    {\n      \"type\": \"rounded-rectangle\",\n      \"position\": {\"x\": \"70%\", \"y\": \"35%\"},\n      \"size\": {\"width\": \"18%\", \"height\": \"25%\"},\n      \"image\": true,\n      \"description\": \"Artistic image with palette and brush\"\n    }\n  ],\n  \"contentPlaceholders\": [\n    {\n      \"type\": \"heading\",\n      \"content\": \"Técnicas Utilizadas\",\n      \"position\": {\"x\": \"50%\", \"y\": \"10%\"},\n      \"size\": {\"width\": \"100%\", \"height\": \"10%\"}\n    },\n    {\n      \"type\": \"subheading\",\n      \"content\": \"Técnica 01\",\n      \"position\": {\"x\": \"19%\", \"y\": \"62%\"},\n      \"size\": {\"width\": \"18%\", \"height\": \"5%\"}\n    },\n    {\n      \"type\": \"body\",\n      \"content\": \"Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\"x\": \"10%\", \"y\": \"68%\"},\n      \"size\": {\"width\": \"18%\", \"height\": \"15%\"}\n    },\n    {\n      \"type\": \"subheading\",\n      \"content\": \"Técnica 02\",\n      \"position\": {\"x\": \"39%\", \"y\": \"62%\"},\n      \"size\": {\"width\": \"18%\", \"height\": \"5%\"}\n    },\n    {\n      \"type\": \"body\",\n      \"content\": \"Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\"x\": \"30%\", \"y\": \"68%\"},\n      \"size\": {\"width\": \"18%\", \"height\": \"15%\"}\n    },\n    {\n      \"type\": \"subheading\",\n      \"content\": \"Técnica 03\",\n      \"position\": {\"x\": \"59%\", \"y\": \"62%\"},\n      \"size\": {\"width\": \"18%\", \"height\": \"5%\"}\n    },\n    {\n      \"type\": \"body\",\n      \"content\": \"Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\"x\": \"50%\", \"y\": \"68%\"},\n      \"size\": {\"width\": \"18%\", \"height\": \"15%\"}\n    },\n    {\n      \"type\": \"subheading\",\n      \"content\": \"Técnica 04\",\n      \"position\": {\"x\": \"79%\", \"y\": \"62%\"},\n      \"size\": {\"width\": \"18%\", \"height\": \"5%\"}\n    },\n    {\n      \"type\": \"body\",\n      \"content\": \"Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\"x\": \"70%\", \"y\": \"68%\"},\n      \"size\": {\"width\": \"18%\", \"height\": \"15%\"}\n    }\n  ]\n}\n```",
+        "timestamp": "2025-09-07T22:04:14.164Z"
+      },
+      "powerpoint_description": {
+        "slideType": "content",
+        "layout": "two-row",
+        "colorPalette": {
+          "background": "#FFFFFF",
+          "text": "#000000",
+          "heading": "#000000"
+        },
+        "typography": {
+          "heading": {
+            "font": "sans-serif",
+            "size": "24px",
+            "weight": "bold",
+            "align": "center"
+          },
+          "subheading": {
+            "font": "sans-serif",
+            "size": "14px",
+            "weight": "bold",
+            "align": "center"
+          },
+          "body": {
+            "font": "sans-serif",
+            "size": "12px",
+            "weight": "normal",
+            "align": "left"
+          }
+        },
+        "shapesAndGraphics": [
+          {
+            "type": "rounded-rectangle",
+            "position": {
+              "x": "10%",
+              "y": "35%"
+            },
+            "size": {
+              "width": "18%",
+              "height": "25%"
+            },
+            "image": true,
+            "description": "Artistic image with abstract design"
+          },
+          {
+            "type": "rounded-rectangle",
+            "position": {
+              "x": "30%",
+              "y": "35%"
+            },
+            "size": {
+              "width": "18%",
+              "height": "25%"
+            },
+            "image": true,
+            "description": "Artistic image with abstract design"
+          },
+          {
+            "type": "rounded-rectangle",
+            "position": {
+              "x": "50%",
+              "y": "35%"
+            },
+            "size": {
+              "width": "18%",
+              "height": "25%"
+            },
+            "image": true,
+            "description": "Artistic image with floral design"
+          },
+          {
+            "type": "rounded-rectangle",
+            "position": {
+              "x": "70%",
+              "y": "35%"
+            },
+            "size": {
+              "width": "18%",
+              "height": "25%"
+            },
+            "image": true,
+            "description": "Artistic image with palette and brush"
+          }
+        ],
+        "contentPlaceholders": [
+          {
+            "type": "heading",
+            "content": "Técnicas Utilizadas",
+            "position": {
+              "x": "50%",
+              "y": "10%"
+            },
+            "size": {
+              "width": "100%",
+              "height": "10%"
+            }
+          },
+          {
+            "type": "subheading",
+            "content": "Técnica 01",
+            "position": {
+              "x": "19%",
+              "y": "62%"
+            },
+            "size": {
+              "width": "18%",
+              "height": "5%"
+            }
+          },
+          {
+            "type": "body",
+            "content": "Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "10%",
+              "y": "68%"
+            },
+            "size": {
+              "width": "18%",
+              "height": "15%"
+            }
+          },
+          {
+            "type": "subheading",
+            "content": "Técnica 02",
+            "position": {
+              "x": "39%",
+              "y": "62%"
+            },
+            "size": {
+              "width": "18%",
+              "height": "5%"
+            }
+          },
+          {
+            "type": "body",
+            "content": "Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "30%",
+              "y": "68%"
+            },
+            "size": {
+              "width": "18%",
+              "height": "15%"
+            }
+          },
+          {
+            "type": "subheading",
+            "content": "Técnica 03",
+            "position": {
+              "x": "59%",
+              "y": "62%"
+            },
+            "size": {
+              "width": "18%",
+              "height": "5%"
+            }
+          },
+          {
+            "type": "body",
+            "content": "Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "50%",
+              "y": "68%"
+            },
+            "size": {
+              "width": "18%",
+              "height": "15%"
+            }
+          },
+          {
+            "type": "subheading",
+            "content": "Técnica 04",
+            "position": {
+              "x": "79%",
+              "y": "62%"
+            },
+            "size": {
+              "width": "18%",
+              "height": "5%"
+            }
+          },
+          {
+            "type": "body",
+            "content": "Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "70%",
+              "y": "68%"
+            },
+            "size": {
+              "width": "18%",
+              "height": "15%"
+            }
+          }
+        ]
+      },
+      "timestamp": "2025-09-07T22:04:14.166Z"
+    },
+    {
+      "filename": "6.png",
+      "ai_analysis": {
+        "success": true,
+        "filename": "6.png",
+        "analysis": "```json\n{\n  \"slideType\": \"Title and Content\",\n  \"layout\": {\n    \"background\": {\n      \"type\": \"image\",\n      \"imageDescription\": \"Colorful abstract painting background\",\n      \"position\": {\"x\": \"0%\", \"y\": \"0%\"},\n      \"size\": {\"width\": \"100%\", \"height\": \"100%\"}\n    },\n    \"foreground\": {\n      \"type\": \"rectangle\",\n      \"position\": {\"x\": \"5%\", \"y\": \"20%\"},\n      \"size\": {\"width\": \"90%\", \"height\": \"60%\"},\n      \"color\": \"#FFFFFF\",\n      \"borderRadius\": \"5%\"\n    }\n  },\n  \"colorPalette\": {\n    \"background\": \"#FFFFFF\",\n    \"text\": \"#000000\"\n  },\n  \"typography\": {\n    \"title\": {\n      \"fontFamily\": \"Sans Serif\",\n      \"fontWeight\": \"Bold\",\n      \"fontSize\": \"5%\",\n      \"color\": \"#000000\"\n    },\n    \"content\": {\n      \"fontFamily\": \"Sans Serif\",\n      \"fontSize\": \"3%\",\n      \"color\": \"#000000\"\n    }\n  },\n  \"shapesAndGraphics\": [\n    {\n      \"type\": \"line\",\n      \"position\": {\"x\": \"28%\", \"y\": \"50%\"},\n      \"size\": {\"width\": \"0%\", \"height\": \"15%\"},\n      \"color\": \"#000000\"\n    },\n    {\n      \"type\": \"line\",\n      \"position\": {\"x\": \"50%\", \"y\": \"50%\"},\n      \"size\": {\"width\": \"0%\", \"height\": \"15%\"},\n      \"color\": \"#000000\"\n    },\n    {\n      \"type\": \"line\",\n      \"position\": {\"x\": \"72%\", \"y\": \"50%\"},\n      \"size\": {\"width\": \"0%\", \"height\": \"15%\"},\n      \"color\": \"#000000\"\n    }\n  ],\n  \"contentPlaceholders\": [\n    {\n      \"type\": \"title\",\n      \"text\": \"Proyectos Colaborativos\",\n      \"position\": {\"x\": \"25%\", \"y\": \"25%\"},\n      \"size\": {\"width\": \"50%\", \"height\": \"10%\"}\n    },\n    {\n      \"type\": \"text\",\n      \"text\": \"01\\nLorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\"x\": \"10%\", \"y\": \"40%\"},\n      \"size\": {\"width\": \"15%\", \"height\": \"30%\"}\n    },\n    {\n      \"type\": \"text\",\n      \"text\": \"02\\nLorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\"x\": \"30%\", \"y\": \"40%\"},\n      \"size\": {\"width\": \"15%\", \"height\": \"30%\"}\n    },\n    {\n      \"type\": \"text\",\n      \"text\": \"03\\nLorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\"x\": \"50%\", \"y\": \"40%\"},\n      \"size\": {\"width\": \"15%\", \"height\": \"30%\"}\n    },\n    {\n      \"type\": \"text\",\n      \"text\": \"04\\nLorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\"x\": \"70%\", \"y\": \"40%\"},\n      \"size\": {\"width\": \"15%\", \"height\": \"30%\"}\n    }\n  ]\n}\n```",
+        "timestamp": "2025-09-07T22:04:37.809Z"
+      },
+      "powerpoint_description": {
+        "slideType": "Title and Content",
+        "layout": {
+          "background": {
+            "type": "image",
+            "imageDescription": "Colorful abstract painting background",
+            "position": {
+              "x": "0%",
+              "y": "0%"
+            },
+            "size": {
+              "width": "100%",
+              "height": "100%"
+            }
+          },
+          "foreground": {
+            "type": "rectangle",
+            "position": {
+              "x": "5%",
+              "y": "20%"
+            },
+            "size": {
+              "width": "90%",
+              "height": "60%"
+            },
+            "color": "#FFFFFF",
+            "borderRadius": "5%"
+          }
+        },
+        "colorPalette": {
+          "background": "#FFFFFF",
+          "text": "#000000"
+        },
+        "typography": {
+          "title": {
+            "fontFamily": "Sans Serif",
+            "fontWeight": "Bold",
+            "fontSize": "5%",
+            "color": "#000000"
+          },
+          "content": {
+            "fontFamily": "Sans Serif",
+            "fontSize": "3%",
+            "color": "#000000"
+          }
+        },
+        "shapesAndGraphics": [
+          {
+            "type": "line",
+            "position": {
+              "x": "28%",
+              "y": "50%"
+            },
+            "size": {
+              "width": "0%",
+              "height": "15%"
+            },
+            "color": "#000000"
+          },
+          {
+            "type": "line",
+            "position": {
+              "x": "50%",
+              "y": "50%"
+            },
+            "size": {
+              "width": "0%",
+              "height": "15%"
+            },
+            "color": "#000000"
+          },
+          {
+            "type": "line",
+            "position": {
+              "x": "72%",
+              "y": "50%"
+            },
+            "size": {
+              "width": "0%",
+              "height": "15%"
+            },
+            "color": "#000000"
+          }
+        ],
+        "contentPlaceholders": [
+          {
+            "type": "title",
+            "text": "Proyectos Colaborativos",
+            "position": {
+              "x": "25%",
+              "y": "25%"
+            },
+            "size": {
+              "width": "50%",
+              "height": "10%"
+            }
+          },
+          {
+            "type": "text",
+            "text": "01\nLorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "10%",
+              "y": "40%"
+            },
+            "size": {
+              "width": "15%",
+              "height": "30%"
+            }
+          },
+          {
+            "type": "text",
+            "text": "02\nLorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "30%",
+              "y": "40%"
+            },
+            "size": {
+              "width": "15%",
+              "height": "30%"
+            }
+          },
+          {
+            "type": "text",
+            "text": "03\nLorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "50%",
+              "y": "40%"
+            },
+            "size": {
+              "width": "15%",
+              "height": "30%"
+            }
+          },
+          {
+            "type": "text",
+            "text": "04\nLorem ipsum dolor sit amet, amet consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "70%",
+              "y": "40%"
+            },
+            "size": {
+              "width": "15%",
+              "height": "30%"
+            }
+          }
+        ]
+      },
+      "timestamp": "2025-09-07T22:04:37.810Z"
+    },
+    {
+      "filename": "7.png",
+      "ai_analysis": {
+        "success": true,
+        "filename": "7.png",
+        "analysis": "```json\n{\n  \"slideType\": \"Title and Content\",\n  \"layout\": {\n    \"background\": \"#FFFFFF\"\n  },\n  \"colorPalette\": {\n    \"primary\": \"#000000\",\n    \"accent\": \"#FF5733\",\n    \"background\": \"#FFFFFF\"\n  },\n  \"typography\": {\n    \"title\": {\n      \"fontFamily\": \"Arial\",\n      \"fontSize\": \"36px\",\n      \"fontWeight\": \"bold\",\n      \"color\": \"#000000\"\n    },\n    \"body\": {\n      \"fontFamily\": \"Arial\",\n      \"fontSize\": \"18px\",\n      \"fontWeight\": \"normal\",\n      \"color\": \"#000000\"\n    }\n  },\n  \"shapesAndGraphics\": [\n    {\n      \"type\": \"image\",\n      \"position\": {\n        \"x\": \"65%\",\n        \"y\": \"0%\"\n      },\n      \"size\": {\n        \"width\": \"35%\",\n        \"height\": \"100%\"\n      },\n      \"style\": {\n        \"shapeType\": \"semi-circle\",\n        \"side\": \"right\"\n      }\n    },\n    {\n      \"type\": \"icon\",\n      \"iconType\": \"paint bucket\",\n      \"position\": {\n        \"x\": \"15%\",\n        \"y\": \"30%\"\n      },\n      \"size\": {\n        \"width\": \"5%\",\n        \"height\": \"10%\"\n      },\n      \"color\": \"#000000\"\n    }\n  ],\n  \"contentPlaceholders\": [\n    {\n      \"type\": \"title\",\n      \"text\": \"Evolución Artística\",\n      \"position\": {\n        \"x\": \"15%\",\n        \"y\": \"50%\"\n      },\n      \"size\": {\n        \"width\": \"50%\",\n        \"height\": \"10%\"\n      }\n    },\n    {\n      \"type\": \"body\",\n      \"text\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium. Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\",\n      \"position\": {\n        \"x\": \"15%\",\n        \"y\": \"60%\"\n      },\n      \"size\": {\n        \"width\": \"50%\",\n        \"height\": \"20%\"\n      }\n    }\n  ]\n}\n```",
+        "timestamp": "2025-09-07T22:04:50.211Z"
+      },
+      "powerpoint_description": {
+        "slideType": "Title and Content",
+        "layout": {
+          "background": "#FFFFFF"
+        },
+        "colorPalette": {
+          "primary": "#000000",
+          "accent": "#FF5733",
+          "background": "#FFFFFF"
+        },
+        "typography": {
+          "title": {
+            "fontFamily": "Arial",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "color": "#000000"
+          },
+          "body": {
+            "fontFamily": "Arial",
+            "fontSize": "18px",
+            "fontWeight": "normal",
+            "color": "#000000"
+          }
+        },
+        "shapesAndGraphics": [
+          {
+            "type": "image",
+            "position": {
+              "x": "65%",
+              "y": "0%"
+            },
+            "size": {
+              "width": "35%",
+              "height": "100%"
+            },
+            "style": {
+              "shapeType": "semi-circle",
+              "side": "right"
+            }
+          },
+          {
+            "type": "icon",
+            "iconType": "paint bucket",
+            "position": {
+              "x": "15%",
+              "y": "30%"
+            },
+            "size": {
+              "width": "5%",
+              "height": "10%"
+            },
+            "color": "#000000"
+          }
+        ],
+        "contentPlaceholders": [
+          {
+            "type": "title",
+            "text": "Evolución Artística",
+            "position": {
+              "x": "15%",
+              "y": "50%"
+            },
+            "size": {
+              "width": "50%",
+              "height": "10%"
+            }
+          },
+          {
+            "type": "body",
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium. Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.",
+            "position": {
+              "x": "15%",
+              "y": "60%"
+            },
+            "size": {
+              "width": "50%",
+              "height": "20%"
+            }
+          }
+        ]
+      },
+      "timestamp": "2025-09-07T22:04:50.225Z"
+    },
+    {
+      "filename": "8.png",
+      "ai_analysis": {
+        "success": true,
+        "filename": "8.png",
+        "analysis": "```json\n{\n  \"slideType\": \"contentWithImage\",\n  \"layout\": \"twoColumn\",\n  \"colorPalette\": {\n    \"background\": \"#FFFFFF\",\n    \"text\": \"#333333\",\n    \"accent\": \"#000000\"\n  },\n  \"typography\": {\n    \"heading\": {\n      \"font\": \"Sans Serif\",\n      \"size\": \"32px\",\n      \"weight\": \"bold\"\n    },\n    \"subheading\": {\n      \"font\": \"Sans Serif\",\n      \"size\": \"18px\",\n      \"weight\": \"normal\"\n    },\n    \"body\": {\n      \"font\": \"Sans Serif\",\n      \"size\": \"16px\",\n      \"weight\": \"normal\"\n    }\n  },\n  \"shapesAndGraphics\": [\n    {\n      \"type\": \"image\",\n      \"position\": {\n        \"x\": \"60%\",\n        \"y\": \"10%\"\n      },\n      \"size\": {\n        \"width\": \"35%\",\n        \"height\": \"80%\"\n      },\n      \"description\": \"Abstract colorful painting with blue, red, yellow, and green colors with paint splatters.\",\n      \"frame\": {\n        \"type\": \"rectangle\",\n        \"roundedCorners\": \"medium\"\n      }\n    }\n  ],\n  \"contentPlaceholders\": [\n    {\n      \"type\": \"heading\",\n      \"position\": {\n        \"x\": \"10%\",\n        \"y\": \"10%\"\n      },\n      \"size\": {\n        \"width\": \"45%\",\n        \"height\": \"10%\"\n      },\n      \"text\": \"Ilustraciones Temáticas\"\n    },\n    {\n      \"type\": \"subheading\",\n      \"position\": {\n        \"x\": \"10%\",\n        \"y\": \"20%\"\n      },\n      \"size\": {\n        \"width\": \"45%\",\n        \"height\": \"5%\"\n      },\n      \"text\": \"Un recorrido visual por mi visión del arte y la expresión.\"\n    },\n    {\n      \"type\": \"bodyText\",\n      \"position\": {\n        \"x\": \"10%\",\n        \"y\": \"30%\"\n      },\n      \"size\": {\n        \"width\": \"45%\",\n        \"height\": \"60%\"\n      },\n      \"text\": [\n        {\n          \"number\": \"01\",\n          \"content\": \"Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\"\n        },\n        {\n          \"number\": \"02\",\n          \"content\": \"Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\"\n        },\n        {\n          \"number\": \"03\",\n          \"content\": \"Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\"\n        }\n      ]\n    }\n  ]\n}\n```",
+        "timestamp": "2025-09-07T22:05:09.655Z"
+      },
+      "powerpoint_description": {
+        "slideType": "contentWithImage",
+        "layout": "twoColumn",
+        "colorPalette": {
+          "background": "#FFFFFF",
+          "text": "#333333",
+          "accent": "#000000"
+        },
+        "typography": {
+          "heading": {
+            "font": "Sans Serif",
+            "size": "32px",
+            "weight": "bold"
+          },
+          "subheading": {
+            "font": "Sans Serif",
+            "size": "18px",
+            "weight": "normal"
+          },
+          "body": {
+            "font": "Sans Serif",
+            "size": "16px",
+            "weight": "normal"
+          }
+        },
+        "shapesAndGraphics": [
+          {
+            "type": "image",
+            "position": {
+              "x": "60%",
+              "y": "10%"
+            },
+            "size": {
+              "width": "35%",
+              "height": "80%"
+            },
+            "description": "Abstract colorful painting with blue, red, yellow, and green colors with paint splatters.",
+            "frame": {
+              "type": "rectangle",
+              "roundedCorners": "medium"
+            }
+          }
+        ],
+        "contentPlaceholders": [
+          {
+            "type": "heading",
+            "position": {
+              "x": "10%",
+              "y": "10%"
+            },
+            "size": {
+              "width": "45%",
+              "height": "10%"
+            },
+            "text": "Ilustraciones Temáticas"
+          },
+          {
+            "type": "subheading",
+            "position": {
+              "x": "10%",
+              "y": "20%"
+            },
+            "size": {
+              "width": "45%",
+              "height": "5%"
+            },
+            "text": "Un recorrido visual por mi visión del arte y la expresión."
+          },
+          {
+            "type": "bodyText",
+            "position": {
+              "x": "10%",
+              "y": "30%"
+            },
+            "size": {
+              "width": "45%",
+              "height": "60%"
+            },
+            "text": [
+              {
+                "number": "01",
+                "content": "Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium."
+              },
+              {
+                "number": "02",
+                "content": "Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium."
+              },
+              {
+                "number": "03",
+                "content": "Lorem ipsum dolor sit amet, consectetur adipiscing sagittis elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium."
+              }
+            ]
+          }
+        ]
+      },
+      "timestamp": "2025-09-07T22:05:09.650Z"
+    },
+    {
+      "filename": "9.png",
+      "ai_analysis": {
+        "success": true,
+        "filename": "9.png",
+        "analysis": "```json\n{\n  \"slideType\": \"Title and Text\",\n  \"layout\": \"Centered Text Overlay on Image\",\n  \"colorPalette\": {\n    \"background\": {\n      \"type\": \"image\",\n      \"description\": \"Colorful abstract painting with vibrant blues, reds, oranges, and yellows\"\n    },\n    \"text\": \"#333333\",\n    \"contentBox\": \"#FFFFFF\"\n  },\n  \"typography\": {\n    \"title\": {\n      \"fontSize\": \"32px\",\n      \"fontWeight\": \"bold\",\n      \"alignment\": \"center\",\n      \"color\": \"#333333\"\n    },\n    \"bodyText\": {\n      \"fontSize\": \"18px\",\n      \"alignment\": \"center\",\n      \"color\": \"#333333\"\n    }\n  },\n  \"shapesAndGraphics\": [\n    {\n      \"type\": \"roundedRectangle\",\n      \"position\": {\n        \"x\": \"10%\",\n        \"y\": \"30%\"\n      },\n      \"size\": {\n        \"width\": \"80%\",\n        \"height\": \"40%\"\n      },\n      \"color\": \"#FFFFFF\",\n      \"borderRadius\": \"10px\"\n    }\n  ],\n  \"contentPlaceholders\": [\n    {\n      \"type\": \"title\",\n      \"position\": {\n        \"x\": \"25%\",\n        \"y\": \"35%\"\n      },\n      \"size\": {\n        \"width\": \"50%\",\n        \"height\": \"10%\"\n      },\n      \"text\": \"Proceso Creativo\"\n    },\n    {\n      \"type\": \"bodyText\",\n      \"position\": {\n        \"x\": \"20%\",\n        \"y\": \"45%\"\n      },\n      \"size\": {\n        \"width\": \"60%\",\n        \"height\": \"20%\"\n      },\n      \"text\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium.\"\n    }\n  ]\n}\n```",
+        "timestamp": "2025-09-07T22:05:24.514Z"
+      },
+      "powerpoint_description": {
+        "slideType": "Title and Text",
+        "layout": "Centered Text Overlay on Image",
+        "colorPalette": {
+          "background": {
+            "type": "image",
+            "description": "Colorful abstract painting with vibrant blues, reds, oranges, and yellows"
+          },
+          "text": "#333333",
+          "contentBox": "#FFFFFF"
+        },
+        "typography": {
+          "title": {
+            "fontSize": "32px",
+            "fontWeight": "bold",
+            "alignment": "center",
+            "color": "#333333"
+          },
+          "bodyText": {
+            "fontSize": "18px",
+            "alignment": "center",
+            "color": "#333333"
+          }
+        },
+        "shapesAndGraphics": [
+          {
+            "type": "roundedRectangle",
+            "position": {
+              "x": "10%",
+              "y": "30%"
+            },
+            "size": {
+              "width": "80%",
+              "height": "40%"
+            },
+            "color": "#FFFFFF",
+            "borderRadius": "10px"
+          }
+        ],
+        "contentPlaceholders": [
+          {
+            "type": "title",
+            "position": {
+              "x": "25%",
+              "y": "35%"
+            },
+            "size": {
+              "width": "50%",
+              "height": "10%"
+            },
+            "text": "Proceso Creativo"
+          },
+          {
+            "type": "bodyText",
+            "position": {
+              "x": "20%",
+              "y": "45%"
+            },
+            "size": {
+              "width": "60%",
+              "height": "20%"
+            },
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque facilisis tincidunt risus sit amet sagittis. Praesent tempus vitae felis maximus pretium."
+          }
+        ]
+      },
+      "timestamp": "2025-09-07T22:05:24.521Z"
+    }
+  ],
+  "failed_filenames": [],
+  "timestamp": "2025-09-07T22:05:26.028Z",
+  "analysis_type": "OpenAI GPT-4 Vision - Uploaded Images",
+  "powerpoint_ready": true
+}

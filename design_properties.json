@@ -1,0 +1,305 @@
+{
+  "sourceFile": "c:\\Users\\jayve\\projects\\Slidy-presto\\Scientific Conference Slides.pptx",
+  "extractedAt": "2025-09-07T17:43:55.366Z",
+  "basicProperties": {
+    "application": "Microsoft Office PowerPoint",
+    "title": "Copie de Scientific Conference Slides",
+    "author": "Unknown",
+    "created": "2006-08-16T00:00:00Z",
+    "modified": "2025-09-07T16:14:21Z",
+    "version": "16.0000"
+  },
+  "structure": {
+    "slideCount": 0,
+    "slideOrder": [],
+    "slideMasters": [],
+    "slideIds": []
+  },
+  "theme": {
+    "colors": [],
+    "fonts": [],
+    "effects": [],
+    "masterTheme": null
+  },
+  "layouts": [
+    {
+      "filename": "ppt/slideLayouts/slideLayout9.xml",
+      "type": "unknown",
+      "shapes": 0,
+      "placeholders": []
+    },
+    {
+      "filename": "ppt/slideLayouts/slideLayout10.xml",
+      "type": "unknown",
+      "shapes": 0,
+      "placeholders": []
+    },
+    {
+      "filename": "ppt/slideLayouts/slideLayout11.xml",
+      "type": "unknown",
+      "shapes": 0,
+      "placeholders": []
+    },
+    {
+      "filename": "ppt/slideLayouts/slideLayout1.xml",
+      "type": "unknown",
+      "shapes": 0,
+      "placeholders": []
+    },
+    {
+      "filename": "ppt/slideLayouts/slideLayout2.xml",
+      "type": "unknown",
+      "shapes": 0,
+      "placeholders": []
+    },
+    {
+      "filename": "ppt/slideLayouts/slideLayout3.xml",
+      "type": "unknown",
+      "shapes": 0,
+      "placeholders": []
+    },
+    {
+      "filename": "ppt/slideLayouts/slideLayout4.xml",
+      "type": "unknown",
+      "shapes": 0,
+      "placeholders": []
+    },
+    {
+      "filename": "ppt/slideLayouts/slideLayout6.xml",
+      "type": "unknown",
+      "shapes": 0,
+      "placeholders": []
+    },
+    {
+      "filename": "ppt/slideLayouts/slideLayout7.xml",
+      "type": "unknown",
+      "shapes": 0,
+      "placeholders": []
+    },
+    {
+      "filename": "ppt/slideLayouts/slideLayout5.xml",
+      "type": "unknown",
+      "shapes": 0,
+      "placeholders": []
+    },
+    {
+      "filename": "ppt/slideLayouts/slideLayout8.xml",
+      "type": "unknown",
+      "shapes": 0,
+      "placeholders": []
+    }
+  ],
+  "slides": [
+    {
+      "filename": "ppt/slides/slide1.xml",
+      "slideNumber": 1,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide2.xml",
+      "slideNumber": 2,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide3.xml",
+      "slideNumber": 3,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide4.xml",
+      "slideNumber": 4,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide5.xml",
+      "slideNumber": 5,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide6.xml",
+      "slideNumber": 6,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide7.xml",
+      "slideNumber": 7,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide8.xml",
+      "slideNumber": 8,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide9.xml",
+      "slideNumber": 9,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide10.xml",
+      "slideNumber": 10,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide11.xml",
+      "slideNumber": 11,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide12.xml",
+      "slideNumber": 12,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide13.xml",
+      "slideNumber": 13,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide14.xml",
+      "slideNumber": 14,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide15.xml",
+      "slideNumber": 15,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "filename": "ppt/slides/slide16.xml",
+      "slideNumber": 16,
+      "background": {
+        "type": "none"
+      },
+      "shapes": [],
+      "images": [],
+      "textBoxes": [],
+      "tables": [],
+      "charts": []
+    }
+  ],
+  "designPatterns": {
+    "dominantColors": [],
+    "layoutPatterns": [],
+    "textStyles": [],
+    "hasImages": false,
+    "hasCharts": false,
+    "hasTables": false,
+    "visualDensity": "low",
+    "colorHarmony": "unknown"
+  },
+  "technicalSummary": {
+    "totalSlides": 16,
+    "themeColors": 0,
+    "slideLayouts": 11,
+    "fontsFound": 0,
+    "hascharts": false,
+    "hasImages": false,
+    "dominantColors": []
+  }
+}

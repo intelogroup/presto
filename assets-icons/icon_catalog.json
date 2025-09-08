@@ -1,0 +1,3743 @@
+{
+  "generated_at": "2025-09-06T23:56:32.452Z",
+  "total_icons": 622,
+  "libraries": {
+    "fontawesome": 28,
+    "heroicons": 94,
+    "lucide": 500
+  },
+  "icons": [
+    {
+      "name": "arrow-down",
+      "filename": "arrow-down.svg",
+      "filepath": "fontawesome/arrow-down.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "arrow-left",
+      "filename": "arrow-left.svg",
+      "filepath": "fontawesome/arrow-left.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "arrow-right",
+      "filename": "arrow-right.svg",
+      "filepath": "fontawesome/arrow-right.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "arrow-trend-down",
+      "filename": "arrow-trend-down.svg",
+      "filepath": "fontawesome/arrow-trend-down.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "arrow-trend-up",
+      "filename": "arrow-trend-up.svg",
+      "filepath": "fontawesome/arrow-trend-up.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "arrow-up",
+      "filename": "arrow-up.svg",
+      "filepath": "fontawesome/arrow-up.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "bullseye",
+      "filename": "bullseye.svg",
+      "filepath": "fontawesome/bullseye.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "chart-area",
+      "filename": "chart-area.svg",
+      "filepath": "fontawesome/chart-area.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "chart-bar",
+      "filename": "chart-bar.svg",
+      "filepath": "fontawesome/chart-bar.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "chart-line",
+      "filename": "chart-line.svg",
+      "filepath": "fontawesome/chart-line.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "chart-pie",
+      "filename": "chart-pie.svg",
+      "filepath": "fontawesome/chart-pie.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "check-circle",
+      "filename": "check-circle.svg",
+      "filepath": "fontawesome/check-circle.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "cog",
+      "filename": "cog.svg",
+      "filepath": "fontawesome/cog.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "comment",
+      "filename": "comment.svg",
+      "filepath": "fontawesome/comment.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "comments",
+      "filename": "comments.svg",
+      "filepath": "fontawesome/comments.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "exclamation-circle",
+      "filename": "exclamation-circle.svg",
+      "filepath": "fontawesome/exclamation-circle.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "eye",
+      "filename": "eye.svg",
+      "filepath": "fontawesome/eye.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "filter",
+      "filename": "filter.svg",
+      "filepath": "fontawesome/filter.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "info-circle",
+      "filename": "info-circle.svg",
+      "filepath": "fontawesome/info-circle.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "lightbulb",
+      "filename": "lightbulb.svg",
+      "filepath": "fontawesome/lightbulb.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "pause",
+      "filename": "pause.svg",
+      "filepath": "fontawesome/pause.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "play",
+      "filename": "play.svg",
+      "filepath": "fontawesome/play.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "search",
+      "filename": "search.svg",
+      "filepath": "fontawesome/search.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "stop",
+      "filename": "stop.svg",
+      "filepath": "fontawesome/stop.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "sync",
+      "filename": "sync.svg",
+      "filepath": "fontawesome/sync.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "times-circle",
+      "filename": "times-circle.svg",
+      "filepath": "fontawesome/times-circle.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "user-check",
+      "filename": "user-check.svg",
+      "filepath": "fontawesome/user-check.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "users",
+      "filename": "users.svg",
+      "filepath": "fontawesome/users.svg",
+      "library": "fontawesome"
+    },
+    {
+      "name": "arrow-left",
+      "filename": "arrow-left.svg",
+      "filepath": "heroicons/arrow-left.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "arrow-path",
+      "filename": "arrow-path.svg",
+      "filepath": "heroicons/arrow-path.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "arrow-right",
+      "filename": "arrow-right.svg",
+      "filepath": "heroicons/arrow-right.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "arrow-trending-up",
+      "filename": "arrow-trending-up.svg",
+      "filepath": "heroicons/arrow-trending-up.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "briefcase",
+      "filename": "briefcase.svg",
+      "filepath": "heroicons/briefcase.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chart-bar-square",
+      "filename": "chart-bar-square.svg",
+      "filepath": "heroicons/chart-bar-square.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chart-bar",
+      "filename": "chart-bar.svg",
+      "filepath": "heroicons/chart-bar.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chart-pie",
+      "filename": "chart-pie.svg",
+      "filepath": "heroicons/chart-pie.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chat-bubble-left-right",
+      "filename": "chat-bubble-left-right.svg",
+      "filepath": "heroicons/chat-bubble-left-right.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chat-bubble-left",
+      "filename": "chat-bubble-left.svg",
+      "filepath": "heroicons/chat-bubble-left.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "check-circle",
+      "filename": "check-circle.svg",
+      "filepath": "heroicons/check-circle.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "circle-stack",
+      "filename": "circle-stack.svg",
+      "filepath": "heroicons/circle-stack.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "clipboard-document-list",
+      "filename": "clipboard-document-list.svg",
+      "filepath": "heroicons/clipboard-document-list.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "cloud",
+      "filename": "cloud.svg",
+      "filepath": "heroicons/cloud.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "code-bracket",
+      "filename": "code-bracket.svg",
+      "filepath": "heroicons/code-bracket.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "cog-6-tooth",
+      "filename": "cog-6-tooth.svg",
+      "filepath": "heroicons/cog-6-tooth.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "cpu-chip",
+      "filename": "cpu-chip.svg",
+      "filepath": "heroicons/cpu-chip.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "exclamation-circle",
+      "filename": "exclamation-circle.svg",
+      "filepath": "heroicons/exclamation-circle.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "eye",
+      "filename": "eye.svg",
+      "filepath": "heroicons/eye.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "folder",
+      "filename": "folder.svg",
+      "filepath": "heroicons/folder.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "funnel",
+      "filename": "funnel.svg",
+      "filepath": "heroicons/funnel.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "information-circle",
+      "filename": "information-circle.svg",
+      "filepath": "heroicons/information-circle.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "light-bulb",
+      "filename": "light-bulb.svg",
+      "filepath": "heroicons/light-bulb.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "magnifying-glass",
+      "filename": "magnifying-glass.svg",
+      "filepath": "heroicons/magnifying-glass.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "academic-cap",
+      "filename": "academic-cap.svg",
+      "filepath": "heroicons/outline/academic-cap.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "adjustments-horizontal",
+      "filename": "adjustments-horizontal.svg",
+      "filepath": "heroicons/outline/adjustments-horizontal.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "archive-box",
+      "filename": "archive-box.svg",
+      "filepath": "heroicons/outline/archive-box.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "arrow-down",
+      "filename": "arrow-down.svg",
+      "filepath": "heroicons/outline/arrow-down.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "arrow-left",
+      "filename": "arrow-left.svg",
+      "filepath": "heroicons/outline/arrow-left.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "arrow-right",
+      "filename": "arrow-right.svg",
+      "filepath": "heroicons/outline/arrow-right.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "arrow-up",
+      "filename": "arrow-up.svg",
+      "filepath": "heroicons/outline/arrow-up.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "at-symbol",
+      "filename": "at-symbol.svg",
+      "filepath": "heroicons/outline/at-symbol.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "bell",
+      "filename": "bell.svg",
+      "filepath": "heroicons/outline/bell.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "bookmark",
+      "filename": "bookmark.svg",
+      "filepath": "heroicons/outline/bookmark.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "calendar",
+      "filename": "calendar.svg",
+      "filepath": "heroicons/outline/calendar.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "camera",
+      "filename": "camera.svg",
+      "filepath": "heroicons/outline/camera.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chart-bar",
+      "filename": "chart-bar.svg",
+      "filepath": "heroicons/outline/chart-bar.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "check",
+      "filename": "check.svg",
+      "filepath": "heroicons/outline/check.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chevron-down",
+      "filename": "chevron-down.svg",
+      "filepath": "heroicons/outline/chevron-down.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chevron-left",
+      "filename": "chevron-left.svg",
+      "filepath": "heroicons/outline/chevron-left.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chevron-right",
+      "filename": "chevron-right.svg",
+      "filepath": "heroicons/outline/chevron-right.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chevron-up",
+      "filename": "chevron-up.svg",
+      "filepath": "heroicons/outline/chevron-up.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "clock",
+      "filename": "clock.svg",
+      "filepath": "heroicons/outline/clock.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "cloud",
+      "filename": "cloud.svg",
+      "filepath": "heroicons/outline/cloud.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "cog",
+      "filename": "cog.svg",
+      "filepath": "heroicons/outline/cog.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "computer-desktop",
+      "filename": "computer-desktop.svg",
+      "filepath": "heroicons/outline/computer-desktop.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "document",
+      "filename": "document.svg",
+      "filepath": "heroicons/outline/document.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "envelope",
+      "filename": "envelope.svg",
+      "filepath": "heroicons/outline/envelope.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "eye",
+      "filename": "eye.svg",
+      "filepath": "heroicons/outline/eye.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "face-smile",
+      "filename": "face-smile.svg",
+      "filepath": "heroicons/outline/face-smile.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "folder",
+      "filename": "folder.svg",
+      "filepath": "heroicons/outline/folder.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "globe-alt",
+      "filename": "globe-alt.svg",
+      "filepath": "heroicons/outline/globe-alt.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "heart",
+      "filename": "heart.svg",
+      "filepath": "heroicons/outline/heart.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "home",
+      "filename": "home.svg",
+      "filepath": "heroicons/outline/home.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "pause",
+      "filename": "pause.svg",
+      "filepath": "heroicons/pause.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "play",
+      "filename": "play.svg",
+      "filepath": "heroicons/play.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "presentation-chart-bar",
+      "filename": "presentation-chart-bar.svg",
+      "filepath": "heroicons/presentation-chart-bar.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "presentation-chart-line",
+      "filename": "presentation-chart-line.svg",
+      "filepath": "heroicons/presentation-chart-line.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "server-stack",
+      "filename": "server-stack.svg",
+      "filepath": "heroicons/server-stack.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "academic-cap",
+      "filename": "academic-cap.svg",
+      "filepath": "heroicons/solid/academic-cap.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "adjustments-horizontal",
+      "filename": "adjustments-horizontal.svg",
+      "filepath": "heroicons/solid/adjustments-horizontal.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "archive-box",
+      "filename": "archive-box.svg",
+      "filepath": "heroicons/solid/archive-box.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "arrow-down",
+      "filename": "arrow-down.svg",
+      "filepath": "heroicons/solid/arrow-down.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "arrow-left",
+      "filename": "arrow-left.svg",
+      "filepath": "heroicons/solid/arrow-left.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "arrow-right",
+      "filename": "arrow-right.svg",
+      "filepath": "heroicons/solid/arrow-right.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "arrow-up",
+      "filename": "arrow-up.svg",
+      "filepath": "heroicons/solid/arrow-up.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "at-symbol",
+      "filename": "at-symbol.svg",
+      "filepath": "heroicons/solid/at-symbol.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "bell",
+      "filename": "bell.svg",
+      "filepath": "heroicons/solid/bell.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "bookmark",
+      "filename": "bookmark.svg",
+      "filepath": "heroicons/solid/bookmark.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "calendar",
+      "filename": "calendar.svg",
+      "filepath": "heroicons/solid/calendar.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "camera",
+      "filename": "camera.svg",
+      "filepath": "heroicons/solid/camera.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chart-bar",
+      "filename": "chart-bar.svg",
+      "filepath": "heroicons/solid/chart-bar.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "check",
+      "filename": "check.svg",
+      "filepath": "heroicons/solid/check.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chevron-down",
+      "filename": "chevron-down.svg",
+      "filepath": "heroicons/solid/chevron-down.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chevron-left",
+      "filename": "chevron-left.svg",
+      "filepath": "heroicons/solid/chevron-left.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chevron-right",
+      "filename": "chevron-right.svg",
+      "filepath": "heroicons/solid/chevron-right.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "chevron-up",
+      "filename": "chevron-up.svg",
+      "filepath": "heroicons/solid/chevron-up.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "clock",
+      "filename": "clock.svg",
+      "filepath": "heroicons/solid/clock.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "cloud",
+      "filename": "cloud.svg",
+      "filepath": "heroicons/solid/cloud.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "cog",
+      "filename": "cog.svg",
+      "filepath": "heroicons/solid/cog.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "computer-desktop",
+      "filename": "computer-desktop.svg",
+      "filepath": "heroicons/solid/computer-desktop.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "document",
+      "filename": "document.svg",
+      "filepath": "heroicons/solid/document.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "envelope",
+      "filename": "envelope.svg",
+      "filepath": "heroicons/solid/envelope.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "eye",
+      "filename": "eye.svg",
+      "filepath": "heroicons/solid/eye.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "face-smile",
+      "filename": "face-smile.svg",
+      "filepath": "heroicons/solid/face-smile.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "folder",
+      "filename": "folder.svg",
+      "filepath": "heroicons/solid/folder.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "globe-alt",
+      "filename": "globe-alt.svg",
+      "filepath": "heroicons/solid/globe-alt.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "heart",
+      "filename": "heart.svg",
+      "filepath": "heroicons/solid/heart.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "home",
+      "filename": "home.svg",
+      "filepath": "heroicons/solid/home.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "stop",
+      "filename": "stop.svg",
+      "filepath": "heroicons/stop.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "trophy",
+      "filename": "trophy.svg",
+      "filepath": "heroicons/trophy.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "user-group",
+      "filename": "user-group.svg",
+      "filepath": "heroicons/user-group.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "users",
+      "filename": "users.svg",
+      "filepath": "heroicons/users.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "x-circle",
+      "filename": "x-circle.svg",
+      "filepath": "heroicons/x-circle.svg",
+      "library": "heroicons"
+    },
+    {
+      "name": "a-arrow-down",
+      "filename": "a-arrow-down.svg",
+      "filepath": "lucide/a-arrow-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "a-arrow-up",
+      "filename": "a-arrow-up.svg",
+      "filepath": "lucide/a-arrow-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "a-large-small",
+      "filename": "a-large-small.svg",
+      "filepath": "lucide/a-large-small.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "accessibility",
+      "filename": "accessibility.svg",
+      "filepath": "lucide/accessibility.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "activity",
+      "filename": "activity.svg",
+      "filepath": "lucide/activity.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "air-vent",
+      "filename": "air-vent.svg",
+      "filepath": "lucide/air-vent.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "airplay",
+      "filename": "airplay.svg",
+      "filepath": "lucide/airplay.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "alarm-clock-check",
+      "filename": "alarm-clock-check.svg",
+      "filepath": "lucide/alarm-clock-check.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "alarm-clock-minus",
+      "filename": "alarm-clock-minus.svg",
+      "filepath": "lucide/alarm-clock-minus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "alarm-clock-off",
+      "filename": "alarm-clock-off.svg",
+      "filepath": "lucide/alarm-clock-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "alarm-clock-plus",
+      "filename": "alarm-clock-plus.svg",
+      "filepath": "lucide/alarm-clock-plus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "alarm-clock",
+      "filename": "alarm-clock.svg",
+      "filepath": "lucide/alarm-clock.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "alarm-smoke",
+      "filename": "alarm-smoke.svg",
+      "filepath": "lucide/alarm-smoke.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "album",
+      "filename": "album.svg",
+      "filepath": "lucide/album.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-center-horizontal",
+      "filename": "align-center-horizontal.svg",
+      "filepath": "lucide/align-center-horizontal.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-center-vertical",
+      "filename": "align-center-vertical.svg",
+      "filepath": "lucide/align-center-vertical.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-end-horizontal",
+      "filename": "align-end-horizontal.svg",
+      "filepath": "lucide/align-end-horizontal.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-end-vertical",
+      "filename": "align-end-vertical.svg",
+      "filepath": "lucide/align-end-vertical.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-horizontal-distribute-center",
+      "filename": "align-horizontal-distribute-center.svg",
+      "filepath": "lucide/align-horizontal-distribute-center.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-horizontal-distribute-end",
+      "filename": "align-horizontal-distribute-end.svg",
+      "filepath": "lucide/align-horizontal-distribute-end.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-horizontal-distribute-start",
+      "filename": "align-horizontal-distribute-start.svg",
+      "filepath": "lucide/align-horizontal-distribute-start.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-horizontal-justify-center",
+      "filename": "align-horizontal-justify-center.svg",
+      "filepath": "lucide/align-horizontal-justify-center.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-horizontal-justify-end",
+      "filename": "align-horizontal-justify-end.svg",
+      "filepath": "lucide/align-horizontal-justify-end.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-horizontal-justify-start",
+      "filename": "align-horizontal-justify-start.svg",
+      "filepath": "lucide/align-horizontal-justify-start.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-horizontal-space-around",
+      "filename": "align-horizontal-space-around.svg",
+      "filepath": "lucide/align-horizontal-space-around.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-horizontal-space-between",
+      "filename": "align-horizontal-space-between.svg",
+      "filepath": "lucide/align-horizontal-space-between.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-start-horizontal",
+      "filename": "align-start-horizontal.svg",
+      "filepath": "lucide/align-start-horizontal.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-start-vertical",
+      "filename": "align-start-vertical.svg",
+      "filepath": "lucide/align-start-vertical.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-vertical-distribute-center",
+      "filename": "align-vertical-distribute-center.svg",
+      "filepath": "lucide/align-vertical-distribute-center.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-vertical-distribute-end",
+      "filename": "align-vertical-distribute-end.svg",
+      "filepath": "lucide/align-vertical-distribute-end.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-vertical-distribute-start",
+      "filename": "align-vertical-distribute-start.svg",
+      "filepath": "lucide/align-vertical-distribute-start.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-vertical-justify-center",
+      "filename": "align-vertical-justify-center.svg",
+      "filepath": "lucide/align-vertical-justify-center.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-vertical-justify-end",
+      "filename": "align-vertical-justify-end.svg",
+      "filepath": "lucide/align-vertical-justify-end.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-vertical-justify-start",
+      "filename": "align-vertical-justify-start.svg",
+      "filepath": "lucide/align-vertical-justify-start.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-vertical-space-around",
+      "filename": "align-vertical-space-around.svg",
+      "filepath": "lucide/align-vertical-space-around.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "align-vertical-space-between",
+      "filename": "align-vertical-space-between.svg",
+      "filepath": "lucide/align-vertical-space-between.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "ambulance",
+      "filename": "ambulance.svg",
+      "filepath": "lucide/ambulance.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "ampersand",
+      "filename": "ampersand.svg",
+      "filepath": "lucide/ampersand.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "ampersands",
+      "filename": "ampersands.svg",
+      "filepath": "lucide/ampersands.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "amphora",
+      "filename": "amphora.svg",
+      "filepath": "lucide/amphora.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "anchor",
+      "filename": "anchor.svg",
+      "filepath": "lucide/anchor.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "angry",
+      "filename": "angry.svg",
+      "filepath": "lucide/angry.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "annoyed",
+      "filename": "annoyed.svg",
+      "filepath": "lucide/annoyed.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "antenna",
+      "filename": "antenna.svg",
+      "filepath": "lucide/antenna.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "anvil",
+      "filename": "anvil.svg",
+      "filepath": "lucide/anvil.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "aperture",
+      "filename": "aperture.svg",
+      "filepath": "lucide/aperture.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "app-window-mac",
+      "filename": "app-window-mac.svg",
+      "filepath": "lucide/app-window-mac.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "app-window",
+      "filename": "app-window.svg",
+      "filepath": "lucide/app-window.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "apple",
+      "filename": "apple.svg",
+      "filepath": "lucide/apple.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "archive-restore",
+      "filename": "archive-restore.svg",
+      "filepath": "lucide/archive-restore.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "archive-x",
+      "filename": "archive-x.svg",
+      "filepath": "lucide/archive-x.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "archive",
+      "filename": "archive.svg",
+      "filepath": "lucide/archive.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "armchair",
+      "filename": "armchair.svg",
+      "filepath": "lucide/armchair.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-big-down-dash",
+      "filename": "arrow-big-down-dash.svg",
+      "filepath": "lucide/arrow-big-down-dash.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-big-down",
+      "filename": "arrow-big-down.svg",
+      "filepath": "lucide/arrow-big-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-big-left-dash",
+      "filename": "arrow-big-left-dash.svg",
+      "filepath": "lucide/arrow-big-left-dash.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-big-left",
+      "filename": "arrow-big-left.svg",
+      "filepath": "lucide/arrow-big-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-big-right-dash",
+      "filename": "arrow-big-right-dash.svg",
+      "filepath": "lucide/arrow-big-right-dash.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-big-right",
+      "filename": "arrow-big-right.svg",
+      "filepath": "lucide/arrow-big-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-big-up-dash",
+      "filename": "arrow-big-up-dash.svg",
+      "filepath": "lucide/arrow-big-up-dash.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-big-up",
+      "filename": "arrow-big-up.svg",
+      "filepath": "lucide/arrow-big-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-down-0-1",
+      "filename": "arrow-down-0-1.svg",
+      "filepath": "lucide/arrow-down-0-1.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-down-1-0",
+      "filename": "arrow-down-1-0.svg",
+      "filepath": "lucide/arrow-down-1-0.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-down-a-z",
+      "filename": "arrow-down-a-z.svg",
+      "filepath": "lucide/arrow-down-a-z.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-down-from-line",
+      "filename": "arrow-down-from-line.svg",
+      "filepath": "lucide/arrow-down-from-line.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-down-left",
+      "filename": "arrow-down-left.svg",
+      "filepath": "lucide/arrow-down-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-down-narrow-wide",
+      "filename": "arrow-down-narrow-wide.svg",
+      "filepath": "lucide/arrow-down-narrow-wide.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-down-right",
+      "filename": "arrow-down-right.svg",
+      "filepath": "lucide/arrow-down-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-down-to-dot",
+      "filename": "arrow-down-to-dot.svg",
+      "filepath": "lucide/arrow-down-to-dot.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-down-to-line",
+      "filename": "arrow-down-to-line.svg",
+      "filepath": "lucide/arrow-down-to-line.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-down-up",
+      "filename": "arrow-down-up.svg",
+      "filepath": "lucide/arrow-down-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-down-wide-narrow",
+      "filename": "arrow-down-wide-narrow.svg",
+      "filepath": "lucide/arrow-down-wide-narrow.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-down-z-a",
+      "filename": "arrow-down-z-a.svg",
+      "filepath": "lucide/arrow-down-z-a.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-down",
+      "filename": "arrow-down.svg",
+      "filepath": "lucide/arrow-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-left-from-line",
+      "filename": "arrow-left-from-line.svg",
+      "filepath": "lucide/arrow-left-from-line.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-left-right",
+      "filename": "arrow-left-right.svg",
+      "filepath": "lucide/arrow-left-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-left-to-line",
+      "filename": "arrow-left-to-line.svg",
+      "filepath": "lucide/arrow-left-to-line.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-left",
+      "filename": "arrow-left.svg",
+      "filepath": "lucide/arrow-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-right-from-line",
+      "filename": "arrow-right-from-line.svg",
+      "filepath": "lucide/arrow-right-from-line.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-right-left",
+      "filename": "arrow-right-left.svg",
+      "filepath": "lucide/arrow-right-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-right-to-line",
+      "filename": "arrow-right-to-line.svg",
+      "filepath": "lucide/arrow-right-to-line.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-right",
+      "filename": "arrow-right.svg",
+      "filepath": "lucide/arrow-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-up-0-1",
+      "filename": "arrow-up-0-1.svg",
+      "filepath": "lucide/arrow-up-0-1.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-up-1-0",
+      "filename": "arrow-up-1-0.svg",
+      "filepath": "lucide/arrow-up-1-0.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-up-a-z",
+      "filename": "arrow-up-a-z.svg",
+      "filepath": "lucide/arrow-up-a-z.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-up-down",
+      "filename": "arrow-up-down.svg",
+      "filepath": "lucide/arrow-up-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-up-from-dot",
+      "filename": "arrow-up-from-dot.svg",
+      "filepath": "lucide/arrow-up-from-dot.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-up-from-line",
+      "filename": "arrow-up-from-line.svg",
+      "filepath": "lucide/arrow-up-from-line.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-up-left",
+      "filename": "arrow-up-left.svg",
+      "filepath": "lucide/arrow-up-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-up-narrow-wide",
+      "filename": "arrow-up-narrow-wide.svg",
+      "filepath": "lucide/arrow-up-narrow-wide.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-up-right",
+      "filename": "arrow-up-right.svg",
+      "filepath": "lucide/arrow-up-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-up-to-line",
+      "filename": "arrow-up-to-line.svg",
+      "filepath": "lucide/arrow-up-to-line.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-up-wide-narrow",
+      "filename": "arrow-up-wide-narrow.svg",
+      "filepath": "lucide/arrow-up-wide-narrow.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-up-z-a",
+      "filename": "arrow-up-z-a.svg",
+      "filepath": "lucide/arrow-up-z-a.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrow-up",
+      "filename": "arrow-up.svg",
+      "filepath": "lucide/arrow-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "arrows-up-from-line",
+      "filename": "arrows-up-from-line.svg",
+      "filepath": "lucide/arrows-up-from-line.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "asterisk",
+      "filename": "asterisk.svg",
+      "filepath": "lucide/asterisk.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "at-sign",
+      "filename": "at-sign.svg",
+      "filepath": "lucide/at-sign.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "atom",
+      "filename": "atom.svg",
+      "filepath": "lucide/atom.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "audio-lines",
+      "filename": "audio-lines.svg",
+      "filepath": "lucide/audio-lines.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "audio-waveform",
+      "filename": "audio-waveform.svg",
+      "filepath": "lucide/audio-waveform.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "award",
+      "filename": "award.svg",
+      "filepath": "lucide/award.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "axe",
+      "filename": "axe.svg",
+      "filepath": "lucide/axe.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "axis-3d",
+      "filename": "axis-3d.svg",
+      "filepath": "lucide/axis-3d.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "baby",
+      "filename": "baby.svg",
+      "filepath": "lucide/baby.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "backpack",
+      "filename": "backpack.svg",
+      "filepath": "lucide/backpack.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-alert",
+      "filename": "badge-alert.svg",
+      "filepath": "lucide/badge-alert.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-cent",
+      "filename": "badge-cent.svg",
+      "filepath": "lucide/badge-cent.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-check",
+      "filename": "badge-check.svg",
+      "filepath": "lucide/badge-check.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-dollar-sign",
+      "filename": "badge-dollar-sign.svg",
+      "filepath": "lucide/badge-dollar-sign.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-euro",
+      "filename": "badge-euro.svg",
+      "filepath": "lucide/badge-euro.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-indian-rupee",
+      "filename": "badge-indian-rupee.svg",
+      "filepath": "lucide/badge-indian-rupee.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-info",
+      "filename": "badge-info.svg",
+      "filepath": "lucide/badge-info.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-japanese-yen",
+      "filename": "badge-japanese-yen.svg",
+      "filepath": "lucide/badge-japanese-yen.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-minus",
+      "filename": "badge-minus.svg",
+      "filepath": "lucide/badge-minus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-percent",
+      "filename": "badge-percent.svg",
+      "filepath": "lucide/badge-percent.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-plus",
+      "filename": "badge-plus.svg",
+      "filepath": "lucide/badge-plus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-pound-sterling",
+      "filename": "badge-pound-sterling.svg",
+      "filepath": "lucide/badge-pound-sterling.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-question-mark",
+      "filename": "badge-question-mark.svg",
+      "filepath": "lucide/badge-question-mark.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-russian-ruble",
+      "filename": "badge-russian-ruble.svg",
+      "filepath": "lucide/badge-russian-ruble.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-swiss-franc",
+      "filename": "badge-swiss-franc.svg",
+      "filepath": "lucide/badge-swiss-franc.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-turkish-lira",
+      "filename": "badge-turkish-lira.svg",
+      "filepath": "lucide/badge-turkish-lira.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge-x",
+      "filename": "badge-x.svg",
+      "filepath": "lucide/badge-x.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "badge",
+      "filename": "badge.svg",
+      "filepath": "lucide/badge.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "baggage-claim",
+      "filename": "baggage-claim.svg",
+      "filepath": "lucide/baggage-claim.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "ban",
+      "filename": "ban.svg",
+      "filepath": "lucide/ban.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "banana",
+      "filename": "banana.svg",
+      "filepath": "lucide/banana.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bandage",
+      "filename": "bandage.svg",
+      "filepath": "lucide/bandage.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "banknote-arrow-down",
+      "filename": "banknote-arrow-down.svg",
+      "filepath": "lucide/banknote-arrow-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "banknote-arrow-up",
+      "filename": "banknote-arrow-up.svg",
+      "filepath": "lucide/banknote-arrow-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "banknote-x",
+      "filename": "banknote-x.svg",
+      "filepath": "lucide/banknote-x.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "banknote",
+      "filename": "banknote.svg",
+      "filepath": "lucide/banknote.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "barcode",
+      "filename": "barcode.svg",
+      "filepath": "lucide/barcode.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "barrel",
+      "filename": "barrel.svg",
+      "filepath": "lucide/barrel.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "baseline",
+      "filename": "baseline.svg",
+      "filepath": "lucide/baseline.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bath",
+      "filename": "bath.svg",
+      "filepath": "lucide/bath.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "battery-charging",
+      "filename": "battery-charging.svg",
+      "filepath": "lucide/battery-charging.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "battery-full",
+      "filename": "battery-full.svg",
+      "filepath": "lucide/battery-full.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "battery-low",
+      "filename": "battery-low.svg",
+      "filepath": "lucide/battery-low.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "battery-medium",
+      "filename": "battery-medium.svg",
+      "filepath": "lucide/battery-medium.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "battery-plus",
+      "filename": "battery-plus.svg",
+      "filepath": "lucide/battery-plus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "battery-warning",
+      "filename": "battery-warning.svg",
+      "filepath": "lucide/battery-warning.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "battery",
+      "filename": "battery.svg",
+      "filepath": "lucide/battery.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "beaker",
+      "filename": "beaker.svg",
+      "filepath": "lucide/beaker.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bean-off",
+      "filename": "bean-off.svg",
+      "filepath": "lucide/bean-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bean",
+      "filename": "bean.svg",
+      "filepath": "lucide/bean.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bed-double",
+      "filename": "bed-double.svg",
+      "filepath": "lucide/bed-double.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bed-single",
+      "filename": "bed-single.svg",
+      "filepath": "lucide/bed-single.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bed",
+      "filename": "bed.svg",
+      "filepath": "lucide/bed.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "beef",
+      "filename": "beef.svg",
+      "filepath": "lucide/beef.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "beer-off",
+      "filename": "beer-off.svg",
+      "filepath": "lucide/beer-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "beer",
+      "filename": "beer.svg",
+      "filepath": "lucide/beer.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bell-dot",
+      "filename": "bell-dot.svg",
+      "filepath": "lucide/bell-dot.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bell-electric",
+      "filename": "bell-electric.svg",
+      "filepath": "lucide/bell-electric.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bell-minus",
+      "filename": "bell-minus.svg",
+      "filepath": "lucide/bell-minus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bell-off",
+      "filename": "bell-off.svg",
+      "filepath": "lucide/bell-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bell-plus",
+      "filename": "bell-plus.svg",
+      "filepath": "lucide/bell-plus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bell-ring",
+      "filename": "bell-ring.svg",
+      "filepath": "lucide/bell-ring.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bell",
+      "filename": "bell.svg",
+      "filepath": "lucide/bell.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "between-horizontal-end",
+      "filename": "between-horizontal-end.svg",
+      "filepath": "lucide/between-horizontal-end.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "between-horizontal-start",
+      "filename": "between-horizontal-start.svg",
+      "filepath": "lucide/between-horizontal-start.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "between-vertical-end",
+      "filename": "between-vertical-end.svg",
+      "filepath": "lucide/between-vertical-end.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "between-vertical-start",
+      "filename": "between-vertical-start.svg",
+      "filepath": "lucide/between-vertical-start.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "biceps-flexed",
+      "filename": "biceps-flexed.svg",
+      "filepath": "lucide/biceps-flexed.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bike",
+      "filename": "bike.svg",
+      "filepath": "lucide/bike.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "binary",
+      "filename": "binary.svg",
+      "filepath": "lucide/binary.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "binoculars",
+      "filename": "binoculars.svg",
+      "filepath": "lucide/binoculars.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "biohazard",
+      "filename": "biohazard.svg",
+      "filepath": "lucide/biohazard.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bird",
+      "filename": "bird.svg",
+      "filepath": "lucide/bird.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bitcoin",
+      "filename": "bitcoin.svg",
+      "filepath": "lucide/bitcoin.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "blend",
+      "filename": "blend.svg",
+      "filepath": "lucide/blend.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "blinds",
+      "filename": "blinds.svg",
+      "filepath": "lucide/blinds.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "blocks",
+      "filename": "blocks.svg",
+      "filepath": "lucide/blocks.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bluetooth-connected",
+      "filename": "bluetooth-connected.svg",
+      "filepath": "lucide/bluetooth-connected.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bluetooth-off",
+      "filename": "bluetooth-off.svg",
+      "filepath": "lucide/bluetooth-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bluetooth-searching",
+      "filename": "bluetooth-searching.svg",
+      "filepath": "lucide/bluetooth-searching.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bluetooth",
+      "filename": "bluetooth.svg",
+      "filepath": "lucide/bluetooth.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bold",
+      "filename": "bold.svg",
+      "filepath": "lucide/bold.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bolt",
+      "filename": "bolt.svg",
+      "filepath": "lucide/bolt.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bomb",
+      "filename": "bomb.svg",
+      "filepath": "lucide/bomb.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bone",
+      "filename": "bone.svg",
+      "filepath": "lucide/bone.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-a",
+      "filename": "book-a.svg",
+      "filepath": "lucide/book-a.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-alert",
+      "filename": "book-alert.svg",
+      "filepath": "lucide/book-alert.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-audio",
+      "filename": "book-audio.svg",
+      "filepath": "lucide/book-audio.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-check",
+      "filename": "book-check.svg",
+      "filepath": "lucide/book-check.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-copy",
+      "filename": "book-copy.svg",
+      "filepath": "lucide/book-copy.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-dashed",
+      "filename": "book-dashed.svg",
+      "filepath": "lucide/book-dashed.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-down",
+      "filename": "book-down.svg",
+      "filepath": "lucide/book-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-headphones",
+      "filename": "book-headphones.svg",
+      "filepath": "lucide/book-headphones.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-heart",
+      "filename": "book-heart.svg",
+      "filepath": "lucide/book-heart.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-image",
+      "filename": "book-image.svg",
+      "filepath": "lucide/book-image.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-key",
+      "filename": "book-key.svg",
+      "filepath": "lucide/book-key.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-lock",
+      "filename": "book-lock.svg",
+      "filepath": "lucide/book-lock.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-marked",
+      "filename": "book-marked.svg",
+      "filepath": "lucide/book-marked.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-minus",
+      "filename": "book-minus.svg",
+      "filepath": "lucide/book-minus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-open-check",
+      "filename": "book-open-check.svg",
+      "filepath": "lucide/book-open-check.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-open-text",
+      "filename": "book-open-text.svg",
+      "filepath": "lucide/book-open-text.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-open",
+      "filename": "book-open.svg",
+      "filepath": "lucide/book-open.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-plus",
+      "filename": "book-plus.svg",
+      "filepath": "lucide/book-plus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-text",
+      "filename": "book-text.svg",
+      "filepath": "lucide/book-text.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-type",
+      "filename": "book-type.svg",
+      "filepath": "lucide/book-type.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-up-2",
+      "filename": "book-up-2.svg",
+      "filepath": "lucide/book-up-2.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-up",
+      "filename": "book-up.svg",
+      "filepath": "lucide/book-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-user",
+      "filename": "book-user.svg",
+      "filepath": "lucide/book-user.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book-x",
+      "filename": "book-x.svg",
+      "filepath": "lucide/book-x.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "book",
+      "filename": "book.svg",
+      "filepath": "lucide/book.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bookmark-check",
+      "filename": "bookmark-check.svg",
+      "filepath": "lucide/bookmark-check.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bookmark-minus",
+      "filename": "bookmark-minus.svg",
+      "filepath": "lucide/bookmark-minus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bookmark-plus",
+      "filename": "bookmark-plus.svg",
+      "filepath": "lucide/bookmark-plus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bookmark-x",
+      "filename": "bookmark-x.svg",
+      "filepath": "lucide/bookmark-x.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bookmark",
+      "filename": "bookmark.svg",
+      "filepath": "lucide/bookmark.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "boom-box",
+      "filename": "boom-box.svg",
+      "filepath": "lucide/boom-box.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bot-message-square",
+      "filename": "bot-message-square.svg",
+      "filepath": "lucide/bot-message-square.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bot-off",
+      "filename": "bot-off.svg",
+      "filepath": "lucide/bot-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bot",
+      "filename": "bot.svg",
+      "filepath": "lucide/bot.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bottle-wine",
+      "filename": "bottle-wine.svg",
+      "filepath": "lucide/bottle-wine.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bow-arrow",
+      "filename": "bow-arrow.svg",
+      "filepath": "lucide/bow-arrow.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "box",
+      "filename": "box.svg",
+      "filepath": "lucide/box.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "boxes",
+      "filename": "boxes.svg",
+      "filepath": "lucide/boxes.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "braces",
+      "filename": "braces.svg",
+      "filepath": "lucide/braces.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "brackets",
+      "filename": "brackets.svg",
+      "filepath": "lucide/brackets.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "brain-circuit",
+      "filename": "brain-circuit.svg",
+      "filepath": "lucide/brain-circuit.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "brain-cog",
+      "filename": "brain-cog.svg",
+      "filepath": "lucide/brain-cog.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "brain",
+      "filename": "brain.svg",
+      "filepath": "lucide/brain.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "brick-wall-fire",
+      "filename": "brick-wall-fire.svg",
+      "filepath": "lucide/brick-wall-fire.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "brick-wall-shield",
+      "filename": "brick-wall-shield.svg",
+      "filepath": "lucide/brick-wall-shield.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "brick-wall",
+      "filename": "brick-wall.svg",
+      "filepath": "lucide/brick-wall.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "briefcase-business",
+      "filename": "briefcase-business.svg",
+      "filepath": "lucide/briefcase-business.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "briefcase-conveyor-belt",
+      "filename": "briefcase-conveyor-belt.svg",
+      "filepath": "lucide/briefcase-conveyor-belt.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "briefcase-medical",
+      "filename": "briefcase-medical.svg",
+      "filepath": "lucide/briefcase-medical.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "briefcase",
+      "filename": "briefcase.svg",
+      "filepath": "lucide/briefcase.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bring-to-front",
+      "filename": "bring-to-front.svg",
+      "filepath": "lucide/bring-to-front.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "brush-cleaning",
+      "filename": "brush-cleaning.svg",
+      "filepath": "lucide/brush-cleaning.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "brush",
+      "filename": "brush.svg",
+      "filepath": "lucide/brush.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bubbles",
+      "filename": "bubbles.svg",
+      "filepath": "lucide/bubbles.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bug-off",
+      "filename": "bug-off.svg",
+      "filepath": "lucide/bug-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bug-play",
+      "filename": "bug-play.svg",
+      "filepath": "lucide/bug-play.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bug",
+      "filename": "bug.svg",
+      "filepath": "lucide/bug.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "building-2",
+      "filename": "building-2.svg",
+      "filepath": "lucide/building-2.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "building",
+      "filename": "building.svg",
+      "filepath": "lucide/building.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bus-front",
+      "filename": "bus-front.svg",
+      "filepath": "lucide/bus-front.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "bus",
+      "filename": "bus.svg",
+      "filepath": "lucide/bus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cable-car",
+      "filename": "cable-car.svg",
+      "filepath": "lucide/cable-car.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cable",
+      "filename": "cable.svg",
+      "filepath": "lucide/cable.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cake-slice",
+      "filename": "cake-slice.svg",
+      "filepath": "lucide/cake-slice.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cake",
+      "filename": "cake.svg",
+      "filepath": "lucide/cake.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calculator",
+      "filename": "calculator.svg",
+      "filepath": "lucide/calculator.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-1",
+      "filename": "calendar-1.svg",
+      "filepath": "lucide/calendar-1.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-arrow-down",
+      "filename": "calendar-arrow-down.svg",
+      "filepath": "lucide/calendar-arrow-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-arrow-up",
+      "filename": "calendar-arrow-up.svg",
+      "filepath": "lucide/calendar-arrow-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-check-2",
+      "filename": "calendar-check-2.svg",
+      "filepath": "lucide/calendar-check-2.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-check",
+      "filename": "calendar-check.svg",
+      "filepath": "lucide/calendar-check.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-clock",
+      "filename": "calendar-clock.svg",
+      "filepath": "lucide/calendar-clock.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-cog",
+      "filename": "calendar-cog.svg",
+      "filepath": "lucide/calendar-cog.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-days",
+      "filename": "calendar-days.svg",
+      "filepath": "lucide/calendar-days.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-fold",
+      "filename": "calendar-fold.svg",
+      "filepath": "lucide/calendar-fold.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-heart",
+      "filename": "calendar-heart.svg",
+      "filepath": "lucide/calendar-heart.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-minus-2",
+      "filename": "calendar-minus-2.svg",
+      "filepath": "lucide/calendar-minus-2.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-minus",
+      "filename": "calendar-minus.svg",
+      "filepath": "lucide/calendar-minus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-off",
+      "filename": "calendar-off.svg",
+      "filepath": "lucide/calendar-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-plus-2",
+      "filename": "calendar-plus-2.svg",
+      "filepath": "lucide/calendar-plus-2.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-plus",
+      "filename": "calendar-plus.svg",
+      "filepath": "lucide/calendar-plus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-range",
+      "filename": "calendar-range.svg",
+      "filepath": "lucide/calendar-range.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-search",
+      "filename": "calendar-search.svg",
+      "filepath": "lucide/calendar-search.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-sync",
+      "filename": "calendar-sync.svg",
+      "filepath": "lucide/calendar-sync.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-x-2",
+      "filename": "calendar-x-2.svg",
+      "filepath": "lucide/calendar-x-2.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar-x",
+      "filename": "calendar-x.svg",
+      "filepath": "lucide/calendar-x.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "calendar",
+      "filename": "calendar.svg",
+      "filepath": "lucide/calendar.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "camera-off",
+      "filename": "camera-off.svg",
+      "filepath": "lucide/camera-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "camera",
+      "filename": "camera.svg",
+      "filepath": "lucide/camera.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "candy-cane",
+      "filename": "candy-cane.svg",
+      "filepath": "lucide/candy-cane.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "candy-off",
+      "filename": "candy-off.svg",
+      "filepath": "lucide/candy-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "candy",
+      "filename": "candy.svg",
+      "filepath": "lucide/candy.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cannabis",
+      "filename": "cannabis.svg",
+      "filepath": "lucide/cannabis.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "captions-off",
+      "filename": "captions-off.svg",
+      "filepath": "lucide/captions-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "captions",
+      "filename": "captions.svg",
+      "filepath": "lucide/captions.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "car-front",
+      "filename": "car-front.svg",
+      "filepath": "lucide/car-front.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "car-taxi-front",
+      "filename": "car-taxi-front.svg",
+      "filepath": "lucide/car-taxi-front.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "car",
+      "filename": "car.svg",
+      "filepath": "lucide/car.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "caravan",
+      "filename": "caravan.svg",
+      "filepath": "lucide/caravan.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "card-sim",
+      "filename": "card-sim.svg",
+      "filepath": "lucide/card-sim.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "carrot",
+      "filename": "carrot.svg",
+      "filepath": "lucide/carrot.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "case-lower",
+      "filename": "case-lower.svg",
+      "filepath": "lucide/case-lower.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "case-sensitive",
+      "filename": "case-sensitive.svg",
+      "filepath": "lucide/case-sensitive.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "case-upper",
+      "filename": "case-upper.svg",
+      "filepath": "lucide/case-upper.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cassette-tape",
+      "filename": "cassette-tape.svg",
+      "filepath": "lucide/cassette-tape.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cast",
+      "filename": "cast.svg",
+      "filepath": "lucide/cast.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "castle",
+      "filename": "castle.svg",
+      "filepath": "lucide/castle.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cat",
+      "filename": "cat.svg",
+      "filepath": "lucide/cat.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cctv",
+      "filename": "cctv.svg",
+      "filepath": "lucide/cctv.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-area",
+      "filename": "chart-area.svg",
+      "filepath": "lucide/chart-area.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-bar-big",
+      "filename": "chart-bar-big.svg",
+      "filepath": "lucide/chart-bar-big.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-bar-decreasing",
+      "filename": "chart-bar-decreasing.svg",
+      "filepath": "lucide/chart-bar-decreasing.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-bar-increasing",
+      "filename": "chart-bar-increasing.svg",
+      "filepath": "lucide/chart-bar-increasing.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-bar-stacked",
+      "filename": "chart-bar-stacked.svg",
+      "filepath": "lucide/chart-bar-stacked.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-bar",
+      "filename": "chart-bar.svg",
+      "filepath": "lucide/chart-bar.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-candlestick",
+      "filename": "chart-candlestick.svg",
+      "filepath": "lucide/chart-candlestick.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-column-big",
+      "filename": "chart-column-big.svg",
+      "filepath": "lucide/chart-column-big.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-column-decreasing",
+      "filename": "chart-column-decreasing.svg",
+      "filepath": "lucide/chart-column-decreasing.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-column-increasing",
+      "filename": "chart-column-increasing.svg",
+      "filepath": "lucide/chart-column-increasing.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-column-stacked",
+      "filename": "chart-column-stacked.svg",
+      "filepath": "lucide/chart-column-stacked.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-column",
+      "filename": "chart-column.svg",
+      "filepath": "lucide/chart-column.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-gantt",
+      "filename": "chart-gantt.svg",
+      "filepath": "lucide/chart-gantt.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-line",
+      "filename": "chart-line.svg",
+      "filepath": "lucide/chart-line.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-network",
+      "filename": "chart-network.svg",
+      "filepath": "lucide/chart-network.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-no-axes-column-decreasing",
+      "filename": "chart-no-axes-column-decreasing.svg",
+      "filepath": "lucide/chart-no-axes-column-decreasing.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-no-axes-column-increasing",
+      "filename": "chart-no-axes-column-increasing.svg",
+      "filepath": "lucide/chart-no-axes-column-increasing.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-no-axes-column",
+      "filename": "chart-no-axes-column.svg",
+      "filepath": "lucide/chart-no-axes-column.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-no-axes-combined",
+      "filename": "chart-no-axes-combined.svg",
+      "filepath": "lucide/chart-no-axes-combined.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-no-axes-gantt",
+      "filename": "chart-no-axes-gantt.svg",
+      "filepath": "lucide/chart-no-axes-gantt.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-pie",
+      "filename": "chart-pie.svg",
+      "filepath": "lucide/chart-pie.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-scatter",
+      "filename": "chart-scatter.svg",
+      "filepath": "lucide/chart-scatter.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chart-spline",
+      "filename": "chart-spline.svg",
+      "filepath": "lucide/chart-spline.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "check-check",
+      "filename": "check-check.svg",
+      "filepath": "lucide/check-check.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "check-line",
+      "filename": "check-line.svg",
+      "filepath": "lucide/check-line.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "check",
+      "filename": "check.svg",
+      "filepath": "lucide/check.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chef-hat",
+      "filename": "chef-hat.svg",
+      "filepath": "lucide/chef-hat.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cherry",
+      "filename": "cherry.svg",
+      "filepath": "lucide/cherry.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevron-down",
+      "filename": "chevron-down.svg",
+      "filepath": "lucide/chevron-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevron-first",
+      "filename": "chevron-first.svg",
+      "filepath": "lucide/chevron-first.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevron-last",
+      "filename": "chevron-last.svg",
+      "filepath": "lucide/chevron-last.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevron-left",
+      "filename": "chevron-left.svg",
+      "filepath": "lucide/chevron-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevron-right",
+      "filename": "chevron-right.svg",
+      "filepath": "lucide/chevron-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevron-up",
+      "filename": "chevron-up.svg",
+      "filepath": "lucide/chevron-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevrons-down-up",
+      "filename": "chevrons-down-up.svg",
+      "filepath": "lucide/chevrons-down-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevrons-down",
+      "filename": "chevrons-down.svg",
+      "filepath": "lucide/chevrons-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevrons-left-right-ellipsis",
+      "filename": "chevrons-left-right-ellipsis.svg",
+      "filepath": "lucide/chevrons-left-right-ellipsis.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevrons-left-right",
+      "filename": "chevrons-left-right.svg",
+      "filepath": "lucide/chevrons-left-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevrons-left",
+      "filename": "chevrons-left.svg",
+      "filepath": "lucide/chevrons-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevrons-right-left",
+      "filename": "chevrons-right-left.svg",
+      "filepath": "lucide/chevrons-right-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevrons-right",
+      "filename": "chevrons-right.svg",
+      "filepath": "lucide/chevrons-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevrons-up-down",
+      "filename": "chevrons-up-down.svg",
+      "filepath": "lucide/chevrons-up-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chevrons-up",
+      "filename": "chevrons-up.svg",
+      "filepath": "lucide/chevrons-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "chromium",
+      "filename": "chromium.svg",
+      "filepath": "lucide/chromium.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "church",
+      "filename": "church.svg",
+      "filepath": "lucide/church.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cigarette-off",
+      "filename": "cigarette-off.svg",
+      "filepath": "lucide/cigarette-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cigarette",
+      "filename": "cigarette.svg",
+      "filepath": "lucide/cigarette.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-alert",
+      "filename": "circle-alert.svg",
+      "filepath": "lucide/circle-alert.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-arrow-down",
+      "filename": "circle-arrow-down.svg",
+      "filepath": "lucide/circle-arrow-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-arrow-left",
+      "filename": "circle-arrow-left.svg",
+      "filepath": "lucide/circle-arrow-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-arrow-out-down-left",
+      "filename": "circle-arrow-out-down-left.svg",
+      "filepath": "lucide/circle-arrow-out-down-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-arrow-out-down-right",
+      "filename": "circle-arrow-out-down-right.svg",
+      "filepath": "lucide/circle-arrow-out-down-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-arrow-out-up-left",
+      "filename": "circle-arrow-out-up-left.svg",
+      "filepath": "lucide/circle-arrow-out-up-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-arrow-out-up-right",
+      "filename": "circle-arrow-out-up-right.svg",
+      "filepath": "lucide/circle-arrow-out-up-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-arrow-right",
+      "filename": "circle-arrow-right.svg",
+      "filepath": "lucide/circle-arrow-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-arrow-up",
+      "filename": "circle-arrow-up.svg",
+      "filepath": "lucide/circle-arrow-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-check-big",
+      "filename": "circle-check-big.svg",
+      "filepath": "lucide/circle-check-big.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-check",
+      "filename": "circle-check.svg",
+      "filepath": "lucide/circle-check.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-chevron-down",
+      "filename": "circle-chevron-down.svg",
+      "filepath": "lucide/circle-chevron-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-chevron-left",
+      "filename": "circle-chevron-left.svg",
+      "filepath": "lucide/circle-chevron-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-chevron-right",
+      "filename": "circle-chevron-right.svg",
+      "filepath": "lucide/circle-chevron-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-chevron-up",
+      "filename": "circle-chevron-up.svg",
+      "filepath": "lucide/circle-chevron-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-dashed",
+      "filename": "circle-dashed.svg",
+      "filepath": "lucide/circle-dashed.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-divide",
+      "filename": "circle-divide.svg",
+      "filepath": "lucide/circle-divide.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-dollar-sign",
+      "filename": "circle-dollar-sign.svg",
+      "filepath": "lucide/circle-dollar-sign.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-dot-dashed",
+      "filename": "circle-dot-dashed.svg",
+      "filepath": "lucide/circle-dot-dashed.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-dot",
+      "filename": "circle-dot.svg",
+      "filepath": "lucide/circle-dot.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-ellipsis",
+      "filename": "circle-ellipsis.svg",
+      "filepath": "lucide/circle-ellipsis.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-equal",
+      "filename": "circle-equal.svg",
+      "filepath": "lucide/circle-equal.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-fading-arrow-up",
+      "filename": "circle-fading-arrow-up.svg",
+      "filepath": "lucide/circle-fading-arrow-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-fading-plus",
+      "filename": "circle-fading-plus.svg",
+      "filepath": "lucide/circle-fading-plus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-gauge",
+      "filename": "circle-gauge.svg",
+      "filepath": "lucide/circle-gauge.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-minus",
+      "filename": "circle-minus.svg",
+      "filepath": "lucide/circle-minus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-off",
+      "filename": "circle-off.svg",
+      "filepath": "lucide/circle-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-parking-off",
+      "filename": "circle-parking-off.svg",
+      "filepath": "lucide/circle-parking-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-parking",
+      "filename": "circle-parking.svg",
+      "filepath": "lucide/circle-parking.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-pause",
+      "filename": "circle-pause.svg",
+      "filepath": "lucide/circle-pause.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-percent",
+      "filename": "circle-percent.svg",
+      "filepath": "lucide/circle-percent.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-play",
+      "filename": "circle-play.svg",
+      "filepath": "lucide/circle-play.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-plus",
+      "filename": "circle-plus.svg",
+      "filepath": "lucide/circle-plus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-pound-sterling",
+      "filename": "circle-pound-sterling.svg",
+      "filepath": "lucide/circle-pound-sterling.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-power",
+      "filename": "circle-power.svg",
+      "filepath": "lucide/circle-power.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-question-mark",
+      "filename": "circle-question-mark.svg",
+      "filepath": "lucide/circle-question-mark.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-slash-2",
+      "filename": "circle-slash-2.svg",
+      "filepath": "lucide/circle-slash-2.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-slash",
+      "filename": "circle-slash.svg",
+      "filepath": "lucide/circle-slash.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-small",
+      "filename": "circle-small.svg",
+      "filepath": "lucide/circle-small.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-star",
+      "filename": "circle-star.svg",
+      "filepath": "lucide/circle-star.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-stop",
+      "filename": "circle-stop.svg",
+      "filepath": "lucide/circle-stop.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-user-round",
+      "filename": "circle-user-round.svg",
+      "filepath": "lucide/circle-user-round.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-user",
+      "filename": "circle-user.svg",
+      "filepath": "lucide/circle-user.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle-x",
+      "filename": "circle-x.svg",
+      "filepath": "lucide/circle-x.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circle",
+      "filename": "circle.svg",
+      "filepath": "lucide/circle.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "circuit-board",
+      "filename": "circuit-board.svg",
+      "filepath": "lucide/circuit-board.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "citrus",
+      "filename": "citrus.svg",
+      "filepath": "lucide/citrus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clapperboard",
+      "filename": "clapperboard.svg",
+      "filepath": "lucide/clapperboard.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clipboard-check",
+      "filename": "clipboard-check.svg",
+      "filepath": "lucide/clipboard-check.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clipboard-clock",
+      "filename": "clipboard-clock.svg",
+      "filepath": "lucide/clipboard-clock.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clipboard-copy",
+      "filename": "clipboard-copy.svg",
+      "filepath": "lucide/clipboard-copy.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clipboard-list",
+      "filename": "clipboard-list.svg",
+      "filepath": "lucide/clipboard-list.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clipboard-minus",
+      "filename": "clipboard-minus.svg",
+      "filepath": "lucide/clipboard-minus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clipboard-paste",
+      "filename": "clipboard-paste.svg",
+      "filepath": "lucide/clipboard-paste.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clipboard-pen-line",
+      "filename": "clipboard-pen-line.svg",
+      "filepath": "lucide/clipboard-pen-line.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clipboard-pen",
+      "filename": "clipboard-pen.svg",
+      "filepath": "lucide/clipboard-pen.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clipboard-plus",
+      "filename": "clipboard-plus.svg",
+      "filepath": "lucide/clipboard-plus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clipboard-type",
+      "filename": "clipboard-type.svg",
+      "filepath": "lucide/clipboard-type.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clipboard-x",
+      "filename": "clipboard-x.svg",
+      "filepath": "lucide/clipboard-x.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clipboard",
+      "filename": "clipboard.svg",
+      "filepath": "lucide/clipboard.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-1",
+      "filename": "clock-1.svg",
+      "filepath": "lucide/clock-1.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-10",
+      "filename": "clock-10.svg",
+      "filepath": "lucide/clock-10.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-11",
+      "filename": "clock-11.svg",
+      "filepath": "lucide/clock-11.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-12",
+      "filename": "clock-12.svg",
+      "filepath": "lucide/clock-12.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-2",
+      "filename": "clock-2.svg",
+      "filepath": "lucide/clock-2.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-3",
+      "filename": "clock-3.svg",
+      "filepath": "lucide/clock-3.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-4",
+      "filename": "clock-4.svg",
+      "filepath": "lucide/clock-4.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-5",
+      "filename": "clock-5.svg",
+      "filepath": "lucide/clock-5.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-6",
+      "filename": "clock-6.svg",
+      "filepath": "lucide/clock-6.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-7",
+      "filename": "clock-7.svg",
+      "filepath": "lucide/clock-7.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-8",
+      "filename": "clock-8.svg",
+      "filepath": "lucide/clock-8.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-9",
+      "filename": "clock-9.svg",
+      "filepath": "lucide/clock-9.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-alert",
+      "filename": "clock-alert.svg",
+      "filepath": "lucide/clock-alert.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-arrow-down",
+      "filename": "clock-arrow-down.svg",
+      "filepath": "lucide/clock-arrow-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-arrow-up",
+      "filename": "clock-arrow-up.svg",
+      "filepath": "lucide/clock-arrow-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-fading",
+      "filename": "clock-fading.svg",
+      "filepath": "lucide/clock-fading.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock-plus",
+      "filename": "clock-plus.svg",
+      "filepath": "lucide/clock-plus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clock",
+      "filename": "clock.svg",
+      "filepath": "lucide/clock.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "closed-caption",
+      "filename": "closed-caption.svg",
+      "filepath": "lucide/closed-caption.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-alert",
+      "filename": "cloud-alert.svg",
+      "filepath": "lucide/cloud-alert.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-check",
+      "filename": "cloud-check.svg",
+      "filepath": "lucide/cloud-check.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-cog",
+      "filename": "cloud-cog.svg",
+      "filepath": "lucide/cloud-cog.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-download",
+      "filename": "cloud-download.svg",
+      "filepath": "lucide/cloud-download.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-drizzle",
+      "filename": "cloud-drizzle.svg",
+      "filepath": "lucide/cloud-drizzle.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-fog",
+      "filename": "cloud-fog.svg",
+      "filepath": "lucide/cloud-fog.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-hail",
+      "filename": "cloud-hail.svg",
+      "filepath": "lucide/cloud-hail.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-lightning",
+      "filename": "cloud-lightning.svg",
+      "filepath": "lucide/cloud-lightning.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-moon-rain",
+      "filename": "cloud-moon-rain.svg",
+      "filepath": "lucide/cloud-moon-rain.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-moon",
+      "filename": "cloud-moon.svg",
+      "filepath": "lucide/cloud-moon.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-off",
+      "filename": "cloud-off.svg",
+      "filepath": "lucide/cloud-off.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-rain-wind",
+      "filename": "cloud-rain-wind.svg",
+      "filepath": "lucide/cloud-rain-wind.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-rain",
+      "filename": "cloud-rain.svg",
+      "filepath": "lucide/cloud-rain.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-snow",
+      "filename": "cloud-snow.svg",
+      "filepath": "lucide/cloud-snow.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-sun-rain",
+      "filename": "cloud-sun-rain.svg",
+      "filepath": "lucide/cloud-sun-rain.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-sun",
+      "filename": "cloud-sun.svg",
+      "filepath": "lucide/cloud-sun.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud-upload",
+      "filename": "cloud-upload.svg",
+      "filepath": "lucide/cloud-upload.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloud",
+      "filename": "cloud.svg",
+      "filepath": "lucide/cloud.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cloudy",
+      "filename": "cloudy.svg",
+      "filepath": "lucide/cloudy.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "clover",
+      "filename": "clover.svg",
+      "filepath": "lucide/clover.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "club",
+      "filename": "club.svg",
+      "filepath": "lucide/club.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "code-xml",
+      "filename": "code-xml.svg",
+      "filepath": "lucide/code-xml.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "code",
+      "filename": "code.svg",
+      "filepath": "lucide/code.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "codepen",
+      "filename": "codepen.svg",
+      "filepath": "lucide/codepen.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "codesandbox",
+      "filename": "codesandbox.svg",
+      "filepath": "lucide/codesandbox.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "coffee",
+      "filename": "coffee.svg",
+      "filepath": "lucide/coffee.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cog",
+      "filename": "cog.svg",
+      "filepath": "lucide/cog.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "coins",
+      "filename": "coins.svg",
+      "filepath": "lucide/coins.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "columns-2",
+      "filename": "columns-2.svg",
+      "filepath": "lucide/columns-2.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "columns-3-cog",
+      "filename": "columns-3-cog.svg",
+      "filepath": "lucide/columns-3-cog.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "columns-3",
+      "filename": "columns-3.svg",
+      "filepath": "lucide/columns-3.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "columns-4",
+      "filename": "columns-4.svg",
+      "filepath": "lucide/columns-4.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "combine",
+      "filename": "combine.svg",
+      "filepath": "lucide/combine.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "command",
+      "filename": "command.svg",
+      "filepath": "lucide/command.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "compass",
+      "filename": "compass.svg",
+      "filepath": "lucide/compass.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "component",
+      "filename": "component.svg",
+      "filepath": "lucide/component.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "computer",
+      "filename": "computer.svg",
+      "filepath": "lucide/computer.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "concierge-bell",
+      "filename": "concierge-bell.svg",
+      "filepath": "lucide/concierge-bell.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cone",
+      "filename": "cone.svg",
+      "filepath": "lucide/cone.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "construction",
+      "filename": "construction.svg",
+      "filepath": "lucide/construction.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "contact-round",
+      "filename": "contact-round.svg",
+      "filepath": "lucide/contact-round.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "contact",
+      "filename": "contact.svg",
+      "filepath": "lucide/contact.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "container",
+      "filename": "container.svg",
+      "filepath": "lucide/container.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "contrast",
+      "filename": "contrast.svg",
+      "filepath": "lucide/contrast.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cookie",
+      "filename": "cookie.svg",
+      "filepath": "lucide/cookie.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cooking-pot",
+      "filename": "cooking-pot.svg",
+      "filepath": "lucide/cooking-pot.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "copy-check",
+      "filename": "copy-check.svg",
+      "filepath": "lucide/copy-check.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "copy-minus",
+      "filename": "copy-minus.svg",
+      "filepath": "lucide/copy-minus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "copy-plus",
+      "filename": "copy-plus.svg",
+      "filepath": "lucide/copy-plus.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "copy-slash",
+      "filename": "copy-slash.svg",
+      "filepath": "lucide/copy-slash.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "copy-x",
+      "filename": "copy-x.svg",
+      "filepath": "lucide/copy-x.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "copy",
+      "filename": "copy.svg",
+      "filepath": "lucide/copy.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "copyleft",
+      "filename": "copyleft.svg",
+      "filepath": "lucide/copyleft.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "copyright",
+      "filename": "copyright.svg",
+      "filepath": "lucide/copyright.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "corner-down-left",
+      "filename": "corner-down-left.svg",
+      "filepath": "lucide/corner-down-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "corner-down-right",
+      "filename": "corner-down-right.svg",
+      "filepath": "lucide/corner-down-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "corner-left-down",
+      "filename": "corner-left-down.svg",
+      "filepath": "lucide/corner-left-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "corner-left-up",
+      "filename": "corner-left-up.svg",
+      "filepath": "lucide/corner-left-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "corner-right-down",
+      "filename": "corner-right-down.svg",
+      "filepath": "lucide/corner-right-down.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "corner-right-up",
+      "filename": "corner-right-up.svg",
+      "filepath": "lucide/corner-right-up.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "corner-up-left",
+      "filename": "corner-up-left.svg",
+      "filepath": "lucide/corner-up-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "corner-up-right",
+      "filename": "corner-up-right.svg",
+      "filepath": "lucide/corner-up-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cpu",
+      "filename": "cpu.svg",
+      "filepath": "lucide/cpu.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "creative-commons",
+      "filename": "creative-commons.svg",
+      "filepath": "lucide/creative-commons.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "credit-card",
+      "filename": "credit-card.svg",
+      "filepath": "lucide/credit-card.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "croissant",
+      "filename": "croissant.svg",
+      "filepath": "lucide/croissant.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "crop",
+      "filename": "crop.svg",
+      "filepath": "lucide/crop.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cross",
+      "filename": "cross.svg",
+      "filepath": "lucide/cross.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "crosshair",
+      "filename": "crosshair.svg",
+      "filepath": "lucide/crosshair.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "crown",
+      "filename": "crown.svg",
+      "filepath": "lucide/crown.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cuboid",
+      "filename": "cuboid.svg",
+      "filepath": "lucide/cuboid.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cup-soda",
+      "filename": "cup-soda.svg",
+      "filepath": "lucide/cup-soda.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "currency",
+      "filename": "currency.svg",
+      "filepath": "lucide/currency.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "cylinder",
+      "filename": "cylinder.svg",
+      "filepath": "lucide/cylinder.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "dam",
+      "filename": "dam.svg",
+      "filepath": "lucide/dam.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "database-backup",
+      "filename": "database-backup.svg",
+      "filepath": "lucide/database-backup.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "database-zap",
+      "filename": "database-zap.svg",
+      "filepath": "lucide/database-zap.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "database",
+      "filename": "database.svg",
+      "filepath": "lucide/database.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "decimals-arrow-left",
+      "filename": "decimals-arrow-left.svg",
+      "filepath": "lucide/decimals-arrow-left.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "decimals-arrow-right",
+      "filename": "decimals-arrow-right.svg",
+      "filepath": "lucide/decimals-arrow-right.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "delete",
+      "filename": "delete.svg",
+      "filepath": "lucide/delete.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "dessert",
+      "filename": "dessert.svg",
+      "filepath": "lucide/dessert.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "diameter",
+      "filename": "diameter.svg",
+      "filepath": "lucide/diameter.svg",
+      "library": "lucide"
+    },
+    {
+      "name": "diamond-minus",
+      "filename": "diamond-minus.svg",
+      "filepath": "lucide/diamond-minus.svg",
+      "library": "lucide"
+    }
+  ]
+}

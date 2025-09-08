@@ -1,0 +1,86 @@
+{
+  "slide_background": {
+    "color": "#4A5C43"
+  },
+  "title": {
+    "text": "Discussion",
+    "font": {
+      "name": "Calibri Light",
+      "size": 54,
+      "color": "#FFFFFF",
+      "bold": false
+    },
+    "position": {
+      "x": "0.5 in",
+      "y": "0.5 in"
+    },
+    "line_above": {
+      "color": "#FFFFFF",
+      "width": "1 pt"
+    }
+  },
+  "body_text": {
+    "font": {
+      "name": "Calibri",
+      "size": 20,
+      "color": "#FFFFFF"
+    },
+    "position": {
+      "x": "0.5 in",
+      "y": "1.5 in"
+    }
+  },
+  "images": [
+    {
+      "path": "assets-images/lab_experiment.jpg",
+      "position": {
+        "x": "5.5 in",
+        "y": "1.0 in"
+      },
+      "size": {
+        "width": "4.0 in",
+        "height": "3.0 in"
+      },
+      "border": {
+        "radius": "10 pt"
+      }
+    },
+    {
+      "path": "assets-images/laboratory.jpg",
+      "position": {
+        "x": "5.5 in",
+        "y": "4.5 in"
+      },
+      "size": {
+        "width": "4.0 in",
+        "height": "3.0 in"
+      },
+      "border": {
+        "radius": "10 pt"
+      }
+    }
+  ],
+  "key_interpretation": {
+    "font": {
+      "name": "Calibri",
+      "size": 18,
+      "color": "#A9BCA3",
+      "bold": true
+    },
+    "explanation_font": {
+      "name": "Calibri",
+      "size": 16,
+      "color": "#FFFFFF"
+    },
+    "positions": [
+      {
+        "x": "5.5 in",
+        "y": "4.2 in"
+      },
+      {
+        "x": "5.5 in",
+        "y": "7.7 in"
+      }
+    ]
+  }
+}

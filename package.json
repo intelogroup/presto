@@ -1,0 +1,28 @@
+{
+  "name": "slidy-presto",
+  "version": "1.0.0",
+  "description": "This project provides an enhanced presentation generator that uses Jinja2 templates to create PowerPoint presentations from JSON data. It automatically extracts design elements (colors and fonts) from a template presentation to ensure brand consistency.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@xmldom/xmldom": "^0.9.8",
+    "axios": "^1.11.0",
+    "docxtemplater": "^3.66.2",
+    "fast-xml-parser": "^5.2.5",
+    "form-data": "^4.0.4",
+    "pizzip": "^3.2.0",
+    "pptx-renderer": "^0.0.8",
+    "pptxgenjs": "^4.0.1",
+    "pptxtemplater": "^1.0.5"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "name": "text-positioning-009",
+  "config": {
+    "presentation": {
+      "layout": "LAYOUT_16x9"
+    },
+    "slides": [
+      {
+        "elements": [
+          {
+            "type": "text",
+            "text": "Text alignment: left, size: 20pt, position: (1.5,2)",
+            "options": {
+              "x": 1.5,
+              "y": 2,
+              "w": 7,
+              "h": 1.2,
+              "fontSize": 20,
+              "align": "left",
+              "color": "333333",
+              "objectName": "Text 0",
+              "line": {},
+              "lineSpacing": null,
+              "lineSpacingMultiple": null,
+              "_bodyProp": {
+                "autoFit": false,
+                "anchor": "ctr",
+                "vert": null,
+                "wrap": true,
+                "align": "left"
+              },
+              "_lineIdx": 0
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "testId": "text-positioning-009-1757257508758",
+    "successRate": 1,
+    "testedAt": "2025-09-07T15:05:09.874Z",
+    "fileSize": 0
+  }
+}

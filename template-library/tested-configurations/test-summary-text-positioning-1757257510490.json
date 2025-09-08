@@ -1,0 +1,11 @@
+{
+  "testName": "text-positioning",
+  "timestamp": "2025-09-07T15:05:10.490Z",
+  "statistics": {
+    "totalVariations": 10,
+    "successful": 10,
+    "failed": 0,
+    "successRate": 100
+  },
+  "failures": []
+}

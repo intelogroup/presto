@@ -1,0 +1,107 @@
+{
+  "slide_title": "Discussion",
+  "layout_analysis": {
+    "background_color": "#5A7454",
+    "background_description": "Dark green background similar to methodology slide",
+    "title_section": {
+      "position": "left_side",
+      "title": "Discussion",
+      "title_color": "white",
+      "title_font_size": "large",
+      "subtitle_text": "Analyze your results and compare them to your hypothesis.",
+      "additional_text": "Add charts and images to help your audience visualize the results."
+    },
+    "image_section": {
+      "position": "right_side",
+      "layout": "two_images_vertical",
+      "image_1": {
+        "description": "Laboratory glassware with colorful liquids - beakers and flasks with green, yellow, and clear solutions",
+        "position": "top_right",
+        "style": "rounded_corners"
+      },
+      "image_2": {
+        "description": "Test tubes in rack with colorful solutions - blue, purple, green liquids with plant elements",
+        "position": "bottom_right",
+        "style": "rounded_corners"
+      }
+    },
+    "content_boxes": {
+      "layout": "two_boxes_bottom",
+      "box_1": {
+        "title": "Key interpretation",
+        "content": "Explain what the results mean.",
+        "background_color": "light_green_transparent",
+        "position": "bottom_left"
+      },
+      "box_2": {
+        "title": "Key interpretation",
+        "content": "Add a brief and concise explanation.",
+        "background_color": "light_green_transparent",
+        "position": "bottom_right"
+      }
+    }
+  },
+  "required_assets": {
+    "images": [
+      {
+        "type": "laboratory_glassware",
+        "description": "Beakers and flasks with colorful chemical solutions",
+        "keywords": ["laboratory", "beakers", "flasks", "colorful liquids", "chemistry"],
+        "preferred_colors": ["green", "yellow", "clear", "blue"]
+      },
+      {
+        "type": "test_tubes",
+        "description": "Test tubes in rack with various colored solutions",
+        "keywords": ["test tubes", "rack", "colorful solutions", "laboratory equipment"],
+        "preferred_colors": ["blue", "purple", "green", "clear"]
+      }
+    ],
+    "icons": [
+      {
+        "type": "chart_icons",
+        "usage": "For data visualization references",
+        "specific_icons": ["chart-bar", "chart-line", "chart-pie"]
+      },
+      {
+        "type": "discussion_icons",
+        "usage": "For communication and analysis",
+        "specific_icons": ["message-circle", "users", "lightbulb"]
+      }
+    ],
+    "vectors": [
+      {
+        "type": "background_pattern",
+        "usage": "Subtle background enhancement",
+        "specific_vectors": ["molecular_pattern", "subtle_grid"]
+      },
+      {
+        "type": "decorative_elements",
+        "usage": "Scientific illustration accents",
+        "specific_vectors": ["laboratory_flask", "molecule_structure"]
+      }
+    ]
+  },
+  "color_palette": {
+    "primary": "#5A7454",
+    "secondary": "#ffffff",
+    "accent_1": "#c8e6c9",
+    "accent_2": "#e8f5e8",
+    "text_primary": "#ffffff",
+    "text_secondary": "#2e7d32"
+  },
+  "typography": {
+    "title_font": "Arial",
+    "title_weight": "normal",
+    "body_font": "Arial",
+    "body_weight": "normal"
+  },
+  "design_notes": [
+    "Maintains consistency with methodology slide design",
+    "Uses same green color scheme (#5A7454)",
+    "Two scientific images positioned on the right side",
+    "Content boxes with light green transparent backgrounds",
+    "Clean, professional layout suitable for scientific presentations",
+    "Images should feature laboratory equipment with colorful solutions",
+    "Rounded corners on images for modern appearance"
+  ]
+}

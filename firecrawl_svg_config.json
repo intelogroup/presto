@@ -1,0 +1,48 @@
+{
+  "crawlerOptions": {
+    "includes": [
+      "**/*.svg",
+      "**/download/**",
+      "**/free/**"
+    ],
+    "excludes": [
+      "**/premium/**",
+      "**/paid/**"
+    ],
+    "limit": 100,
+    "allowBackwardCrawling": false,
+    "allowExternalContentLinks": false
+  },
+  "pageOptions": {
+    "onlyMainContent": true,
+    "includeHtml": false,
+    "includeRawHtml": false,
+    "includeLinks": true
+  },
+  "extractorOptions": {
+    "mode": "llm-extraction",
+    "extractionPrompt": "Extract all SVG download links, file names, categories, and licensing information from this page. Focus on:\n                1. Direct SVG download URLs\n                2. File names and descriptions\n                3. Category/tag information\n                4. License/usage rights\n                5. File size if available\n                \n                Return as JSON with structure:\n                {\n                    \"svgFiles\": [\n                        {\n                            \"url\": \"direct download URL\",\n                            \"filename\": \"suggested filename\",\n                            \"category\": \"business/tech/etc\",\n                            \"license\": \"license info\",\n                            \"description\": \"brief description\"\n                        }\n                    ]\n                }"
+  },
+  "sources": [
+    {
+      "url": "https://undraw.co",
+      "name": "unDraw",
+      "maxDepth": 2
+    },
+    {
+      "url": "https://www.svgrepo.com",
+      "name": "SVG Repo",
+      "maxDepth": 2
+    },
+    {
+      "url": "https://freesvg.org",
+      "name": "FreeSVG",
+      "maxDepth": 2
+    },
+    {
+      "url": "https://www.vecteezy.com",
+      "name": "Vecteezy",
+      "maxDepth": 2
+    }
+  ]
+}
