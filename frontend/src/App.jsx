@@ -23,13 +23,16 @@ export default function App() {
     if (el) el.scrollTop = el.scrollHeight
   }
 
+  React.useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
   const send = async () => {
     if (!canSend) return
     const next = [...messages, { role: 'user', content: input }]
     setMessages(next)
     setInput('')
     setLoading(true)
-    setTimeout(scrollToBottom, 0)
 
     try {
       const res = await fetch('/api/chat', {
