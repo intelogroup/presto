@@ -5,7 +5,18 @@ const PptxGenJS = require('pptxgenjs');
 const fs = require('fs').promises;
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { routePresentationRequest, ContentValidator } = require('./intelligent-routing');
+
+// Try to load intelligent routing, fallback gracefully if not available
+let routePresentationRequest = null;
+let ContentValidator = null;
+try {
+    const intelligentRouting = require('./intelligent-routing');
+    routePresentationRequest = intelligentRouting.routePresentationRequest;
+    ContentValidator = intelligentRouting.ContentValidator;
+    console.log('✅ Intelligent routing system loaded');
+} catch (error) {
+    console.log('⚠️ Intelligent routing not available, using fallback mode');
+}
 
 const app = express();
 const port = 3004;
