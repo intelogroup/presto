@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { Target, Presentation, BookOpen, Users, Star, Lightbulb, Zap, Sparkles, Rocket, CheckCircle, Palette, FileText, ChevronRight } from 'lucide-react'
 
-function Message({ role, content }) {
+function Message({ role, content, isFormatted }) {
   return (
     <div className={`msg ${role}`} aria-live={role === 'assistant' ? 'polite' : 'off'}>
-      <div style={{ whiteSpace: 'pre-wrap' }}>{content}</div>
+      {isFormatted ? content : <div style={{ whiteSpace: 'pre-wrap' }}>{content}</div>}
     </div>
   )
 }
@@ -23,39 +24,70 @@ function TopBar() {
   )
 }
 
-function formatPresentationOutline(pptxData) {
-  const slideIcons = ['📋', '🎯', '📚', '🤝', '⭐', '💡', '🔥', '✨', '🚀', '💪']
+function PresentationOutline({ pptxData }) {
+  const slideIcons = [FileText, Target, BookOpen, Users, Star, Lightbulb, Zap, Sparkles, Rocket, CheckCircle]
 
-  let formatted = `🎯 **${pptxData.title}**\n`
-  if (pptxData.subtitle) {
-    formatted += `*${pptxData.subtitle}*\n\n`
-  } else {
-    formatted += '\n'
-  }
+  return (
+    <div style={{ lineHeight: '1.6' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+        <Target size={20} style={{ color: 'var(--primary)' }} />
+        <strong style={{ fontSize: '18px', color: 'var(--primary)' }}>{pptxData.title}</strong>
+      </div>
 
-  formatted += `📊 **Presentation Outline** (${pptxData.slides?.length || 0} slides)\n\n`
+      {pptxData.subtitle && (
+        <div style={{ fontStyle: 'italic', marginBottom: '16px', color: 'var(--muted)' }}>
+          {pptxData.subtitle}
+        </div>
+      )}
 
-  pptxData.slides?.forEach((slide, index) => {
-    const icon = slideIcons[index] || '▫️'
-    formatted += `${icon} **Slide ${index + 1}: ${slide.title}**\n`
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+        <Presentation size={18} style={{ color: 'var(--primary)' }} />
+        <strong>Presentation Outline</strong>
+        <span style={{ color: 'var(--muted)' }}>({pptxData.slides?.length || 0} slides)</span>
+      </div>
 
-    if (slide.type === 'bullets' && slide.bullets) {
-      slide.bullets.forEach(bullet => {
-        formatted += `   • ${bullet}\n`
-      })
-    } else if (slide.content) {
-      const preview = slide.content.length > 80 ?
-        slide.content.substring(0, 80) + '...' :
-        slide.content
-      formatted += `   ${preview}\n`
-    }
-    formatted += '\n'
-  })
+      <div style={{ marginLeft: '16px' }}>
+        {pptxData.slides?.map((slide, index) => {
+          const IconComponent = slideIcons[index] || FileText
+          return (
+            <div key={index} style={{ marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <IconComponent size={16} style={{ color: 'var(--primary)' }} />
+                <strong>Slide {index + 1}: {slide.title}</strong>
+              </div>
 
-  formatted += `🎨 Theme: ${pptxData.colorScheme || 'professional'}\n\n`
-  formatted += '✅ Your presentation is ready! Click "Generate PowerPoint" below to download it.'
+              {slide.type === 'bullets' && slide.bullets ? (
+                <div style={{ marginLeft: '24px' }}>
+                  {slide.bullets.map((bullet, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', marginBottom: '2px' }}>
+                      <ChevronRight size={12} style={{ marginTop: '4px', color: 'var(--muted)' }} />
+                      <span>{bullet}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : slide.content ? (
+                <div style={{ marginLeft: '24px', color: 'var(--muted)' }}>
+                  {slide.content.length > 80 ?
+                    slide.content.substring(0, 80) + '...' :
+                    slide.content}
+                </div>
+              ) : null}
+            </div>
+          )
+        })}
+      </div>
 
-  return formatted
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px', marginBottom: '8px' }}>
+        <Palette size={16} style={{ color: 'var(--primary)' }} />
+        <span>Theme: <strong>{pptxData.colorScheme || 'professional'}</strong></span>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', fontWeight: '500' }}>
+        <CheckCircle size={16} />
+        <span>Your presentation is ready! Click "Generate PowerPoint" below to download it.</span>
+      </div>
+    </div>
+  )
 }
 
 export default function App() {
@@ -189,8 +221,8 @@ export default function App() {
           if (pptxData.title && pptxData.slides) {
             setLastPptxData(pptxData)
             // Create a nicely formatted response instead of showing raw JSON
-            const formattedResponse = formatPresentationOutline(pptxData)
-            setMessages(m => [...m, { role: 'assistant', content: formattedResponse }])
+            const formattedResponse = <PresentationOutline pptxData={pptxData} />
+            setMessages(m => [...m, { role: 'assistant', content: formattedResponse, isFormatted: true }])
             return
           }
         } catch (e) {
