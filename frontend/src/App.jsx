@@ -192,7 +192,28 @@ export default function App() {
         </div>
 
         <section className="pptx-area" aria-label="Presentation preview">
-          <div className="pptx-placeholder">Your AI-generated PowerPoint will appear here</div>
+          {lastPptxData ? (
+            <div className="pptx-ready">
+              <div className="pptx-preview">
+                <h3>📊 {lastPptxData.title}</h3>
+                {lastPptxData.subtitle && <p className="subtitle">{lastPptxData.subtitle}</p>}
+                <div className="slides-info">
+                  {lastPptxData.slides?.length} slides • {lastPptxData.colorScheme || 'professional'} theme
+                </div>
+                <button
+                  className="button generate-btn"
+                  onClick={() => generatePPTX(lastPptxData)}
+                  disabled={pptxLoading}
+                >
+                  {pptxLoading ? 'Generating...' : '⬇ Generate PowerPoint'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="pptx-placeholder">
+              Ask me to create a presentation and I'll help you generate a PowerPoint file!
+            </div>
+          )}
         </section>
         </div>
       </div>
