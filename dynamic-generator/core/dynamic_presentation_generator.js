@@ -19,9 +19,9 @@ const path = require('path');
 const { EventEmitter } = require('events');
 
 // Import existing toolkit components
-const LayoutCalculator = require('./pptx-toolkit/layout-calculator');
-const SmartContentFitter = require('./pptx-toolkit/content-fitter');
-const PptxValidationHelper = require('./pptx-toolkit/pptx-validation-helper');
+const LayoutCalculator = require('../toolkit/layout-calculator');
+const SmartContentFitter = require('../toolkit/content-fitter');
+const PptxValidationHelper = require('../toolkit/pptx-validation-helper');
 
 class DynamicPresentationGenerator extends EventEmitter {
     constructor(options = {}) {
