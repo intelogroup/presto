@@ -19,12 +19,18 @@
   "dependencies": {
     "@xmldom/xmldom": "^0.9.8",
     "axios": "^1.11.0",
+    "cors": "^2.8.5",
     "docxtemplater": "^3.66.2",
+    "express": "^4.21.1",
     "fast-xml-parser": "^5.2.5",
     "form-data": "^4.0.4",
+    "openai": "^4.47.2",
     "pizzip": "^3.2.0",
     "pptx-renderer": "^0.0.8",
     "pptxgenjs": "^4.0.1",
     "pptxtemplater": "^1.0.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
   }
 }
