@@ -520,29 +520,54 @@ app.get('/', (req, res) => {
     });
 });
 
-// List available generator templates
+// Get template capabilities and analysis
+app.get('/template-capabilities', async (req, res) => {
+    try {
+        const capabilities = await require('./intelligent-routing').loadTemplateCapabilities();
+        res.json(capabilities);
+    } catch (error) {
+        console.error('Error loading template capabilities:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Analyze user input for template recommendations
+app.post('/analyze-request', async (req, res) => {
+    try {
+        const { userInput, presentationData } = req.body || {};
+
+        if (!userInput) {
+            return res.status(400).json({ error: 'userInput is required' });
+        }
+
+        const routingResult = await routePresentationRequest(userInput, presentationData);
+        res.json(routingResult);
+    } catch (error) {
+        console.error('Error analyzing request:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// List available generator templates (enhanced with capabilities)
 app.get('/templates', async (req, res) => {
     try {
-        const genDir = path.join(__dirname, 'generators');
-        const files = await fs.readdir(genDir);
+        const capabilities = await require('./intelligent-routing').loadTemplateCapabilities();
         const templates = [];
-        for (const file of files) {
-            if (!file.endsWith('.js')) continue;
-            const id = path.basename(file, '.js');
-            const filePath = path.join(genDir, file);
-            const content = await fs.readFile(filePath, 'utf8');
-            // Extract top comment block or first 2 comment lines as description
-            const match = content.match(/\/\*([\s\S]*?)\*\//);
-            let description = '';
-            if (match) {
-                description = match[1].split('\n').map(s => s.replace(/^\s*\*?\s?/, '')).slice(0,3).join(' ');
-            } else {
-                const firstLine = content.split('\n')[0] || '';
-                description = firstLine.substring(0, 120);
-            }
-            templates.push({ id, name: id.replace(/[_-]/g, ' '), description, thumbnail: `/templates/thumb/${id}` });
+
+        // Add templates from capabilities
+        for (const [id, template] of Object.entries(capabilities.templates || {})) {
+            templates.push({
+                id,
+                name: template.name,
+                description: template.description,
+                thumbnail: `/templates/thumb/${id}`,
+                capabilities: template.capabilities,
+                suitableFor: template.suitableFor,
+                keywords: template.keywords
+            });
         }
-        res.json({ templates });
+
+        res.json({ templates, defaultGenerator: capabilities.defaultGenerator });
     } catch (error) {
         console.error('Error listing templates:', error);
         res.status(500).json({ error: error.message });
