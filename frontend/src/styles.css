@@ -29,3 +29,11 @@ body{margin:0;background:linear-gradient(180deg,#ffffff 0%, #f7fbff 100%);color:
 
 .pptx-area{margin-top:20px;background:#fff;border:1px dashed var(--border);border-radius:16px;min-height:180px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(14,20,34,0.04)}
 .pptx-placeholder{color:var(--muted);padding:20px;text-align:center;font-size:13px}
+.pptx-ready{width:100%;padding:20px}
+.pptx-preview{text-align:center}
+.pptx-preview h3{margin:0 0 8px;color:var(--primary);font-size:18px}
+.pptx-preview .subtitle{margin:0 0 12px;color:var(--muted);font-size:14px}
+.slides-info{margin:12px 0 20px;color:var(--muted);font-size:12px}
+.generate-btn{margin:0 auto;display:block;background:linear-gradient(180deg,#22c55e 0%, #16a34a 100%);border-radius:999px;font-size:14px}
+.generate-btn:hover{background:linear-gradient(180deg,#16a34a 0%, #15803d 100%);transform:translateY(-1px);box-shadow:0 8px 18px rgba(34,197,94,.25)}
+.generate-btn:disabled{background:#94a3b8;transform:none;box-shadow:none}
