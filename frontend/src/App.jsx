@@ -259,6 +259,17 @@ export default function App() {
       const data = await res.json()
       const assistant = data?.message?.content || 'No response.'
 
+      // Check if this is a presentation request and analyze it
+      const isPresentationRequest = input.toLowerCase().includes('presentation') ||
+                                  input.toLowerCase().includes('powerpoint') ||
+                                  input.toLowerCase().includes('pptx') ||
+                                  input.toLowerCase().includes('slides')
+
+      if (isPresentationRequest) {
+        // Analyze the request for intelligent routing
+        await analyzeRequest(input)
+      }
+
       // Try to detect and parse JSON for PPTX generation
       const jsonMatch = assistant.match(/\{[\s\S]*\}/)
       if (jsonMatch) {
