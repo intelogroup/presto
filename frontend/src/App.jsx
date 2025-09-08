@@ -105,7 +105,7 @@ export default function App() {
             <textarea
               className="input"
               rows={1}
-              placeholder="Type a message..."
+              placeholder="Describe your presentation..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={onKey}
