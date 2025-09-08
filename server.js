@@ -359,6 +359,24 @@ app.post('/generate-pptx', async (req, res) => {
         // Ensure temp directory exists
         await fs.mkdir(path.dirname(outputPath), { recursive: true });
 
+        // Helper to list available templates
+        async function listTemplates() {
+            const genDir = path.join(__dirname, 'generators');
+            try {
+                const files = await fs.readdir(genDir);
+                return files.filter(f => f.endsWith('.js')).map(f => path.basename(f, '.js'));
+            } catch (e) { return [] }
+        }
+
+        if (!req.body.template) {
+            // No template specified: pick one at random (weighted selection could be added here)
+            const available = await listTemplates();
+            if (available.length > 0) {
+                const idx = Math.floor(Math.random() * available.length);
+                req.body.template = available[idx];
+            }
+        }
+
         if (req.body.template) {
             const tpl = String(req.body.template).replace(/\.js$/, '');
             try {
