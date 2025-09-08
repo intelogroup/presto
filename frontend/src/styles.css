@@ -38,6 +38,6 @@ body{margin:0;background:linear-gradient(180deg,#ffffff 0%, #f7fbff 100%);color:
 .generate-btn:hover{background:linear-gradient(180deg,#16a34a 0%, #15803d 100%);transform:translateY(-1px);box-shadow:0 8px 18px rgba(34,197,94,.25)}
 .generate-btn:disabled{background:#94a3b8;transform:none;box-shadow:none}
 .template-btn{border:0;background:transparent;padding:0;cursor:pointer}
-.template-btn img{width:56px;height:36px;border-radius:6px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.12));background:#fff}
+.template-btn img{width:80px;height:50px;border-radius:8px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.15));background:#fff;border:1px solid var(--border)}
 .template-btn.active{outline:2px solid rgba(14,165,233,.12);border-radius:8px}
 .template-random{background:transparent;border:1px dashed var(--border);padding:6px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
