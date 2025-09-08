@@ -558,18 +558,29 @@ app.get('/', (req, res) => {
     });
 });
 
-// Get template capabilities and analysis
+// Get template capabilities and analysis (with fallback)
 app.get('/template-capabilities', async (req, res) => {
     try {
-        const capabilities = await require('./intelligent-routing').loadTemplateCapabilities();
-        res.json(capabilities);
+        if (routePresentationRequest) {
+            const capabilities = await require('./intelligent-routing').loadTemplateCapabilities();
+            res.json(capabilities);
+        } else {
+            res.json({
+                templates: {},
+                defaultGenerator: {
+                    name: "Presto Default Generator",
+                    description: "Reliable presentation generator",
+                    note: "Intelligent routing not available"
+                }
+            });
+        }
     } catch (error) {
         console.error('Error loading template capabilities:', error);
         res.status(500).json({ error: error.message });
     }
 });
 
-// Analyze user input for template recommendations
+// Analyze user input for template recommendations (with fallback)
 app.post('/analyze-request', async (req, res) => {
     try {
         const { userInput, presentationData } = req.body || {};
@@ -578,8 +589,19 @@ app.post('/analyze-request', async (req, res) => {
             return res.status(400).json({ error: 'userInput is required' });
         }
 
-        const routingResult = await routePresentationRequest(userInput, presentationData);
-        res.json(routingResult);
+        if (routePresentationRequest) {
+            const routingResult = await routePresentationRequest(userInput, presentationData);
+            res.json(routingResult);
+        } else {
+            res.json({
+                success: true,
+                analysis: {
+                    useDefault: true,
+                    reasoning: "Intelligent routing not available, using default generator"
+                },
+                recommendedTemplate: null
+            });
+        }
     } catch (error) {
         console.error('Error analyzing request:', error);
         res.status(500).json({ error: error.message });
