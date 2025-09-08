@@ -145,7 +145,6 @@ export default function App() {
 
       const data = await res.json()
       const assistant = data?.message?.content || 'No response.'
-      setMessages(m => [...m, { role: 'assistant', content: assistant }])
 
       // Try to detect and parse JSON for PPTX generation
       const jsonMatch = assistant.match(/\{[\s\S]*\}/)
@@ -154,11 +153,17 @@ export default function App() {
           const pptxData = JSON.parse(jsonMatch[0])
           if (pptxData.title && pptxData.slides) {
             setLastPptxData(pptxData)
+            // Create a nicely formatted response instead of showing raw JSON
+            const formattedResponse = formatPresentationOutline(pptxData)
+            setMessages(m => [...m, { role: 'assistant', content: formattedResponse }])
+            return
           }
         } catch (e) {
           // Not valid JSON, ignore
         }
       }
+
+      setMessages(m => [...m, { role: 'assistant', content: assistant }])
     } catch (e) {
       setMessages(m => [
         ...m,
