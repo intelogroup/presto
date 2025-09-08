@@ -160,7 +160,48 @@ export default function App() {
   const listRef = useRef(null)
   const fileInputRef = useRef(null)
 
-  const canSend = input.trim().length > 0 && !loading
+  const canSend = (input.trim().length > 0 || selectedImages.length > 0) && !loading
+
+  const handleFileUpload = (event) => {
+    const files = Array.from(event.target.files)
+    files.forEach(file => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const newImage = {
+            id: Date.now() + Math.random(),
+            url: e.target.result,
+            name: file.name,
+            type: 'upload'
+          }
+          setSelectedImages(prev => [...prev, newImage])
+        }
+        reader.readAsDataURL(file)
+      }
+    })
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  const addImageUrl = () => {
+    if (imageUrl.trim()) {
+      const newImage = {
+        id: Date.now(),
+        url: imageUrl.trim(),
+        name: 'Image URL',
+        type: 'url'
+      }
+      setSelectedImages(prev => [...prev, newImage])
+      setImageUrl('')
+      setShowImageInput(false)
+    }
+  }
+
+  const removeImage = (imageId) => {
+    setSelectedImages(prev => prev.filter(img => img.id !== imageId))
+  }
 
   const analyzeRequest = async (userInput) => {
     try {
