@@ -256,11 +256,14 @@ class FlowerPresentationGenerator {
         // PRESERVED: Image rotation with ADAPTED images
         const imageIndex = slideIndex % this.decorativeImages.length;
         try {
-            slide.addImage({
-                path: `assets-images/${this.decorativeImages[imageIndex]}`,
-                x: 7.2, y: 2, w: 2, h: 1.5,
-                transparency: 25
-            });
+            const imgPath = require('path').join(__dirname, 'assets-images', this.decorativeImages[imageIndex]);
+            const fs = require('fs');
+            if (fs.existsSync(imgPath)) {
+                slide.addImage({ path: imgPath, x: 7.2, y: 2, w: 2, h: 1.5, transparency: 25 });
+            } else {
+                slide.addShape('rect', { x: 7.2, y: 2, w: 2, h: 1.5, fill: { color: '#f3f4f6' }, line: { color: '#d1d5db' } });
+                slide.addText('Image', { x: 7.2, y: 2.5, w: 2, h: 0.4, fontSize: 12, color: '#6b7280', align: 'center' });
+            }
         } catch (error) {
             console.log(`Image ${this.decorativeImages[imageIndex]} not found, skipping...`);
         }
