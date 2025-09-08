@@ -297,19 +297,56 @@ app.post('/generate-pptx', async (req, res) => {
             return res.status(400).json({ error: 'Title is required' });
         }
 
-        const generator = new PrestoSlidesGenerator();
+        // If a specific template is requested, try to load it
+        let usedTemplate = 'presto_default';
+        let result = null;
         const fileName = `presentation_${uuidv4()}.pptx`;
         const outputPath = path.join(__dirname, 'temp', fileName);
 
         // Ensure temp directory exists
         await fs.mkdir(path.dirname(outputPath), { recursive: true });
 
-        const result = await generator.generatePresentation({
-            title,
-            subtitle,
-            slides,
-            colorScheme
-        }, outputPath);
+        if (req.body.template) {
+            const tpl = String(req.body.template).replace(/\.js$/, '');
+            try {
+                const modPath = path.join(__dirname, 'generators', `${tpl}.js`);
+                const Mod = require(modPath);
+                const inst = new Mod();
+                usedTemplate = tpl;
+                // Prefer generatePresentation(data, outputPath)
+                if (typeof inst.generatePresentation === 'function') {
+                    result = await inst.generatePresentation({ title, subtitle, slides, colorScheme }, outputPath);
+                } else if (typeof inst.generateDemo === 'function') {
+                    // Fallback: call generateDemo and then try to write its internal pptx
+                    // Some generators write files themselves; as a fallback we run generateDemo and then expect failure if not compatible
+                    await inst.generateDemo();
+                    // Try to save if generator exposes pptx
+                    if (inst.pptx) {
+                        await inst.pptx.writeFile({ fileName: outputPath });
+                        result = { success: true, path: outputPath };
+                    } else {
+                        result = { success: false, error: 'Template does not support programmatic generation' };
+                    }
+                } else {
+                    result = { success: false, error: 'Template does not implement a supported generation method' };
+                }
+            } catch (e) {
+                console.error('Template load error:', e.message);
+                // Fallback to default generator
+                usedTemplate = 'presto_default';
+            }
+        }
+
+        if (!result) {
+            const generator = new PrestoSlidesGenerator();
+            result = await generator.generatePresentation({
+                title,
+                subtitle,
+                slides,
+                colorScheme
+            }, outputPath);
+            usedTemplate = 'presto_default';
+        }
 
         if (result.success) {
             // Send file as download
