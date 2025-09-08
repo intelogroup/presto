@@ -182,6 +182,34 @@ export default function App() {
       <div className="app-wrap">
         <div className="container">
           <div className="card" role="group" aria-label="Chat">
+          <div style={{ padding: '0 16px 12px', display: 'flex', justifyContent: 'flex-end' }}>
+            {!lastPptxData && (
+              <button className="small" onClick={async () => {
+                // Finalize: request structured JSON plan from the AI using current messages
+                const messagesForAI = messages.map(({role, content})=>({role, content}));
+                setPptxLoading(true);
+                try {
+                  const res = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ messages: messagesForAI.concat([{ role: 'system', content: 'You are a presentation assistant. When asked, produce a JSON representation of the slides in the format: {"title":"","subtitle":"","slides":[{"title":"","type":"","content":"","bullets":[]}]}. Do not output any additional text. This output is for the application to consume.' }]) }) });
+                  const data = await res.json();
+                  const assistant = data?.message?.content || '';
+                  const jsonMatch = assistant.match(/\{[\s\S]*\}/);
+                  if (jsonMatch) {
+                    try {
+                      const pptxData = JSON.parse(jsonMatch[0]);
+                      setLastPptxData(pptxData);
+                      setMessages(m=>[...m, { role: 'assistant', content: 'Plan finalized. Click Generate to build the PowerPoint.' }]);
+                    } catch(e) {
+                      setMessages(m=>[...m, { role: 'assistant', content: 'Could not parse plan. Please refine.' }]);
+                    }
+                  } else {
+                    setMessages(m=>[...m, { role: 'assistant', content: 'No plan returned. Please ask the assistant to provide a slide plan.' }]);
+                  }
+                } catch(e) {
+                  setMessages(m=>[...m, { role: 'assistant', content: `Error finalizing plan: ${e.message}` }]);
+                } finally { setPptxLoading(false) }
+              }}>Finalize plan</button>
+            )}
+          </div>
           <div className="header">
             <div style={{ width: 10, height: 10, background: 'var(--primary)', borderRadius: 999 }} />
             <div>
