@@ -378,45 +378,68 @@ class DynamicPresentationGenerator extends EventEmitter {
     }
 
     addSlideContent(slide, slideData, template) {
+        // Ensure template exists with fallback defaults
+        const safeTemplate = template || this.layoutTemplates.textImageDefault || {
+            textArea: { x: 0.5, y: 1.5, w: 8.5, h: 4 },
+            imageArea: { x: 5.5, y: 1.5, w: 4, h: 4 },
+            title: { x: 0.5, y: 0.3, w: 9, h: 0.8 }
+        };
+
         // Add main content
         if (slideData.content) {
-            const contentArea = template.textArea || template.leftColumn || template.chartArea;
-            const contentFit = this.contentFitter.createSmartText(
-                this.sanitizeText(slideData.content, this.options.maxTextLength),
-                contentArea,
-                'body',
-                {
+            const contentArea = safeTemplate.textArea || safeTemplate.leftColumn || safeTemplate.chartArea || { x: 0.5, y: 1.5, w: 8.5, h: 4 };
+
+            try {
+                const contentFit = this.contentFitter.createSmartText(
+                    this.sanitizeText(slideData.content, this.options.maxTextLength),
+                    contentArea,
+                    'body',
+                    {
+                        color: this.colors.text,
+                        fontFace: this.fonts.body.face,
+                        valign: 'top'
+                    }
+                );
+                slide.addText(contentFit.text, contentFit.options);
+            } catch (error) {
+                this.handleError('Content text fitting', error);
+                // Fallback to simple text
+                slide.addText(this.sanitizeText(slideData.content, 500), {
+                    x: 0.5, y: 1.5, w: 8.5, h: 4,
+                    fontSize: 16,
                     color: this.colors.text,
-                    fontFace: this.fonts.body.face,
-                    valign: 'top'
-                }
-            );
-            slide.addText(contentFit.text, contentFit.options);
+                    wrap: true
+                });
+            }
         }
 
         // Add bullets
         if (slideData.bullets && Array.isArray(slideData.bullets)) {
-            this.addBulletPoints(slide, slideData.bullets, template.textArea || template.leftColumn);
+            const bulletArea = safeTemplate.textArea || safeTemplate.leftColumn || { x: 0.5, y: 1.5, w: 8.5, h: 4 };
+            this.addBulletPoints(slide, slideData.bullets, bulletArea);
         }
 
         // Add images
         if (slideData.images || slideData.image) {
-            this.addImages(slide, slideData.images || [slideData.image], template.imageArea || template.rightColumn);
+            const imageArea = safeTemplate.imageArea || safeTemplate.rightColumn || { x: 5.5, y: 1.5, w: 4, h: 4 };
+            this.addImages(slide, slideData.images || [slideData.image], imageArea);
         }
 
         // Add icons
-        if (slideData.icons) {
-            this.addIconGrid(slide, slideData.icons, template.gridArea || template.iconGrid);
+        if (slideData.icons && Array.isArray(slideData.icons)) {
+            const iconArea = safeTemplate.gridArea || safeTemplate.iconGrid || { x: 1, y: 2, w: 8, h: 3.5 };
+            this.addIconGrid(slide, slideData.icons, iconArea);
         }
 
         // Add charts
         if (slideData.chart || slideData.chartData || slideData.data) {
-            this.addChart(slide, slideData, template.chartArea || template.imageArea);
+            const chartArea = safeTemplate.chartArea || safeTemplate.imageArea || { x: 1, y: 1.8, w: 8, h: 3.5 };
+            this.addChart(slide, slideData, chartArea);
         }
 
         // Add two-column content
         if (slideData.leftContent && slideData.rightContent) {
-            this.addTwoColumnContent(slide, slideData, template);
+            this.addTwoColumnContent(slide, slideData, safeTemplate);
         }
     }
 
@@ -862,7 +885,7 @@ if (require.main === module) {
                     icons: [
                         { symbol: '🎯', label: 'Precision' },
                         { symbol: '⚡', label: 'Speed' },
-                        { symbol: '🛡️', label: 'Reliability' },
+                        { symbol: '��️', label: 'Reliability' },
                         { symbol: '🎨', label: 'Design' },
                         { symbol: '📊', label: 'Analytics' },
                         { symbol: '🔧', label: 'Tools' }
