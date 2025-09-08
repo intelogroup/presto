@@ -14,7 +14,7 @@
  * - Error handling and validation
  */
 
-const DynamicPresentationGenerator = require('./dynamic_presentation_generator');
+const DynamicPresentationGenerator = require('../core/dynamic_presentation_generator');
 
 // Example 1: Basic Usage with Default Layout (Text Left, Images Right)
 async function basicExample() {
