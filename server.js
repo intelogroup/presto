@@ -15,7 +15,7 @@ try {
     ContentValidator = intelligentRouting.ContentValidator;
     console.log('✅ Intelligent routing system loaded');
 } catch (error) {
-    console.log('⚠️ Intelligent routing not available, using fallback mode');
+    console.log('��️ Intelligent routing not available, using fallback mode');
 }
 
 const app = express();
@@ -661,6 +661,9 @@ app.get('/health', (req, res) => {
 
 // Root endpoint
 app.get('/', (req, res) => {
+    const aiStatus = USE_OPENROUTER ? 'openrouter_gemini_2.0' :
+                     (aiClient ? 'openai' : 'demo_mode');
+
     res.json({
         name: 'Presto Slides API',
         version: '1.0.0',
@@ -670,7 +673,8 @@ app.get('/', (req, res) => {
             'GET /templates - List available templates (use /api/templates from frontend)',
             'GET /health - Health check'
         ],
-        openai_status: USE_LOCAL_FALLBACK ? 'demo_mode' : 'connected'
+        ai_provider: aiStatus,
+        model: USE_OPENROUTER ? 'google/gemini-2.0-flash-exp:free' : 'gpt-4o-mini'
     });
 });
 
