@@ -202,11 +202,14 @@ class FlowerPresentationGenerator {
         
         // PRESERVED: Image addition with error handling
         try {
-            slide.addImage({
-                path: `assets-images/${this.decorativeImages[0]}`, // ADAPTED: botanical.jpg
-                x: 7.2, y: 0.5, w: 2, h: 1.5,
-                transparency: 20
-            });
+            const imgPath = require('path').join(__dirname, 'assets-images', this.decorativeImages[0]);
+            const fs = require('fs');
+            if (fs.existsSync(imgPath)) {
+                slide.addImage({ path: imgPath, x: 7.2, y: 0.5, w: 2, h: 1.5, transparency: 20 });
+            } else {
+                slide.addShape('rect', { x: 7.2, y: 0.5, w: 2, h: 1.5, fill: { color: '#f3f4f6' }, line: { color: '#d1d5db' } });
+                slide.addText('Image', { x: 7.2, y: 0.9, w: 2, h: 0.4, fontSize: 12, color: '#6b7280', align: 'center' });
+            }
         } catch (error) {
             console.log(`Image ${this.decorativeImages[0]} not found, skipping...`);
         }
