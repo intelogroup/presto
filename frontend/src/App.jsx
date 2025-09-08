@@ -25,7 +25,7 @@ function TopBar() {
 
 export default function App() {
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hi! Ask me anything.' }
+    { role: 'assistant', content: 'Hi! I\'m here to help you create amazing PowerPoint presentations. Just describe what you need and I\'ll generate it for you!' }
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
