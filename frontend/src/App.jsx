@@ -2,9 +2,42 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Target, Presentation, BookOpen, Users, Star, Lightbulb, Zap, Sparkles, Rocket, CheckCircle, Palette, FileText, ChevronRight, Image, Upload, X } from 'lucide-react'
 
 function Message({ role, content, isFormatted }) {
+  const renderContent = () => {
+    if (isFormatted) {
+      return content
+    }
+
+    // Handle multi-modal content
+    if (Array.isArray(content)) {
+      return (
+        <div>
+          {content.map((item, index) => {
+            if (item.type === 'text') {
+              return <div key={index} style={{ whiteSpace: 'pre-wrap', marginBottom: '8px' }}>{item.text}</div>
+            } else if (item.type === 'image_url') {
+              return (
+                <div key={index} style={{ marginBottom: '8px' }}>
+                  <img
+                    src={item.image_url.url}
+                    alt="User uploaded image"
+                    style={{ maxWidth: '300px', maxHeight: '200px', borderRadius: '8px', border: '1px solid #e5e7eb' }}
+                  />
+                </div>
+              )
+            }
+            return null
+          })}
+        </div>
+      )
+    }
+
+    // Regular text content
+    return <div style={{ whiteSpace: 'pre-wrap' }}>{content}</div>
+  }
+
   return (
     <div className={`msg ${role}`} aria-live={role === 'assistant' ? 'polite' : 'off'}>
-      {isFormatted ? content : <div style={{ whiteSpace: 'pre-wrap' }}>{content}</div>}
+      {renderContent()}
     </div>
   )
 }
