@@ -126,37 +126,40 @@ class DogSuperheroBookGenerator {
     
     addTitleSlide(pres, data) {
         const slide = pres.addSlide();
-        
+
         // Superhero-themed background
         slide.background = { color: this.colorScheme.lightBlue };
-        
+
         // Main title with superhero styling
         slide.addText(ContentConstraintSystem.constrainTitle(data.title), {
             x: 1, y: 1.5, w: 8, h: 1.2,
             fontSize: 44, bold: true, color: this.colorScheme.primary,
             align: 'center', fontFace: 'Calibri'
         });
-        
+
         // Subtitle
         slide.addText(ContentConstraintSystem.constrainText(data.subtitle), {
             x: 1, y: 2.8, w: 8, h: 0.8,
             fontSize: 24, color: this.colorScheme.secondary,
             align: 'center', fontFace: 'Calibri'
         });
-        
+
         // Heroic accent elements (no outline)
         slide.addShape('rect', {
             x: 2, y: 4, w: 6, h: 0.15,
             fill: { color: this.colorScheme.accent }
         });
-        
-        // Add decorative image on the right
+
+        // Add decorative image on the right if available, otherwise draw placeholder
         try {
-            slide.addImage({
-                path: path.join(__dirname, 'assets-images', 'laboratory.jpg'),
-                x: 8.5, y: 1.5, w: 1.2, h: 1.2,
-                transparency: 30
-            });
+            const imgPath = path.join(__dirname, 'assets-images', 'laboratory.jpg');
+            if (fs.existsSync(imgPath)) {
+                slide.addImage({ path: imgPath, x: 8.5, y: 1.5, w: 1.2, h: 1.2, transparency: 30 });
+            } else {
+                // Draw placeholder box
+                slide.addShape('rect', { x: 8.5, y: 1.5, w: 1.2, h: 1.2, fill: { color: this.colorScheme.lightBlue }, line: { color: this.colorScheme.primary } });
+                slide.addText('Image', { x: 8.5, y: 1.9, w: 1.2, h: 0.4, fontSize: 10, color: this.colorScheme.primary, align: 'center' });
+            }
         } catch (error) {
             console.warn('Could not add title slide image:', error.message);
         }
