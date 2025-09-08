@@ -372,12 +372,27 @@ app.post('/generate-pptx', async (req, res) => {
             throw dirError;
         }
 
-        // Helper to list available templates
+        // Helper to list available templates (filter to only working generators)
         async function listTemplates() {
             const genDir = path.join(__dirname, 'generators');
             try {
                 const files = await fs.readdir(genDir);
-                return files.filter(f => f.endsWith('.js')).map(f => path.basename(f, '.js'));
+                const jsFiles = files.filter(f => f.endsWith('.js'));
+
+                // Filter to only include known working generators
+                const workingGenerators = [
+                    'fixed_positioning_generator',
+                    'enhanced_pptx_generator',
+                    'demo_enhanced_generator',
+                    'flower_presentation_example',
+                    'methodology_slide_generator',
+                    'modern_sustainable_tech_presentation',
+                    'overflow_safe_generator'
+                ];
+
+                return jsFiles
+                    .map(f => path.basename(f, '.js'))
+                    .filter(name => workingGenerators.includes(name));
             } catch (e) {
                 console.error('listTemplates error:', e);
                 return []
