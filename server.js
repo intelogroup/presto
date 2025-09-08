@@ -400,22 +400,29 @@ app.post('/generate-pptx', async (req, res) => {
 
         if (req.body.template) {
             const tpl = String(req.body.template).replace(/\.js$/, '');
-            console.log('Step 5: Loading template:', tpl);
+            console.log('Step 5: Attempting to load template:', tpl);
             try {
                 const modPath = path.join(__dirname, 'generators', `${tpl}.js`);
                 console.log('Template module path:', modPath);
                 const adapter = await loadTemplateAdapter(modPath);
                 if (!adapter) {
-                    console.log('Step 5 WARNING: Template could not be adapted');
-                    result = { success: false, error: 'Template could not be adapted for programmatic generation' };
+                    console.log('Step 5 WARNING: Template could not be adapted, using default generator');
+                    result = null; // Force fallback to default
                 } else {
                     console.log('Step 5: Template adapter loaded successfully');
                     usedTemplate = tpl;
                     result = await adapter.generatePresentation({ title, subtitle, slides, colorScheme }, outputPath);
                     console.log('Step 5: Template generation result:', result);
+
+                    // If template generation failed, fallback to default
+                    if (!result || !result.success) {
+                        console.log('Step 5 WARNING: Template generation failed, using default generator');
+                        result = null;
+                        usedTemplate = 'presto_default';
+                    }
                 }
             } catch (e) {
-                console.error('Step 5 ERROR: Template load error:', e.message, e.stack);
+                console.error('Step 5 ERROR: Template load error:', e.message);
                 // Fallback to default generator
                 usedTemplate = 'presto_default';
                 result = null;
