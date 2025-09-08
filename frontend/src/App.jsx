@@ -154,7 +154,11 @@ export default function App() {
   const [selectedTemplate, setSelectedTemplate] = useState(null)
   const [showSlideDetails, setShowSlideDetails] = useState(false)
   const [intelligentAnalysis, setIntelligentAnalysis] = useState(null)
+  const [selectedImages, setSelectedImages] = useState([])
+  const [imageUrl, setImageUrl] = useState('')
+  const [showImageInput, setShowImageInput] = useState(false)
   const listRef = useRef(null)
+  const fileInputRef = useRef(null)
 
   const canSend = input.trim().length > 0 && !loading
 
