@@ -61,8 +61,42 @@ function generateMicePresentation() {
   }
 
   // Save the presentation
-  pptx.writeFile('mice_evolution_presentation.pptx');
+  if (outputPath) {
+    return pptx.writeFile({ fileName: outputPath });
+  }
+  return pptx.writeFile('mice_evolution_presentation.pptx');
 }
 
-// Execute the function to generate the presentation
-generateMicePresentation();
+// Programmatic export
+module.exports = {
+  generatePresentation: async (data = {}, outputPath) => {
+    // allow overriding slide content
+    const slides = Array.isArray(data.slides) && data.slides.length ? data.slides : slideContent;
+    // build presentation similarly
+    const pptx = new pptxgen({ title: data.title || 'Human and Mouse Cohabitation and Evolution' });
+    for (const slide of slides) {
+      const slideToAdd = pptx.addSlide();
+      if (slide.title) {
+        slideToAdd.addText(slide.title, { x: 0.5, y: 1.5, w: 9, h: 1, fontSize: 20, bold: true });
+      }
+      if (slide.content && slide.content.text) {
+        slideToAdd.addText(slide.content.text, { x: 0.5, y: 3, text: slide.content.text, fontSize: 14 });
+      }
+      if (slide.content && slide.content.image) {
+        try {
+          if (fs.existsSync(slide.content.image)) {
+            slideToAdd.addImage({ path: slide.content.image, x: 5.5, y: 1.5, w: 2, h: 4 });
+          } else {
+            slideToAdd.addShape(pptx.ShapeType.rect, { x: 5.5, y: 1.5, w: 2, h: 4, fill: { color: '#f3f4f6' }, line: { color: '#d1d5db' } });
+            slideToAdd.addText('Image', { x: 5.5, y: 3, w: 2, h: 0.4, fontSize: 12, color: '#6b7280', align: 'center' });
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+    }
+    const out = outputPath || 'mice_evolution_presentation.pptx';
+    await pptx.writeFile({ fileName: out });
+    return { success: true, path: out };
+  }
+};

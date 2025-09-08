@@ -190,6 +190,31 @@ class FixedPositioningGenerator {
         return slide;
     }
 
+    // Programmatic generation wrapper
+    async generatePresentation(data = {}, outputPath) {
+        // If slides provided, create slides accordingly, otherwise use demo
+        try {
+            if (data.slides && Array.isArray(data.slides) && data.slides.length > 0) {
+                // create title if data.title
+                if (data.title) this.createTitleSlide();
+                data.slides.forEach(s => {
+                    if (s.type === 'bullet' || s.type === 'bullets') this.createBulletSlide(s.title || '', s.bullets || s.content || []);
+                    else if (s.type === 'two-column') this.createTwoColumnSlide(s.title || '', s.left || '', s.right || '');
+                    else this.createContentSlide(s.title || '', s.content || '');
+                });
+                const outPath = outputPath || './fixed_positioning_output.pptx';
+                await this.pptx.writeFile({ fileName: outPath });
+                return { success: true, path: outPath };
+            }
+
+            // Fallback to demo generator
+            const filename = await this.generateDemo();
+            return { success: true, path: filename };
+        } catch (err) {
+            return { success: false, error: err.message };
+        }
+    }
+
     // Generate complete demo presentation
     async generateDemo() {
         console.log('🚀 Generating Fixed Positioning Demo...');
