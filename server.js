@@ -392,7 +392,7 @@ app.get('/', (req, res) => {
         endpoints: [
             'POST /chat - Chat with AI for PowerPoint generation',
             'POST /generate-pptx - Generate PPTX',
-            'GET /templates - List available templates',
+            'GET /templates - List available templates (use /api/templates from frontend)',
             'GET /health - Health check'
         ],
         openai_status: USE_LOCAL_FALLBACK ? 'demo_mode' : 'connected'
