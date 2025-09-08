@@ -290,19 +290,26 @@ app.post('/chat', async (req, res) => {
 // PPTX Generation endpoint
 app.post('/generate-pptx', async (req, res) => {
     try {
+        console.log('PPTX Generation Request:', JSON.stringify(req.body, null, 2));
+
         const { title, subtitle, slides, colorScheme } = req.body || {};
 
         if (!title) {
+            console.log('Error: Title is required');
             return res.status(400).json({ error: 'Title is required' });
         }
 
+        console.log('Creating generator...');
         const generator = new PrestoSlidesGenerator();
         const fileName = `presentation_${uuidv4()}.pptx`;
         const outputPath = path.join(__dirname, 'temp', fileName);
 
+        console.log('Output path:', outputPath);
+
         // Ensure temp directory exists
         await fs.mkdir(path.dirname(outputPath), { recursive: true });
 
+        console.log('Generating presentation...');
         const result = await generator.generatePresentation({
             title,
             subtitle,
@@ -310,7 +317,10 @@ app.post('/generate-pptx', async (req, res) => {
             colorScheme
         }, outputPath);
 
+        console.log('Generation result:', result);
+
         if (result.success) {
+            console.log('Sending file download...');
             // Send file as download
             res.download(outputPath, `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pptx`, async (err) => {
                 // Clean up temp file
@@ -325,10 +335,12 @@ app.post('/generate-pptx', async (req, res) => {
                 }
             });
         } else {
+            console.log('Generation failed:', result.error);
             res.status(500).json({ error: result.error });
         }
     } catch (error) {
-        console.error('PPTX generation error:', error.message);
+        console.error('PPTX generation error:', error);
+        console.error('Stack trace:', error.stack);
         res.status(500).json({ error: error.message });
     }
 });
