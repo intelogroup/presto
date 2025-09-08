@@ -352,10 +352,71 @@ app.get('/', (req, res) => {
         version: '1.0.0',
         endpoints: [
             'POST /chat - Chat with AI for PowerPoint generation',
+            'POST /generate-pptx - Generate PPTX',
+            'GET /templates - List available templates',
             'GET /health - Health check'
         ],
         openai_status: USE_LOCAL_FALLBACK ? 'demo_mode' : 'connected'
     });
+});
+
+// List available generator templates
+app.get('/templates', async (req, res) => {
+    try {
+        const genDir = path.join(__dirname, 'generators');
+        const files = await fs.readdir(genDir);
+        const templates = [];
+        for (const file of files) {
+            if (!file.endsWith('.js')) continue;
+            const id = path.basename(file, '.js');
+            const filePath = path.join(genDir, file);
+            const content = await fs.readFile(filePath, 'utf8');
+            // Extract top comment block or first 2 comment lines as description
+            const match = content.match(/\/\*([\s\S]*?)\*\//);
+            let description = '';
+            if (match) {
+                description = match[1].split('\n').map(s => s.replace(/^\s*\*?\s?/, '')).slice(0,3).join(' ');
+            } else {
+                const firstLine = content.split('\n')[0] || '';
+                description = firstLine.substring(0, 120);
+            }
+            templates.push({ id, name: id.replace(/[_-]/g, ' '), description, thumbnail: `/templates/thumb/${id}` });
+        }
+        res.json({ templates });
+    } catch (error) {
+        console.error('Error listing templates:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Serve a simple SVG thumbnail for template id
+app.get('/templates/thumb/:id', (req, res) => {
+    try {
+        const { id } = req.params;
+        const title = id.replace(/[_-]/g, ' ');
+        // Simple deterministic color based on id hash
+        let hash = 0;
+        for (let i = 0; i < id.length; i++) hash = ((hash << 5) - hash) + id.charCodeAt(i);
+        const hue = Math.abs(hash) % 360;
+        const color1 = `hsl(${hue} 70% 40%)`;
+        const color2 = `hsl(${(hue + 40) % 360} 70% 55%)`;
+        const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240' viewBox='0 0 400 240'>
+  <defs>
+    <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0' stop-color='${color1}' />
+      <stop offset='1' stop-color='${color2}' />
+    </linearGradient>
+  </defs>
+  <rect width='400' height='240' fill='url(#g)' rx='16' />
+  <text x='50%' y='50%' font-size='22' font-family='Segoe UI, Arial' fill='#fff' text-anchor='middle' dominant-baseline='middle'>${title}</text>
+  <rect x='18' y='200' width='120' height='18' rx='9' fill='rgba(255,255,255,0.12)'/>
+</svg>`;
+        res.setHeader('Content-Type', 'image/svg+xml');
+        res.send(svg);
+    } catch (error) {
+        res.status(500).send('');
+    }
 });
 
 // Start server
