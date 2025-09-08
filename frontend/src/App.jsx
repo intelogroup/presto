@@ -90,8 +90,8 @@ export default function App() {
           <div className="header">
             <div style={{ width: 10, height: 10, background: 'var(--primary)', borderRadius: 999 }} />
             <div>
-              <h1>Minimal Chat</h1>
-              <div className="sub">Light UI • React + Vite</div>
+              <h1>Create Presentation</h1>
+              <div className="sub">Describe your PowerPoint and let AI build it</div>
             </div>
           </div>
 
