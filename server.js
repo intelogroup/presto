@@ -647,11 +647,15 @@ app.post('/generate-pptx', async (req, res) => {
 
 // Health check endpoint
 app.get('/health', (req, res) => {
+    const aiStatus = USE_OPENROUTER ? 'openrouter_gemini' :
+                     (aiClient ? 'openai' : 'local_fallback');
+
     res.status(200).json({
         status: 'OK',
         timestamp: new Date().toISOString(),
         server: 'Presto Slides API Server',
-        openai_connected: !USE_LOCAL_FALLBACK
+        ai_provider: aiStatus,
+        model: USE_OPENROUTER ? 'google/gemini-2.0-flash-exp:free' : 'gpt-4o-mini'
     });
 });
 
