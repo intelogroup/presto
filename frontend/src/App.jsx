@@ -242,13 +242,14 @@ export default function App() {
                 <div className="slides-info">
                   {lastPptxData.slides?.length} slides • {lastPptxData.colorScheme || 'professional'} theme
                 </div>
-                <button
-                  className="button generate-btn"
-                  onClick={() => generatePPTX({ ...lastPptxData, template: selectedTemplate })}
-                  disabled={pptxLoading}
-                >
-                  {pptxLoading ? 'Generating...' : '⬇ Generate PowerPoint'}
-                </button>
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 12 }}>
+                  <button className="button generate-btn" onClick={() => generatePPTX({ ...lastPptxData, template: selectedTemplate })} disabled={pptxLoading}>
+                    {pptxLoading ? 'Generating...' : '⬇ Generate PowerPoint'}
+                  </button>
+                  <button className="button" onClick={() => setShowSlideDetails(s => !s)} style={{ background: '#eef2ff', color: 'var(--primary)' }}>
+                    {showSlideDetails ? 'Hide details' : 'Show slide details'}
+                  </button>
+                </div>
 
                 {showSlideDetails && (
                   <div style={{ textAlign: 'left', marginTop: 16 }}>
