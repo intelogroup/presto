@@ -135,20 +135,34 @@ export default function App() {
     } catch (e) {}
   }, [selectedTemplate])
 
-  const generatePPTX = async (presentationData) => {
+  const generatePPTX = async (presentationData, userContext = null) => {
     setPptxLoading(true)
 
     try {
+      // Prepare enhanced request with user context for intelligent routing
+      const requestBody = {
+        ...presentationData,
+        userInput: userContext || `Generate a presentation about ${presentationData.title}`,
+        template: selectedTemplate
+      }
+
+      console.log('🎯 Generating PPTX with intelligent routing:', requestBody)
+
       const res = await fetch('/api/generate-pptx', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(presentationData)
+        body: JSON.stringify(requestBody)
       })
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
         throw new Error(err.error || `PPTX generation failed: ${res.status}`)
       }
+
+      // Get analysis info from headers
+      const templateUsed = res.headers.get('X-Presto-Template')
+      const isValidated = res.headers.get('X-Presto-Validated')
+      const analysisData = res.headers.get('X-Presto-Analysis')
 
       // Create blob and download
       const blob = await res.blob()
@@ -162,9 +176,20 @@ export default function App() {
       window.URL.revokeObjectURL(url)
 
       setLastPptxData(presentationData)
+
+      let successMessage = `✅ PowerPoint generated successfully! "${presentationData.title}" has been downloaded.`
+
+      if (templateUsed && templateUsed !== 'presto_default') {
+        successMessage += ` Using specialized template: ${templateUsed}.`
+      }
+
+      if (isValidated === 'true') {
+        successMessage += ' Content validated and optimized for PowerPoint.'
+      }
+
       setMessages(m => [...m, {
         role: 'assistant',
-        content: `✅ PowerPoint generated successfully! "${presentationData.title}" has been downloaded.`
+        content: successMessage
       }])
     } catch (e) {
       setMessages(m => [...m, {
