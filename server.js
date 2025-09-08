@@ -5,6 +5,7 @@ const PptxGenJS = require('pptxgenjs');
 const fs = require('fs').promises;
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const { routePresentationRequest, ContentValidator } = require('./intelligent-routing');
 
 const app = express();
 const port = 3004;
