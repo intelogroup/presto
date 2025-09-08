@@ -352,7 +352,7 @@ app.get('/profesional-blanco', (req, res) => {
 });
 
 // Simple chat completion endpoint
-app.post('/api/chat', async (req, res) => {
+app.post('/chat', async (req, res) => {
     try {
         const { messages, model, temperature, max_tokens } = req.body || {};
         if (!Array.isArray(messages) || messages.length === 0) {
