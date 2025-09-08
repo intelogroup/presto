@@ -320,6 +320,31 @@ app.get('/profesional-blanco', (req, res) => {
     }
 });
 
+// Simple chat completion endpoint
+app.post('/api/chat', async (req, res) => {
+    try {
+        const { messages, model, temperature, max_tokens } = req.body || {};
+        if (!Array.isArray(messages) || messages.length === 0) {
+            return res.status(400).json({ error: 'messages array is required' });
+        }
+        const response = await openai.chat.completions.create({
+            model: model || 'gpt-4o-mini',
+            messages,
+            temperature: typeof temperature === 'number' ? temperature : 0.7,
+            max_tokens: typeof max_tokens === 'number' ? max_tokens : 800,
+        });
+        const out = {
+            id: response.id,
+            message: response.choices?.[0]?.message,
+            usage: response.usage || null,
+            created: response.created,
+        };
+        res.status(200).json(out);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
     res.status(200).json({
