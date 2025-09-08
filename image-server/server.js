@@ -7,13 +7,13 @@ const OpenAI = require('openai');
 const app = express();
 const port = 3000;
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
-
 // If no OpenAI API key is provided, fall back to a lightweight local echo responder
 const USE_LOCAL_FALLBACK = !process.env.OPENAI_API_KEY;
+
+// Initialize OpenAI client only if we have an API key
+const openai = USE_LOCAL_FALLBACK ? null : new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+});
 
 async function callOpenAIChat(params) {
     if (USE_LOCAL_FALLBACK) {
