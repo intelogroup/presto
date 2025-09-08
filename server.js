@@ -363,25 +363,12 @@ app.post('/generate-pptx', async (req, res) => {
             const tpl = String(req.body.template).replace(/\.js$/, '');
             try {
                 const modPath = path.join(__dirname, 'generators', `${tpl}.js`);
-                const Mod = require(modPath);
-                const inst = new Mod();
-                usedTemplate = tpl;
-                // Prefer generatePresentation(data, outputPath)
-                if (typeof inst.generatePresentation === 'function') {
-                    result = await inst.generatePresentation({ title, subtitle, slides, colorScheme }, outputPath);
-                } else if (typeof inst.generateDemo === 'function') {
-                    // Fallback: call generateDemo and then try to write its internal pptx
-                    // Some generators write files themselves; as a fallback we run generateDemo and then expect failure if not compatible
-                    await inst.generateDemo();
-                    // Try to save if generator exposes pptx
-                    if (inst.pptx) {
-                        await inst.pptx.writeFile({ fileName: outputPath });
-                        result = { success: true, path: outputPath };
-                    } else {
-                        result = { success: false, error: 'Template does not support programmatic generation' };
-                    }
+                const adapter = await loadTemplateAdapter(modPath);
+                if (!adapter) {
+                    result = { success: false, error: 'Template could not be adapted for programmatic generation' };
                 } else {
-                    result = { success: false, error: 'Template does not implement a supported generation method' };
+                    usedTemplate = tpl;
+                    result = await adapter.generatePresentation({ title, subtitle, slides, colorScheme }, outputPath);
                 }
             } catch (e) {
                 console.error('Template load error:', e.message);
