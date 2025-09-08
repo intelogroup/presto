@@ -347,9 +347,40 @@ export default function App() {
 
   const send = async () => {
     if (!canSend) return
-    const next = [...messages, { role: 'user', content: input }]
+
+    // Build multi-modal message content
+    let messageContent
+    if (selectedImages.length > 0) {
+      // Multi-modal message with text and images
+      messageContent = []
+
+      // Add text if present
+      if (input.trim()) {
+        messageContent.push({
+          type: 'text',
+          text: input.trim()
+        })
+      }
+
+      // Add images
+      selectedImages.forEach(image => {
+        messageContent.push({
+          type: 'image_url',
+          image_url: {
+            url: image.url
+          }
+        })
+      })
+    } else {
+      // Text-only message
+      messageContent = input
+    }
+
+    const userMessage = { role: 'user', content: messageContent }
+    const next = [...messages, userMessage]
     setMessages(next)
     setInput('')
+    setSelectedImages([])
     setLoading(true)
 
     try {
