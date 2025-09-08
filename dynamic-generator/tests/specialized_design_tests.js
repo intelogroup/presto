@@ -6,7 +6,7 @@
  * the generator's adaptability to different presentation needs.
  */
 
-const DynamicPresentationGenerator = require('./dynamic_presentation_generator');
+const DynamicPresentationGenerator = require('../core/dynamic_presentation_generator');
 const fs = require('fs').promises;
 
 class SpecializedDesignTests {
