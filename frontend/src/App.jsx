@@ -106,6 +106,25 @@ export default function App() {
 
   const canSend = input.trim().length > 0 && !loading
 
+  const analyzeRequest = async (userInput) => {
+    try {
+      const res = await fetch('/api/analyze-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userInput })
+      })
+
+      if (res.ok) {
+        const analysis = await res.json()
+        setIntelligentAnalysis(analysis)
+        return analysis
+      }
+    } catch (e) {
+      console.error('Request analysis failed:', e)
+    }
+    return null
+  }
+
   const scrollToBottom = () => {
     const el = listRef.current
     if (el) el.scrollTop = el.scrollHeight
