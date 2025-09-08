@@ -50,23 +50,23 @@ if (USE_OPENROUTER) {
     console.log('⚠️ No API keys available, using local fallback');
 }
 
-async function callOpenAIChat(params) {
+async function callAIChat(params) {
     if (USE_LOCAL_FALLBACK) {
         // Build a simple echo-like assistant response for local development
         const lastUserMessage = Array.isArray(params.messages) ?
             params.messages.slice().reverse().find(m => m.role === 'user') : null;
         const userText = lastUserMessage?.content || 'Hello';
-        
+
         // Simulate a delay
         await new Promise(resolve => setTimeout(resolve, 500));
-        
+
         return {
             id: `local-${Date.now()}`,
             choices: [
                 {
                     message: {
                         role: 'assistant',
-                        content: `I understand you want to create a PowerPoint presentation about: "${userText}". 
+                        content: `I understand you want to create a PowerPoint presentation about: "${userText}".
 
 Here's what I would suggest:
 - Title slide with your main topic
@@ -74,7 +74,7 @@ Here's what I would suggest:
 - Professional design with consistent formatting
 - Conclusion slide
 
-To generate the actual PowerPoint, please connect an OpenAI API key. For now, I'm running in demo mode.`
+To generate the actual PowerPoint, please connect an API key. For now, I'm running in demo mode.`
                     }
                 }
             ],
@@ -83,11 +83,20 @@ To generate the actual PowerPoint, please connect an OpenAI API key. For now, I'
         };
     }
 
-    // Real OpenAI call
-    if (!openai) {
-        throw new Error('OpenAI client not initialized');
+    if (!aiClient) {
+        throw new Error('AI client not initialized');
     }
-    return await openai.chat.completions.create(params);
+
+    // Set the appropriate model based on the API being used
+    const modelToUse = USE_OPENROUTER ? 'google/gemini-2.0-flash-exp:free' : (params.model || 'gpt-4o-mini');
+
+    const requestParams = {
+        ...params,
+        model: modelToUse
+    };
+
+    console.log(`🤖 Making AI request with model: ${modelToUse}`);
+    return await aiClient.chat.completions.create(requestParams);
 }
 
 // Adapter loader for template modules to standardize generatePresentation
