@@ -303,7 +303,7 @@ export default function App() {
 
           <div className="messages" ref={listRef}>
             {messages.map((m, i) => (
-              <Message key={i} role={m.role} content={m.content} />
+              <Message key={i} role={m.role} content={m.content} isFormatted={m.isFormatted} />
             ))}
           </div>
 
