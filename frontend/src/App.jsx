@@ -220,21 +220,45 @@ export default function App() {
 
       console.log('🎯 Generating PPTX with intelligent routing:', requestBody)
 
-      const res = await fetch('/api/generate-pptx', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-      })
+      let res, isBackupUsed = false
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        throw new Error(err.error || `PPTX generation failed: ${res.status}`)
+      try {
+        // Try main server first
+        res = await fetch('/api/generate-pptx', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        })
+
+        if (!res.ok) {
+          throw new Error(`Main server failed: ${res.status}`)
+        }
+      } catch (mainServerError) {
+        console.warn('🛡️ Main server failed, trying backup server:', mainServerError.message)
+
+        // Fallback to backup server
+        try {
+          res = await fetch('http://localhost:3005/generate-pptx', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(presentationData) // Backup server uses simpler format
+          })
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}))
+            throw new Error(err.error || `Backup server failed: ${res.status}`)
+          }
+
+          isBackupUsed = true
+          console.log('✅ Backup server succeeded')
+        } catch (backupError) {
+          throw new Error(`Both servers failed. Main: ${mainServerError.message}, Backup: ${backupError.message}`)
+        }
       }
 
-      // Get analysis info from headers
-      const templateUsed = res.headers.get('X-Presto-Template')
+      // Get analysis info from headers (main server only)
+      const templateUsed = res.headers.get('X-Presto-Template') || res.headers.get('X-Generator')
       const isValidated = res.headers.get('X-Presto-Validated')
-      const analysisData = res.headers.get('X-Presto-Analysis')
 
       // Create blob and download
       const blob = await res.blob()
@@ -251,12 +275,15 @@ export default function App() {
 
       let successMessage = `✅ PowerPoint generated successfully! "${presentationData.title}" has been downloaded.`
 
-      if (templateUsed && templateUsed !== 'presto_default') {
-        successMessage += ` Using specialized template: ${templateUsed}.`
-      }
-
-      if (isValidated === 'true') {
-        successMessage += ' Content validated and optimized for PowerPoint.'
+      if (isBackupUsed) {
+        successMessage += ' (Generated using backup server for reliability)'
+      } else {
+        if (templateUsed && templateUsed !== 'presto_default') {
+          successMessage += ` Using specialized template: ${templateUsed}.`
+        }
+        if (isValidated === 'true') {
+          successMessage += ' Content validated and optimized for PowerPoint.'
+        }
       }
 
       setMessages(m => [...m, {
