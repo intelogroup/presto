@@ -400,15 +400,9 @@ app.post('/generate-pptx', async (req, res) => {
         }
 
         if (!req.body.template) {
-            console.log('Step 4: No template specified, selecting random...');
-            // No template specified: pick one at random (weighted selection could be added here)
-            const available = await listTemplates();
-            console.log('Available templates:', available);
-            if (available.length > 0) {
-                const idx = Math.floor(Math.random() * available.length);
-                req.body.template = available[idx];
-                console.log('Selected random template:', req.body.template);
-            }
+            console.log('Step 4: No template specified, using default generator for reliability');
+            // For now, always use default generator to ensure reliability
+            // TODO: Re-enable random template selection after validating all generators
         } else {
             console.log('Step 4: Template specified:', req.body.template);
         }
