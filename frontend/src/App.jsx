@@ -13,7 +13,7 @@ function TopBar() {
     <div className="topbar" role="banner">
       <div className="brand">
         <div className="dot" />
-        <span>Fusion Builder</span>
+        <span>Presto Slides : Ai Powerpoint Generator</span>
       </div>
       <div className="top-actions">
         <a href="https://www.builder.io/c/docs/projects" target="_blank" rel="noreferrer" className="link">Docs</a>
