@@ -342,6 +342,9 @@ app.post('/chat', async (req, res) => {
 
 // PPTX Generation endpoint
 app.post('/generate-pptx', async (req, res) => {
+    console.log('=== PPTX Generation Request Started ===');
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
+
     try {
         const { title, subtitle, slides, colorScheme } = req.body || {};
 
@@ -350,14 +353,24 @@ app.post('/generate-pptx', async (req, res) => {
             return res.status(400).json({ error: 'Title is required' });
         }
 
+        console.log('Step 1: Validations passed, title:', title);
+
         // If a specific template is requested, try to load it
         let usedTemplate = 'presto_default';
         let result = null;
         const fileName = `presentation_${uuidv4()}.pptx`;
         const outputPath = path.join(__dirname, 'temp', fileName);
 
+        console.log('Step 2: Generated output path:', outputPath);
+
         // Ensure temp directory exists
-        await fs.mkdir(path.dirname(outputPath), { recursive: true });
+        try {
+            await fs.mkdir(path.dirname(outputPath), { recursive: true });
+            console.log('Step 3: Temp directory created/verified');
+        } catch (dirError) {
+            console.error('Step 3 ERROR: Failed to create temp directory:', dirError);
+            throw dirError;
+        }
 
         // Helper to list available templates
         async function listTemplates() {
@@ -365,48 +378,73 @@ app.post('/generate-pptx', async (req, res) => {
             try {
                 const files = await fs.readdir(genDir);
                 return files.filter(f => f.endsWith('.js')).map(f => path.basename(f, '.js'));
-            } catch (e) { return [] }
+            } catch (e) {
+                console.error('listTemplates error:', e);
+                return []
+            }
         }
 
         if (!req.body.template) {
+            console.log('Step 4: No template specified, selecting random...');
             // No template specified: pick one at random (weighted selection could be added here)
             const available = await listTemplates();
+            console.log('Available templates:', available);
             if (available.length > 0) {
                 const idx = Math.floor(Math.random() * available.length);
                 req.body.template = available[idx];
+                console.log('Selected random template:', req.body.template);
             }
+        } else {
+            console.log('Step 4: Template specified:', req.body.template);
         }
 
         if (req.body.template) {
             const tpl = String(req.body.template).replace(/\.js$/, '');
+            console.log('Step 5: Loading template:', tpl);
             try {
                 const modPath = path.join(__dirname, 'generators', `${tpl}.js`);
+                console.log('Template module path:', modPath);
                 const adapter = await loadTemplateAdapter(modPath);
                 if (!adapter) {
+                    console.log('Step 5 WARNING: Template could not be adapted');
                     result = { success: false, error: 'Template could not be adapted for programmatic generation' };
                 } else {
+                    console.log('Step 5: Template adapter loaded successfully');
                     usedTemplate = tpl;
                     result = await adapter.generatePresentation({ title, subtitle, slides, colorScheme }, outputPath);
+                    console.log('Step 5: Template generation result:', result);
                 }
             } catch (e) {
-                console.error('Template load error:', e.message);
+                console.error('Step 5 ERROR: Template load error:', e.message, e.stack);
                 // Fallback to default generator
                 usedTemplate = 'presto_default';
+                result = null;
             }
         }
 
         if (!result) {
-            const generator = new PrestoSlidesGenerator();
-            result = await generator.generatePresentation({
-                title,
-                subtitle,
-                slides,
-                colorScheme
-            }, outputPath);
-            usedTemplate = 'presto_default';
+            console.log('Step 6: Using default PrestoSlidesGenerator');
+            try {
+                const generator = new PrestoSlidesGenerator();
+                console.log('Step 6: Generator instance created');
+                result = await generator.generatePresentation({
+                    title,
+                    subtitle,
+                    slides,
+                    colorScheme
+                }, outputPath);
+                console.log('Step 6: Default generation result:', result);
+                usedTemplate = 'presto_default';
+            } catch (genError) {
+                console.error('Step 6 ERROR: Default generator failed:', genError.message, genError.stack);
+                throw genError;
+            }
         }
 
-        if (result.success) {
+        console.log('Step 7: Final result:', result);
+
+        if (result && result.success) {
+            console.log('Step 8: Success! Sending file download');
             // Send file as download
             // attach header indicating which template was used
             res.setHeader('X-Presto-Template', usedTemplate);
@@ -414,6 +452,7 @@ app.post('/generate-pptx', async (req, res) => {
                 // Clean up temp file
                 try {
                     await fs.unlink(outputPath);
+                    console.log('Step 9: Temp file cleaned up');
                 } catch (cleanupError) {
                     console.error('Cleanup error:', cleanupError);
                 }
@@ -423,11 +462,14 @@ app.post('/generate-pptx', async (req, res) => {
                 }
             });
         } else {
-            console.error('PPTX Generation failed:', result.error);
-            res.status(500).json({ error: result.error });
+            console.error('Step 8 ERROR: PPTX Generation failed:', result?.error || 'Unknown error');
+            res.status(500).json({ error: result?.error || 'Unknown generation error' });
         }
     } catch (error) {
-        console.error('PPTX generation error:', error.message);
+        console.error('=== CRITICAL PPTX GENERATION ERROR ===');
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        console.error('========================================');
         res.status(500).json({ error: error.message });
     }
 });
