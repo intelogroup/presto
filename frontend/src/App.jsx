@@ -221,7 +221,7 @@ export default function App() {
               <div style={{ display: 'flex', gap: 8 }}>
                 {templates.slice(0,5).map(t => (
                   <button key={t.id} onClick={() => setSelectedTemplate(t.id)} className={"template-btn " + (selectedTemplate===t.id? 'active':'')} title={t.name}>
-                    <img src={t.thumbnail} alt={t.name} loading="lazy" decoding="async" />
+                    <img src={`${t.thumbnail}?v=${Date.now()}`} alt={t.name} loading="lazy" decoding="async" />
                   </button>
                 ))}
                 <button className="template-random" onClick={() => setSelectedTemplate(null)}>Random</button>
