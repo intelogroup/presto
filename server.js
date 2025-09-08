@@ -15,7 +15,7 @@ try {
     ContentValidator = intelligentRouting.ContentValidator;
     console.log('✅ Intelligent routing system loaded');
 } catch (error) {
-    console.log('��️ Intelligent routing not available, using fallback mode');
+    console.log('⚠️ Intelligent routing not available, using fallback mode');
 }
 
 const app = express();
@@ -843,8 +843,11 @@ app.get('/templates/thumb/:id', async (req, res) => {
 app.listen(port, () => {
     console.log(`🚀 Presto Slides API Server v2 running on http://localhost:${port}`);
     if (USE_LOCAL_FALLBACK) {
-        console.log('⚠️  Running in demo mode (no OpenAI API key)');
-        console.log('💡 Set OPENAI_API_KEY environment variable for full functionality');
+        console.log('⚠️  Running in demo mode (no API keys available)');
+        console.log('💡 Set OPENROUTER_API_KEY for Gemini 2.0 or OPENAI_API_KEY for OpenAI');
+    } else if (USE_OPENROUTER) {
+        console.log('✅ OpenRouter API connected - Using Gemini 2.0 Flash (free)');
+        console.log('🤖 Model: google/gemini-2.0-flash-exp:free');
     } else {
         console.log('✅ OpenAI API connected');
     }
