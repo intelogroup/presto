@@ -1,0 +1,162 @@
+{
+  "templates": {
+    "fixed_positioning_generator": {
+      "name": "Enhanced Fixed Positioning",
+      "description": "Advanced presentation generator with precise positioning and professional layouts",
+      "capabilities": {
+        "maxSlides": 20,
+        "supportsBullets": true,
+        "supportsImages": true,
+        "supportsCharts": false,
+        "themes": ["professional", "modern"],
+        "specialFeatures": ["precise-positioning", "content-validation", "overflow-protection"]
+      },
+      "suitableFor": [
+        "business presentations",
+        "professional reports", 
+        "scientific content",
+        "methodology slides",
+        "research presentations"
+      ],
+      "keywords": ["business", "professional", "scientific", "research", "methodology", "corporate"]
+    },
+    "enhanced_pptx_generator": {
+      "name": "Enhanced PPTX Generator", 
+      "description": "Feature-rich generator with advanced styling and layouts",
+      "capabilities": {
+        "maxSlides": 25,
+        "supportsBullets": true,
+        "supportsImages": true,
+        "supportsCharts": true,
+        "themes": ["professional", "modern", "creative"],
+        "specialFeatures": ["advanced-styling", "multiple-layouts", "chart-support"]
+      },
+      "suitableFor": [
+        "comprehensive presentations",
+        "data-driven content",
+        "analytical reports",
+        "business intelligence",
+        "detailed proposals"
+      ],
+      "keywords": ["data", "analytics", "comprehensive", "detailed", "charts", "business intelligence"]
+    },
+    "flower_presentation_example": {
+      "name": "Nature & Garden Presentation",
+      "description": "Specialized for nature, gardening, and botanical content",
+      "capabilities": {
+        "maxSlides": 15,
+        "supportsBullets": true,
+        "supportsImages": true,
+        "supportsCharts": false,
+        "themes": ["nature", "green"],
+        "specialFeatures": ["nature-imagery", "botanical-styling", "eco-themes"]
+      },
+      "suitableFor": [
+        "gardening presentations",
+        "botanical content",
+        "environmental topics",
+        "nature education",
+        "sustainability themes"
+      ],
+      "keywords": ["garden", "flower", "plant", "nature", "environment", "green", "botanical", "sustainability"]
+    },
+    "modern_sustainable_tech_presentation": {
+      "name": "Sustainable Technology",
+      "description": "Modern presentation focused on technology and sustainability",
+      "capabilities": {
+        "maxSlides": 18,
+        "supportsBullets": true,
+        "supportsImages": true,
+        "supportsCharts": true,
+        "themes": ["modern", "tech", "sustainable"],
+        "specialFeatures": ["tech-styling", "sustainability-focus", "modern-design"]
+      },
+      "suitableFor": [
+        "technology presentations",
+        "sustainability reports",
+        "innovation showcases",
+        "green technology",
+        "future trends"
+      ],
+      "keywords": ["technology", "tech", "innovation", "sustainable", "future", "digital", "green tech"]
+    },
+    "methodology_slide_generator": {
+      "name": "Scientific Methodology",
+      "description": "Specialized for scientific methodology and research processes",
+      "capabilities": {
+        "maxSlides": 10,
+        "supportsBullets": true,
+        "supportsImages": true,
+        "supportsCharts": false,
+        "themes": ["scientific", "academic"],
+        "specialFeatures": ["process-flows", "methodology-layouts", "academic-styling"]
+      },
+      "suitableFor": [
+        "research methodology",
+        "scientific processes",
+        "academic presentations",
+        "experimental procedures",
+        "study protocols"
+      ],
+      "keywords": ["methodology", "research", "scientific", "academic", "experiment", "study", "process"]
+    }
+  },
+  "defaultGenerator": {
+    "name": "Presto Default Generator",
+    "description": "Reliable, versatile presentation generator for all general purposes",
+    "capabilities": {
+      "maxSlides": 50,
+      "supportsBullets": true,
+      "supportsImages": false,
+      "supportsCharts": false,
+      "themes": ["professional", "modern"],
+      "specialFeatures": ["reliability", "fast-generation", "text-focused"]
+    },
+    "guardrails": {
+      "maxTitleLength": 100,
+      "maxSubtitleLength": 200,
+      "maxSlideTitle": 80,
+      "maxBulletPoints": 8,
+      "maxBulletLength": 200,
+      "maxContentLength": 2000,
+      "validColorSchemes": ["professional", "modern"],
+      "textSanitization": true,
+      "contentValidation": true
+    },
+    "suitableFor": [
+      "general presentations",
+      "educational content", 
+      "training materials",
+      "simple business presentations",
+      "text-heavy content"
+    ]
+  },
+  "contentConstraints": {
+    "globalLimits": {
+      "maxSlides": 50,
+      "minSlides": 1,
+      "maxTitleLength": 100,
+      "maxSubtitleLength": 300,
+      "maxSlideTitle": 100,
+      "maxContentLength": 3000
+    },
+    "textSanitization": {
+      "removeControlChars": true,
+      "maxLineLength": 120,
+      "allowedCharacters": "alphanumeric, punctuation, spaces, common symbols"
+    },
+    "layoutConstraints": {
+      "safeArea": {
+        "x": 0.5,
+        "y": 0.5, 
+        "width": 9,
+        "height": 4.625
+      },
+      "slideSize": {
+        "width": 10,
+        "height": 5.625,
+        "format": "16:9"
+      }
+    }
+  }
+}
