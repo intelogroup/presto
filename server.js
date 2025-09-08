@@ -486,33 +486,52 @@ app.get('/templates', async (req, res) => {
     }
 });
 
-// Serve a simple SVG thumbnail for template id
-app.get('/templates/thumb/:id', (req, res) => {
+const axios = require('axios');
+
+// Serve a thumbnail for template id (proxy from picsum.photos as placeholder)
+app.get('/templates/thumb/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const title = id.replace(/[_-]/g, ' ');
-        // Simple deterministic color based on id hash
-        let hash = 0;
-        for (let i = 0; i < id.length; i++) hash = ((hash << 5) - hash) + id.charCodeAt(i);
-        const hue = Math.abs(hash) % 360;
-        const color1 = `hsl(${hue} 70% 40%)`;
-        const color2 = `hsl(${(hue + 40) % 360} 70% 55%)`;
-        const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240' viewBox='0 0 400 240'>
-  <defs>
-    <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
-      <stop offset='0' stop-color='${color1}' />
-      <stop offset='1' stop-color='${color2}' />
-    </linearGradient>
-  </defs>
-  <rect width='400' height='240' fill='url(#g)' rx='16' />
-  <text x='50%' y='50%' font-size='22' font-family='Segoe UI, Arial' fill='#fff' text-anchor='middle' dominant-baseline='middle'>${title}</text>
-  <rect x='18' y='200' width='120' height='18' rx='9' fill='rgba(255,255,255,0.12)'/>
-</svg>`;
-        res.setHeader('Content-Type', 'image/svg+xml');
-        res.send(svg);
+        const thumbsDir = path.join(__dirname, 'generators', 'assets-images', 'thumbs');
+        await fs.mkdir(thumbsDir).catch(()=>{});
+        const filePath = path.join(thumbsDir, `${id}.jpg`);
+        // If cached locally, serve it
+        try {
+            const stat = await fs.stat(filePath).catch(()=>null);
+            if (stat && stat.size > 0) {
+                const buf = await fs.readFile(filePath);
+                res.setHeader('Content-Type', 'image/jpeg');
+                return res.send(buf);
+            }
+        } catch (e) {
+            // continue to fetch
+        }
+
+        // Fetch from picsum.photos as placeholder (seeded by id)
+        const seed = encodeURIComponent(id);
+        const url = `https://picsum.photos/seed/${seed}/400/240`;
+        const response = await axios.get(url, { responseType: 'arraybuffer', timeout: 5000 });
+        const data = Buffer.from(response.data, 'binary');
+        // Cache locally (best-effort)
+        fs.writeFile(filePath, data).catch(()=>{});
+        res.setHeader('Content-Type', 'image/jpeg');
+        res.send(data);
     } catch (error) {
-        res.status(500).send('');
+        // Fallback to simple SVG if image fetch fails
+        try {
+            const { id } = req.params;
+            const title = id.replace(/[_-]/g, ' ');
+            let hash = 0;
+            for (let i = 0; i < id.length; i++) hash = ((hash << 5) - hash) + id.charCodeAt(i);
+            const hue = Math.abs(hash) % 360;
+            const color1 = `hsl(${hue} 70% 40%)`;
+            const color2 = `hsl(${(hue + 40) % 360} 70% 55%)`;
+            const svg = `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240' viewBox='0 0 400 240'>\n  <defs>\n    <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>\n      <stop offset='0' stop-color='${color1}' />\n      <stop offset='1' stop-color='${color2}' />\n    </linearGradient>\n  </defs>\n  <rect width='400' height='240' fill='url(#g)' rx='16' />\n  <text x='50%' y='50%' font-size='22' font-family='Segoe UI, Arial' fill='#fff' text-anchor='middle' dominant-baseline='middle'>${title}</text>\n</svg>`;
+            res.setHeader('Content-Type', 'image/svg+xml');
+            res.send(svg);
+        } catch (err) {
+            res.status(500).send('');
+        }
     }
 });
 
