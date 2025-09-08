@@ -30,7 +30,7 @@ async function testPPTXGeneration() {
     try {
         console.log('Testing PPTX generation...');
         
-        const response = await fetch('http://localhost:3001/generate-pptx', {
+        const response = await fetch('http://localhost:3002/generate-pptx', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(testData)
