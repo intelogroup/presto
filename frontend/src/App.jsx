@@ -137,34 +137,21 @@ export default function App() {
 
   const generatePPTX = async (presentationData) => {
     setPptxLoading(true)
-    console.log('Starting PPTX generation with data:', presentationData)
 
     try {
-      console.log('Making request to /api/generate-pptx')
       const res = await fetch('/api/generate-pptx', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(presentationData)
       })
 
-      console.log('Response status:', res.status, 'OK:', res.ok)
-      console.log('Response headers:', Object.fromEntries(res.headers.entries()))
-
       if (!res.ok) {
-        console.log('Response not OK, trying to parse error')
-        const err = await res.json().catch((parseError) => {
-          console.log('Could not parse error JSON:', parseError)
-          return {}
-        })
-        console.log('Parsed error:', err)
+        const err = await res.json().catch(() => ({}))
         throw new Error(err.error || `PPTX generation failed: ${res.status}`)
       }
 
-      console.log('Creating blob from response')
       // Create blob and download
       const blob = await res.blob()
-      console.log('Blob created, size:', blob.size)
-
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -180,7 +167,6 @@ export default function App() {
         content: `✅ PowerPoint generated successfully! "${presentationData.title}" has been downloaded.`
       }])
     } catch (e) {
-      console.error('PPTX generation error:', e)
       setMessages(m => [...m, {
         role: 'assistant',
         content: `❌ PPTX generation failed: ${e.message}`
