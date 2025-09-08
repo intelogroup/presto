@@ -121,7 +121,7 @@ export default function App() {
         </div>
 
         <section className="pptx-area" aria-label="Presentation preview">
-          <div className="pptx-placeholder">Presentation preview will appear here after generation.</div>
+          <div className="pptx-placeholder">Your AI-generated PowerPoint will appear here</div>
         </section>
         </div>
       </div>
