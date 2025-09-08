@@ -434,20 +434,27 @@ app.post('/generate-pptx', async (req, res) => {
             sanitizedData = requestData;
         }
 
-        // Step 3: Analyze request for template routing (if user provided context)
+        // Step 3: Analyze request for template routing (if available and user provided context)
         let routingResult = null;
         let usedTemplate = 'presto_default';
 
-        if (requestData.userInput) {
-            console.log('Step 3: Analyzing request for template routing...');
-            routingResult = await routePresentationRequest(requestData.userInput, sanitizedData);
-            console.log('Routing analysis:', routingResult.analysis);
+        if (routePresentationRequest && requestData.userInput) {
+            try {
+                console.log('Step 3: Analyzing request for template routing...');
+                routingResult = await routePresentationRequest(requestData.userInput, sanitizedData);
+                console.log('Routing analysis:', routingResult?.analysis);
 
-            if (routingResult.success && routingResult.recommendedTemplate) {
-                console.log(`Recommended template: ${routingResult.recommendedTemplate}`);
-                // For now, still use default generator but log the recommendation
-                console.log('Note: Template system available but using default for reliability');
+                if (routingResult?.success && routingResult.recommendedTemplate) {
+                    console.log(`Recommended template: ${routingResult.recommendedTemplate}`);
+                    // For now, still use default generator but log the recommendation
+                    console.log('Note: Template system available but using default for reliability');
+                }
+            } catch (routingError) {
+                console.log('⚠️ Template routing error, using default generator:', routingError.message);
+                routingResult = null;
             }
+        } else {
+            console.log('Step 3: Using default generator (no routing available or no user input)');
         }
 
         // Step 4: Setup file generation
