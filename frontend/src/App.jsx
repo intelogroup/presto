@@ -416,10 +416,16 @@ export default function App() {
             ))}
           </div>
 
+          {intelligentAnalysis && (
+            <div style={{ padding: '0 16px' }}>
+              <IntelligentAnalysis analysis={intelligentAnalysis} />
+            </div>
+          )}
+
           <div style={{ padding: '8px 16px', display: 'flex', gap: 8, alignItems: 'center' }}>
             <button className="small" onClick={() => setShowSlideDetails(s => !s)}>{showSlideDetails ? 'Hide slide details' : 'Show slide details'}</button>
             <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--muted)' }}>
-              Selected template: {selectedTemplate || 'Random'}
+              Selected template: {selectedTemplate || 'Auto-detect'}
             </div>
           </div>
 
