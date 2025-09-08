@@ -24,6 +24,58 @@ function TopBar() {
   )
 }
 
+function IntelligentAnalysis({ analysis }) {
+  if (!analysis || !analysis.success) return null
+
+  return (
+    <div style={{
+      background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+      border: '1px solid #0ea5e9',
+      borderRadius: '12px',
+      padding: '12px',
+      margin: '8px 0',
+      fontSize: '13px'
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+        <Zap size={16} style={{ color: '#0ea5e9' }} />
+        <strong style={{ color: '#0ea5e9' }}>AI Template Analysis</strong>
+      </div>
+
+      {analysis.analysis?.recommendedTemplate ? (
+        <div>
+          <div style={{ marginBottom: '4px' }}>
+            <span style={{ color: '#047857', fontWeight: '600' }}>✨ Recommended: </span>
+            {analysis.analysis.recommendedTemplate}
+          </div>
+          <div style={{ color: '#6b7280', fontSize: '12px' }}>
+            {analysis.analysis.reasoning}
+          </div>
+          {analysis.analysis.detectedTopics?.length > 0 && (
+            <div style={{ marginTop: '6px' }}>
+              <span style={{ fontSize: '11px', color: '#6b7280' }}>Topics: </span>
+              {analysis.analysis.detectedTopics.map((topic, i) => (
+                <span key={i} style={{
+                  background: '#e0f2fe',
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  fontSize: '11px',
+                  marginRight: '4px'
+                }}>
+                  {topic}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div style={{ color: '#6b7280' }}>
+          Using default generator for optimal reliability and general-purpose presentations.
+        </div>
+      )}
+    </div>
+  )
+}
+
 function PresentationOutline({ pptxData }) {
   const slideIcons = [FileText, Target, BookOpen, Users, Star, Lightbulb, Zap, Sparkles, Rocket, CheckCircle]
 
