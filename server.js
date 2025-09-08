@@ -282,42 +282,128 @@ class PrestoSlidesGenerator {
     }
 
     async generatePresentation(data, outputPath) {
-        const pptx = new PptxGenJS();
-
-        // Setup presentation
-        pptx.defineLayout({ name: 'LAYOUT_16x9', width: 10, height: 5.625 });
-        pptx.layout = 'LAYOUT_16x9';
-        pptx.author = 'Presto Slides - AI PowerPoint Generator';
-        pptx.company = 'Presto Slides';
-        pptx.subject = data.title || 'AI Generated Presentation';
-        pptx.title = data.title || 'Presentation';
-
-        const colorScheme = data.colorScheme || 'professional';
+        console.log('🎯 PrestoSlidesGenerator: Starting generation...');
 
         try {
-            // Create title slide
-            if (data.title) {
-                this.createTitleSlide(pptx, data.title, data.subtitle, colorScheme);
+            // Validate input data
+            if (!data || typeof data !== 'object') {
+                throw new Error('Invalid presentation data provided');
             }
 
-            // Create content slides
-            if (data.slides && Array.isArray(data.slides)) {
-                data.slides.forEach(slideData => {
-                    if (slideData.type === 'bullets' && slideData.bullets) {
-                        this.createBulletSlide(pptx, slideData.title, slideData.bullets, colorScheme);
-                    } else {
-                        this.createContentSlide(pptx, slideData.title, slideData.content, colorScheme);
+            if (!data.title || typeof data.title !== 'string' || data.title.trim().length === 0) {
+                throw new Error('Title is required and must be a non-empty string');
+            }
+
+            console.log(`Creating presentation: "${data.title}"`);
+
+            const pptx = new PptxGenJS();
+
+            // Setup presentation safely
+            try {
+                pptx.defineLayout({ name: 'LAYOUT_16x9', width: 10, height: 5.625 });
+                pptx.layout = 'LAYOUT_16x9';
+                pptx.author = 'Presto Slides - AI PowerPoint Generator';
+                pptx.company = 'Presto Slides';
+                pptx.subject = this.sanitizeText(data.title, 100) || 'AI Generated Presentation';
+                pptx.title = this.sanitizeText(data.title, 100) || 'Presentation';
+                console.log('✅ PPTX setup completed');
+            } catch (setupError) {
+                console.log('⚠️ PPTX setup had issues, continuing with basic setup:', setupError.message);
+            }
+
+            const colorScheme = data.colorScheme || 'professional';
+            console.log(`Using color scheme: ${colorScheme}`);
+
+            // Create title slide
+            try {
+                this.createTitleSlide(pptx, data.title, data.subtitle || '', colorScheme);
+                console.log('✅ Title slide created');
+            } catch (titleError) {
+                console.error('Title slide creation failed:', titleError.message);
+                throw new Error(`Failed to create title slide: ${titleError.message}`);
+            }
+
+            // Create content slides with robust error handling
+            let slidesCreated = 0;
+            if (data.slides && Array.isArray(data.slides) && data.slides.length > 0) {
+                console.log(`Creating ${data.slides.length} content slides...`);
+
+                for (let i = 0; i < data.slides.length && i < 50; i++) { // Limit to 50 slides
+                    try {
+                        const slideData = data.slides[i];
+
+                        if (!slideData || typeof slideData !== 'object') {
+                            console.log(`⚠️ Skipping invalid slide ${i + 1}`);
+                            continue;
+                        }
+
+                        const slideTitle = slideData.title || `Slide ${i + 1}`;
+
+                        if (slideData.type === 'bullets' && slideData.bullets && Array.isArray(slideData.bullets)) {
+                            // Filter out empty bullets and limit to 8
+                            const validBullets = slideData.bullets
+                                .filter(bullet => bullet && typeof bullet === 'string' && bullet.trim().length > 0)
+                                .slice(0, 8);
+
+                            if (validBullets.length > 0) {
+                                this.createBulletSlide(pptx, slideTitle, validBullets, colorScheme);
+                                slidesCreated++;
+                                console.log(`✅ Bullet slide ${i + 1} created with ${validBullets.length} bullets`);
+                            } else {
+                                console.log(`⚠️ Skipping bullet slide ${i + 1} - no valid bullets`);
+                            }
+                        } else if (slideData.content || slideData.title) {
+                            const content = slideData.content || 'Content not provided';
+                            this.createContentSlide(pptx, slideTitle, content, colorScheme);
+                            slidesCreated++;
+                            console.log(`✅ Content slide ${i + 1} created`);
+                        } else {
+                            console.log(`⚠️ Skipping slide ${i + 1} - no title or content`);
+                        }
+                    } catch (slideError) {
+                        console.error(`Error creating slide ${i + 1}:`, slideError.message);
+                        // Continue with other slides instead of failing completely
                     }
-                });
+                }
+
+                console.log(`✅ Successfully created ${slidesCreated} content slides`);
+            } else {
+                console.log('⚠️ No valid slides provided, creating title slide only');
+            }
+
+            // Ensure output directory exists
+            try {
+                const outputDir = require('path').dirname(outputPath);
+                await require('fs').promises.mkdir(outputDir, { recursive: true });
+                console.log('✅ Output directory verified');
+            } catch (dirError) {
+                console.log('Directory creation warning:', dirError.message);
             }
 
             // Write file
+            console.log(`Writing presentation to: ${outputPath}`);
             await pptx.writeFile({ fileName: outputPath });
-            return { success: true, path: outputPath };
+            console.log('✅ File written successfully');
+
+            const result = {
+                success: true,
+                path: outputPath,
+                slides: slidesCreated + 1, // +1 for title slide
+                generator: 'PrestoSlidesGenerator',
+                colorScheme: colorScheme
+            };
+
+            console.log('🎉 PrestoSlidesGenerator: Generation completed successfully');
+            return result;
 
         } catch (error) {
-            console.error('PPTX Generation Error:', error);
-            return { success: false, error: error.message };
+            console.error('�� PrestoSlidesGenerator CRITICAL ERROR:', error.message);
+            console.error('Error details:', error);
+            return {
+                success: false,
+                error: error.message,
+                generator: 'PrestoSlidesGenerator'
+            };
         }
     }
 }
