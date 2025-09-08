@@ -12,6 +12,34 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 });
 
+// If no OpenAI API key is provided, fall back to a lightweight local echo responder
+const USE_LOCAL_FALLBACK = !process.env.OPENAI_API_KEY;
+
+async function callOpenAIChat(params) {
+    if (USE_LOCAL_FALLBACK) {
+        // Build a simple echo-like assistant response for local development
+        const lastUserMessage = Array.isArray(params.messages) ?
+            params.messages.slice().reverse().find(m => m.role === 'user') : null;
+        const userText = lastUserMessage?.content || 'Hello';
+        return {
+            id: `local-${Date.now()}`,
+            choices: [
+                {
+                    message: {
+                        role: 'assistant',
+                        content: `Local echo (no OPENAI_API_KEY): ${userText}`
+                    }
+                }
+            ],
+            usage: null,
+            created: Math.floor(Date.now() / 1000)
+        };
+    }
+
+    // Real OpenAI call
+    return await openai.chat.completions.create(params);
+}
+
 // Helper function to create directory if it doesn't exist
 function ensureDirectoryExists(dirPath) {
     if (!fs.existsSync(dirPath)) {
@@ -78,7 +106,7 @@ async function analyzeImage(filePath, filename) {
         else if (ext === '.webp') mimeType = 'image/webp';
 
         // Call OpenAI Vision API
-        const response = await openai.chat.completions.create({
+        const response = await callOpenAIChat({
             model: "gpt-4o",
             messages: [
                 {
@@ -327,7 +355,7 @@ app.post('/api/chat', async (req, res) => {
         if (!Array.isArray(messages) || messages.length === 0) {
             return res.status(400).json({ error: 'messages array is required' });
         }
-        const response = await openai.chat.completions.create({
+        const response = await callOpenAIChat({
             model: model || 'gpt-4o-mini',
             messages,
             temperature: typeof temperature === 'number' ? temperature : 0.7,
