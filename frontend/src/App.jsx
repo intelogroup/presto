@@ -405,7 +405,7 @@ export default function App() {
                     <img src={`${t.thumbnail}?v=${Date.now()}`} alt={t.name} loading="lazy" decoding="async" />
                   </button>
                 ))}
-                <button className="template-random" onClick={() => setSelectedTemplate(null)}>Random</button>
+                <button className="template-random" onClick={() => setSelectedTemplate(null)}>Auto-detect</button>
               </div>
             </div>
           </div>
