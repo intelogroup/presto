@@ -418,10 +418,38 @@ export default function App() {
 
     try {
       // Enhanced prompt for PowerPoint generation
-      const enhancedMessages = next.map(({ role, content }) => ({
-        role,
-        content: role === 'user' && next.length > 1 ?
-          `${content}\n\nIf this is a request for a PowerPoint presentation, please structure your response as a JSON object with this format:
+      const enhancedMessages = next.map(({ role, content }) => {
+        if (role === 'user' && next.length > 1) {
+          // Handle multi-modal content properly
+          if (Array.isArray(content)) {
+            // For multi-modal messages, add the enhancement as additional text content
+            const enhancementText = "\n\nIf this is a request for a PowerPoint presentation, please structure your response as a JSON object with this format:\n{\n  \"title\": \"Presentation Title\",\n  \"subtitle\": \"Optional subtitle\",\n  \"slides\": [\n    {\"title\": \"Slide Title\", \"content\": \"Slide content\"},\n    {\"title\": \"Slide Title\", \"type\": \"bullets\", \"bullets\": [\"Point 1\", \"Point 2\"]}\n  ],\n  \"colorScheme\": \"professional\"\n}";
+
+            // Find text content and enhance it
+            const enhancedContent = content.map(item => {
+              if (item.type === 'text') {
+                return {
+                  ...item,
+                  text: item.text + enhancementText
+                };
+              }
+              return item;
+            });
+
+            // If no text content, add the enhancement as new text
+            if (!enhancedContent.some(item => item.type === 'text')) {
+              enhancedContent.unshift({
+                type: 'text',
+                text: enhancementText
+              });
+            }
+
+            return { role, content: enhancedContent };
+          } else {
+            // For text-only messages
+            return {
+              role,
+              content: `${content}\n\nIf this is a request for a PowerPoint presentation, please structure your response as a JSON object with this format:
 {
   "title": "Presentation Title",
   "subtitle": "Optional subtitle",
@@ -430,8 +458,12 @@ export default function App() {
     {"title": "Slide Title", "type": "bullets", "bullets": ["Point 1", "Point 2"]}
   ],
   "colorScheme": "professional"
-}` : content
-      }))
+}`
+            };
+          }
+        }
+        return { role, content };
+      })
 
       const res = await fetch('/api/chat', {
         method: 'POST',
