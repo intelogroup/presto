@@ -175,12 +175,30 @@ export default function App() {
               <h1>Create Presentation</h1>
               <div className="sub">Describe your PowerPoint and let AI build it</div>
             </div>
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, alignItems: 'center' }}>
+              <div style={{ fontSize: 12, color: 'var(--muted)' }}>Template</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {templates.slice(0,5).map(t => (
+                  <button key={t.id} onClick={() => setSelectedTemplate(t.id)} className={"template-btn " + (selectedTemplate===t.id? 'active':'')} title={t.name}>
+                    <img src={t.thumbnail} alt={t.name} style={{ width: 56, height: 36, borderRadius: 6, objectFit: 'cover' }} />
+                  </button>
+                ))}
+                <button className="template-random" onClick={() => setSelectedTemplate(null)}>Random</button>
+              </div>
+            </div>
           </div>
 
           <div className="messages" ref={listRef}>
             {messages.map((m, i) => (
               <Message key={i} role={m.role} content={m.content} />
             ))}
+          </div>
+
+          <div style={{ padding: '8px 16px', display: 'flex', gap: 8, alignItems: 'center' }}>
+            <button className="small" onClick={() => setShowSlideDetails(s => !s)}>{showSlideDetails ? 'Hide slide details' : 'Show slide details'}</button>
+            <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--muted)' }}>
+              Selected template: {selectedTemplate || 'Random'}
+            </div>
           </div>
 
           <div className="input-row">
@@ -213,11 +231,24 @@ export default function App() {
                 </div>
                 <button
                   className="button generate-btn"
-                  onClick={() => generatePPTX(lastPptxData)}
+                  onClick={() => generatePPTX({ ...lastPptxData, template: selectedTemplate })}
                   disabled={pptxLoading}
                 >
                   {pptxLoading ? 'Generating...' : '⬇ Generate PowerPoint'}
                 </button>
+
+                {showSlideDetails && (
+                  <div style={{ textAlign: 'left', marginTop: 16 }}>
+                    <h4>Slides preview</h4>
+                    {lastPptxData.slides.map((s, idx) => (
+                      <div key={idx} style={{ padding: 8, borderBottom: '1px solid #eee' }}>
+                        <strong>{idx+1}. {s.title}</strong>
+                        <div style={{ color: 'var(--muted)', marginTop: 6 }}>{s.type === 'bullets' ? s.bullets?.join('\n') : s.content}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
               </div>
             </div>
           ) : (
