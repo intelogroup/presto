@@ -772,38 +772,92 @@ class DynamicPresentationGenerator extends EventEmitter {
             // Reset counters
             this.slideCount = 0;
 
-            // Create slides
-            if (data.slides) {
-                // Title slide
-                if (data.slides.title || data.title) {
-                    this.createTitleSlide(data.slides.title || { title: data.title, subtitle: data.subtitle, author: data.author });
-                }
-
-                // Content slides
-                const contentSlides = Object.entries(data.slides).filter(([key]) => key !== 'title');
-                
-                for (const [key, slideData] of contentSlides) {
-                    if (slideData) {
-                        this.createAdaptiveSlide(slideData);
+            // Create slides with improved error handling
+            try {
+                if (data.slides && typeof data.slides === 'object') {
+                    // Title slide
+                    if (data.slides.title || data.title) {
+                        const titleData = data.slides.title || {
+                            title: data.title || 'Presentation',
+                            subtitle: data.subtitle,
+                            author: data.author
+                        };
+                        this.createTitleSlide(titleData);
                     }
-                }
-            } else if (data.content || data.text) {
-                // Simple text-based generation
-                this.createTitleSlide({ title: data.title || 'Presentation' });
-                this.createAdaptiveSlide({ 
-                    title: 'Content',
-                    content: data.content || data.text
-                });
-            }
 
-            // Ensure at least one slide exists
-            if (this.slideCount === 0) {
-                this.createTitleSlide({ title: 'Dynamic Presentation' });
-                this.createAdaptiveSlide({
-                    title: 'Default Content',
-                    content: 'This presentation was generated with the Dynamic Presentation Generator. Provide content data to customize slides.',
-                    icons: ['💡', '🎯', '✨']
+                    // Content slides
+                    const contentSlides = Object.entries(data.slides).filter(([key]) => key !== 'title');
+
+                    for (const [key, slideData] of contentSlides) {
+                        if (slideData && typeof slideData === 'object') {
+                            this.createAdaptiveSlide(slideData);
+                        }
+                    }
+                } else if (data.content || data.text) {
+                    // Simple text-based generation
+                    this.createTitleSlide({ title: data.title || 'Presentation' });
+                    this.createAdaptiveSlide({
+                        title: 'Content',
+                        content: data.content || data.text
+                    });
+                } else if (data.title) {
+                    // Only title provided - create minimal presentation
+                    this.createTitleSlide({ title: data.title, subtitle: data.subtitle, author: data.author });
+                    this.createAdaptiveSlide({
+                        title: 'Overview',
+                        content: 'This presentation was created with minimal data. Add slides object with content to customize the presentation.',
+                        bullets: [
+                            'Use slides.title for title slide configuration',
+                            'Add content slides with title and content properties',
+                            'Include bullets for bullet points',
+                            'Add icons for visual elements',
+                            'Use chartData for data visualization'
+                        ]
+                    });
+                }
+
+                // Ensure at least one slide exists
+                if (this.slideCount === 0) {
+                    console.log('⚠️ No valid data provided, creating default presentation');
+                    this.createTitleSlide({ title: 'Dynamic Presentation Generator' });
+                    this.createAdaptiveSlide({
+                        title: 'Getting Started',
+                        content: 'This presentation was generated with the Dynamic Presentation Generator. To create custom presentations, provide data in the following format:',
+                        bullets: [
+                            'title: "Your Presentation Title"',
+                            'slides: { slide_name: { title: "Slide Title", content: "..." } }',
+                            'Use icons: [{ symbol: "🎯", label: "Label" }] for visual elements',
+                            'Add chartData: { values: [1,2,3] } for charts',
+                            'Include images: [{ description: "..." }] for placeholders'
+                        ]
+                    });
+                }
+            } catch (slideCreationError) {
+                this.handleError('Slide creation process', slideCreationError);
+
+                // Emergency fallback - create minimal working presentation
+                this.slideCount = 0; // Reset count
+                this.pptx = new PptxGenJS(); // Reset presentation
+                this.setupDefaults();
+
+                const slide = this.pptx.addSlide();
+                slide.addText('Presentation Generation Error', {
+                    x: 1, y: 2, w: 8, h: 1,
+                    fontSize: 32,
+                    color: '333333',
+                    align: 'center',
+                    bold: true
                 });
+
+                slide.addText('An error occurred during presentation generation. Please check your data format and try again.', {
+                    x: 1, y: 3.5, w: 8, h: 2,
+                    fontSize: 16,
+                    color: '666666',
+                    align: 'center',
+                    wrap: true
+                });
+
+                this.slideCount = 1;
             }
 
             // Create output directory if needed
