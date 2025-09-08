@@ -610,34 +610,60 @@ class DynamicPresentationGenerator extends EventEmitter {
     }
 
     addTwoColumnContent(slide, slideData, template) {
+        // Ensure template has column definitions
+        const leftColumn = template.leftColumn || { x: 0.5, y: 1.5, w: 4.2, h: 4 };
+        const rightColumn = template.rightColumn || { x: 5.2, y: 1.5, w: 4.2, h: 4 };
+
         // Left column
         if (slideData.leftContent) {
-            const leftFit = this.contentFitter.createSmartText(
-                this.sanitizeText(slideData.leftContent, 800),
-                template.leftColumn,
-                'body',
-                {
+            try {
+                const leftFit = this.contentFitter.createSmartText(
+                    this.sanitizeText(slideData.leftContent, 800),
+                    leftColumn,
+                    'body',
+                    {
+                        color: this.colors.text,
+                        fontFace: this.fonts.body.face,
+                        valign: 'top'
+                    }
+                );
+                slide.addText(leftFit.text, leftFit.options);
+            } catch (error) {
+                this.handleError('Left column text fitting', error);
+                // Fallback
+                slide.addText(this.sanitizeText(slideData.leftContent, 400), {
+                    ...leftColumn,
+                    fontSize: 16,
                     color: this.colors.text,
-                    fontFace: this.fonts.body.face,
-                    valign: 'top'
-                }
-            );
-            slide.addText(leftFit.text, leftFit.options);
+                    wrap: true
+                });
+            }
         }
 
         // Right column
         if (slideData.rightContent) {
-            const rightFit = this.contentFitter.createSmartText(
-                this.sanitizeText(slideData.rightContent, 800),
-                template.rightColumn,
-                'body',
-                {
+            try {
+                const rightFit = this.contentFitter.createSmartText(
+                    this.sanitizeText(slideData.rightContent, 800),
+                    rightColumn,
+                    'body',
+                    {
+                        color: this.colors.text,
+                        fontFace: this.fonts.body.face,
+                        valign: 'top'
+                    }
+                );
+                slide.addText(rightFit.text, rightFit.options);
+            } catch (error) {
+                this.handleError('Right column text fitting', error);
+                // Fallback
+                slide.addText(this.sanitizeText(slideData.rightContent, 400), {
+                    ...rightColumn,
+                    fontSize: 16,
                     color: this.colors.text,
-                    fontFace: this.fonts.body.face,
-                    valign: 'top'
-                }
-            );
-            slide.addText(rightFit.text, rightFit.options);
+                    wrap: true
+                });
+            }
         }
     }
 
