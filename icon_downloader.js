@@ -22,12 +22,92 @@ class IconDownloader {
         
         // Icon sources with their GitHub raw URLs
         this.sources = {
+            // COLORED ICON SOURCES
+            simpleicons: {
+                name: 'Simple Icons (Colored Brands)',
+                baseUrl: 'https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons',
+                categories: ['brand'],
+                license: 'CC0 1.0',
+                description: '🎨 2800+ popular brand logos in full color SVG format',
+                colored: true,
+                sampleIcons: [
+                    'react', 'javascript', 'python', 'github', 'nodejs', 'npm', 'vercel', 'aws',
+                    'docker', 'kubernetes', 'mongodb', 'postgresql', 'tailwindcss', 'figma',
+                    'notion', 'slack', 'typescript', 'nextdotjs', 'prisma', 'planetscale',
+                    'stripe', 'paypal', 'googlecloud', 'firebase', 'adobe', 'photoshop',
+                    'illustrator', 'xd', 'microsoft', 'apple', 'google', 'amazon',
+                    'spotify', 'netflix', 'youtube', 'linkedin', 'instagram', 'twitter',
+                    'facebook', 'tiktok', 'zoom', 'discord', 'reddit', 'twitch',
+                    'dropbox', 'googledrive', 'onedrive', 'airbnb', 'uber', 'shopify'
+                ]
+            },
+            weathericons: {
+                name: 'Weather Icons (Colored)',
+                baseUrl: 'https://raw.githubusercontent.com/erikflowers/weather-icons/master/svg',
+                categories: ['weather'],
+                license: 'SIL OFL 1.1',
+                description: '🎨 Beautiful weather icons with color variants',
+                colored: true,
+                sampleIcons: [
+                    'wi-day-sunny', 'wi-night-clear', 'wi-day-cloudy', 'wi-night-cloudy',
+                    'wi-rain', 'wi-snow', 'wi-thunderstorm', 'wi-fog', 'wi-windy',
+                    'wi-hot', 'wi-cold', 'wi-hurricane', 'wi-tornado', 'wi-hail',
+                    'wi-sleet', 'wi-dust', 'wi-smoke', 'wi-sandstorm', 'wi-earthquake',
+                    'wi-fire', 'wi-flood', 'wi-meteor', 'wi-tsunami', 'wi-volcano'
+                ]
+            },
+            cryptocurrency: {
+                name: 'Cryptocurrency Icons (Colored)',
+                baseUrl: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/svg/color',
+                categories: ['crypto'],
+                license: 'CC0 1.0',
+                description: '🎨 Cryptocurrency and blockchain icons in full color',
+                colored: true,
+                sampleIcons: [
+                    'btc', 'eth', 'ada', 'bnb', 'xrp', 'sol', 'dot', 'doge',
+                    'avax', 'shib', 'matic', 'ltc', 'link', 'xlm', 'etc', 'bch',
+                    'fil', 'trx', 'eos', 'xmr', 'aave', 'uni', 'cake', 'sushi'
+                ]
+            },
+            devicons: {
+                name: 'DevIcons (Colored Tech)',
+                baseUrl: 'https://raw.githubusercontent.com/devicons/devicon/master/icons',
+                categories: ['tech'],
+                license: 'MIT',
+                description: '🎨 Developer tool and technology icons in full color',
+                colored: true,
+                sampleIcons: [
+                    'javascript/javascript-original', 'python/python-original', 'nodejs/nodejs-original',
+                    'react/react-original', 'html5/html5-original', 'css3/css3-original',
+                    'git/git-original', 'github/github-original', 'linux/linux-original',
+                    'windows8/windows8-original', 'typescript/typescript-original', 'nextjs/nextjs-original',
+                    'express/express-original', 'mongodb/mongodb-original', 'postgresql/postgresql-original',
+                    'mysql/mysql-original', 'redis/redis-original', 'docker/docker-original',
+                    'kubernetes/kubernetes-plain', 'aws/aws-original', 'azure/azure-original',
+                    'firebase/firebase-plain', 'vuejs/vuejs-original', 'angular/angular-original'
+                ]
+            },
+            flagicons: {
+                name: 'Flag Icons (Country Flags)',
+                baseUrl: 'https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3',
+                categories: ['flags'],
+                license: 'MIT',
+                description: '🎨 Beautiful country flag icons in SVG format',
+                colored: true,
+                sampleIcons: [
+                    'us', 'gb', 'ca', 'au', 'de', 'fr', 'it', 'es', 'jp', 'kr',
+                    'cn', 'in', 'br', 'mx', 'ru', 'za', 'eg', 'ng', 'ke', 'gh',
+                    'se', 'no', 'dk', 'fi', 'nl', 'be', 'ch', 'at', 'pl', 'cz'
+                ]
+            },
+            // MONOCHROME ICON SOURCES
             heroicons: {
                 name: 'Heroicons',
                 baseUrl: 'https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/24',
                 categories: ['outline', 'solid'],
                 license: 'MIT',
                 description: 'Beautiful hand-crafted SVG icons by Tailwind CSS team',
+                colored: false,
                 sampleIcons: [
                     'academic-cap', 'adjustments-horizontal', 'archive-box', 'arrow-down',
                     'arrow-left', 'arrow-right', 'arrow-up', 'at-symbol', 'bell', 'bookmark',
@@ -46,6 +126,7 @@ class IconDownloader {
                 categories: ['default'],
                 license: 'MIT',
                 description: 'Simply beautiful open source icons',
+                colored: false,
                 sampleIcons: [
                     'activity', 'airplay', 'alert-circle', 'alert-octagon', 'alert-triangle',
                     'anchor', 'aperture', 'archive', 'arrow-down', 'arrow-left', 'arrow-right',
@@ -66,6 +147,7 @@ class IconDownloader {
                 categories: ['default'],
                 license: 'MIT',
                 description: 'Over 4000+ free SVG icons for web development',
+                colored: false,
                 sampleIcons: [
                     'adjustments', 'alarm', 'alert-circle', 'alert-triangle', 'anchor',
                     'aperture', 'apps', 'archive', 'arrow-down', 'arrow-left', 'arrow-right',
@@ -85,6 +167,7 @@ class IconDownloader {
                 categories: ['default'],
                 license: 'MIT',
                 description: 'Official open source SVG icon library for Bootstrap',
+                colored: false,
                 sampleIcons: [
                     'alarm', 'alert-circle', 'alert-triangle', 'archive', 'arrow-down',
                     'arrow-left', 'arrow-right', 'arrow-up', 'at', 'award', 'bag', 'bar-chart',
@@ -105,6 +188,7 @@ class IconDownloader {
                 categories: ['default'],
                 license: 'ISC',
                 description: 'Beautiful & consistent icon toolkit made by the community',
+                colored: false,
                 sampleIcons: [
                     'activity', 'airplay', 'alert-circle', 'alert-octagon', 'alert-triangle',
                     'align-center', 'anchor', 'aperture', 'archive', 'arrow-down', 'arrow-left',
@@ -277,6 +361,54 @@ class IconDownloader {
     }
 
     /**
+     * Download colored icons only
+     */
+    async downloadColoredIcons(iconsPerSource = 20) {
+        console.log('🎨 Starting COLORED icon downloads...');
+        console.log(`📊 Downloading ${iconsPerSource} colored icons per source\n`);
+        
+        const allResults = [];
+        const coloredSources = Object.keys(this.sources).filter(key => this.sources[key].colored);
+        
+        for (const sourceName of coloredSources) {
+            const results = await this.downloadFromSource(sourceName, iconsPerSource);
+            allResults.push(...results);
+        }
+        
+        // Save catalog
+        this.saveCatalog();
+        
+        console.log(`\n🎨 Colored icons download complete! ${allResults.length} colorful SVG icons downloaded.`);
+        console.log(`📁 Icons organized in: ${this.outputDir}`);
+        
+        return allResults;
+    }
+
+    /**
+     * Download monochrome icons only
+     */
+    async downloadMonochromeIcons(iconsPerSource = 15) {
+        console.log('⚫ Starting MONOCHROME icon downloads...');
+        console.log(`📊 Downloading ${iconsPerSource} monochrome icons per source\n`);
+        
+        const allResults = [];
+        const monochromeSources = Object.keys(this.sources).filter(key => !this.sources[key].colored);
+        
+        for (const sourceName of monochromeSources) {
+            const results = await this.downloadFromSource(sourceName, iconsPerSource);
+            allResults.push(...results);
+        }
+        
+        // Save catalog
+        this.saveCatalog();
+        
+        console.log(`\n⚫ Monochrome icons download complete! ${allResults.length} monochrome SVG icons downloaded.`);
+        console.log(`📁 Icons organized in: ${this.outputDir}`);
+        
+        return allResults;
+    }
+
+    /**
      * Download from specific source only
      */
     async downloadSpecificSource(sourceName, iconLimit = 30) {
@@ -308,8 +440,16 @@ class IconDownloader {
         console.log('\n🎨 Multi-Source SVG Icon Downloader');
         console.log('=====================================');
         
-        console.log('\n📚 Available Icon Libraries:');
-        Object.entries(this.sources).forEach(([key, source]) => {
+        console.log('\n🎨 COLORED ICON LIBRARIES:');
+        Object.entries(this.sources).filter(([key, source]) => source.colored).forEach(([key, source]) => {
+            console.log(`\n• ${source.name} (${key})`);
+            console.log(`  📄 License: ${source.license}`);
+            console.log(`  📝 ${source.description}`);
+            console.log(`  🔢 Sample icons: ${source.sampleIcons.length}`);
+        });
+        
+        console.log('\n⚫ MONOCHROME ICON LIBRARIES:');
+        Object.entries(this.sources).filter(([key, source]) => !source.colored).forEach(([key, source]) => {
             console.log(`\n• ${source.name} (${key})`);
             console.log(`  📄 License: ${source.license}`);
             console.log(`  📝 ${source.description}`);
@@ -318,11 +458,14 @@ class IconDownloader {
         
         console.log('\n🚀 Usage Examples:');
         console.log('• --samples: Download samples from all sources (15 icons each)');
-        console.log('• --source heroicons: Download from Heroicons only');
-        console.log('• --source feather: Download from Feather Icons only');
-        console.log('• --source tabler: Download from Tabler Icons only');
-        console.log('• --source bootstrap: Download from Bootstrap Icons only');
-        console.log('• --source lucide: Download from Lucide Icons only');
+        console.log('• --colored: Download only from colored icon sources');
+        console.log('• --monochrome: Download only from monochrome icon sources');
+        console.log('• --source simpleicons: Download colored brand logos');
+        console.log('• --source devicons: Download colored tech icons');
+        console.log('• --source flagicons: Download country flags');
+        console.log('• --source weathericons: Download weather icons');
+        console.log('• --source cryptocurrency: Download crypto icons');
+        console.log('• --source heroicons: Download monochrome Heroicons');
         console.log('• --help: Show this information');
         
         console.log('\n📁 Output Structure:');
@@ -351,6 +494,10 @@ if (require.main === module) {
     
     if (args.includes('--samples')) {
         downloader.downloadSamples();
+    } else if (args.includes('--colored')) {
+        downloader.downloadColoredIcons();
+    } else if (args.includes('--monochrome')) {
+        downloader.downloadMonochromeIcons();
     } else if (args.includes('--source')) {
         const sourceIndex = args.indexOf('--source');
         const sourceName = args[sourceIndex + 1];

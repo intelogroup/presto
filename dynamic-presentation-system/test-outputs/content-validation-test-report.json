@@ -1,0 +1,335 @@
+{
+  "testSuite": "Content Validation System",
+  "timestamp": "2025-09-11T21:34:35.872Z",
+  "metrics": {
+    "totalTests": 45,
+    "passedTests": 39,
+    "failedTests": 6,
+    "validationSuccessRate": 86.66666666666667,
+    "averageValidationTime": 8.648235294117647,
+    "totalTruncations": 3,
+    "totalSanitizations": 0
+  },
+  "validatorMetrics": {
+    "totalValidations": 119,
+    "validContent": 119,
+    "invalidContent": 0,
+    "truncations": 3,
+    "sanitizations": 0,
+    "validationErrors": [],
+    "averageContentLength": 864.8235294117648,
+    "truncationSavings": 2793,
+    "validationRate": 100,
+    "truncationRate": 2.5210084033613445,
+    "sanitizationRate": 0
+  },
+  "results": [
+    {
+      "test": "Basic Validation",
+      "success": true,
+      "message": "Content validated successfully",
+      "timestamp": "2025-09-11T21:34:35.816Z"
+    },
+    {
+      "test": "Length Validation - Title Truncation",
+      "success": true,
+      "message": "Title properly truncated",
+      "timestamp": "2025-09-11T21:34:35.818Z"
+    },
+    {
+      "test": "Length Validation - Content Truncation",
+      "success": true,
+      "message": "Content properly truncated",
+      "timestamp": "2025-09-11T21:34:35.820Z"
+    },
+    {
+      "test": "Truncation Strategy - smart",
+      "success": false,
+      "message": "smart strategy failed",
+      "timestamp": "2025-09-11T21:34:35.821Z"
+    },
+    {
+      "test": "Truncation Strategy - sentence",
+      "success": false,
+      "message": "sentence strategy failed",
+      "timestamp": "2025-09-11T21:34:35.822Z"
+    },
+    {
+      "test": "Truncation Strategy - word",
+      "success": false,
+      "message": "word strategy failed",
+      "timestamp": "2025-09-11T21:34:35.822Z"
+    },
+    {
+      "test": "Truncation Strategy - ellipsis",
+      "success": false,
+      "message": "ellipsis strategy failed",
+      "timestamp": "2025-09-11T21:34:35.823Z"
+    },
+    {
+      "test": "Truncation Strategy - summary",
+      "success": false,
+      "message": "summary strategy failed",
+      "timestamp": "2025-09-11T21:34:35.823Z"
+    },
+    {
+      "test": "Truncation Strategy - hard",
+      "success": false,
+      "message": "hard strategy failed",
+      "timestamp": "2025-09-11T21:34:35.823Z"
+    },
+    {
+      "test": "Content Sanitization - Control Characters",
+      "success": true,
+      "message": "Control characters removed successfully",
+      "timestamp": "2025-09-11T21:34:35.825Z"
+    },
+    {
+      "test": "Content Sanitization - Whitespace Normalization",
+      "success": true,
+      "message": "Whitespace normalized successfully",
+      "timestamp": "2025-09-11T21:34:35.826Z"
+    },
+    {
+      "test": "Structure Validation - Section Limit",
+      "success": true,
+      "message": "Sections limited to 20",
+      "timestamp": "2025-09-11T21:34:35.827Z"
+    },
+    {
+      "test": "Structure Validation - Missing Fields",
+      "success": true,
+      "message": "Missing fields filled with defaults",
+      "timestamp": "2025-09-11T21:34:35.827Z"
+    },
+    {
+      "test": "Section Validation",
+      "success": true,
+      "message": "All sections properly validated",
+      "timestamp": "2025-09-11T21:34:35.828Z"
+    },
+    {
+      "test": "List Validation",
+      "success": true,
+      "message": "List properly validated (8 items)",
+      "timestamp": "2025-09-11T21:34:35.829Z"
+    },
+    {
+      "test": "Field Validation - Empty Title",
+      "success": true,
+      "message": "Field validation passed",
+      "timestamp": "2025-09-11T21:34:35.830Z"
+    },
+    {
+      "test": "Field Validation - Null Content",
+      "success": true,
+      "message": "Field validation passed",
+      "timestamp": "2025-09-11T21:34:35.831Z"
+    },
+    {
+      "test": "Field Validation - Undefined Subtitle",
+      "success": true,
+      "message": "Field validation passed",
+      "timestamp": "2025-09-11T21:34:35.831Z"
+    },
+    {
+      "test": "Auto-Fix Mechanisms",
+      "success": true,
+      "message": "Applied 5 fixes",
+      "timestamp": "2025-09-11T21:34:35.832Z"
+    },
+    {
+      "test": "Fallback Generation - Input 1",
+      "success": true,
+      "message": "Fallback generated successfully",
+      "timestamp": "2025-09-11T21:34:35.832Z"
+    },
+    {
+      "test": "Fallback Generation - Input 2",
+      "success": true,
+      "message": "Fallback generated successfully",
+      "timestamp": "2025-09-11T21:34:35.832Z"
+    },
+    {
+      "test": "Fallback Generation - Input 3",
+      "success": true,
+      "message": "Fallback generated successfully",
+      "timestamp": "2025-09-11T21:34:35.832Z"
+    },
+    {
+      "test": "Fallback Generation - Input 4",
+      "success": true,
+      "message": "Fallback generated successfully",
+      "timestamp": "2025-09-11T21:34:35.833Z"
+    },
+    {
+      "test": "Fallback Generation - Input 5",
+      "success": true,
+      "message": "Fallback generated successfully",
+      "timestamp": "2025-09-11T21:34:35.833Z"
+    },
+    {
+      "test": "Fallback Generation - Input 6",
+      "success": true,
+      "message": "Fallback generated successfully",
+      "timestamp": "2025-09-11T21:34:35.833Z"
+    },
+    {
+      "test": "Edge Case - Very Long Single Word",
+      "success": true,
+      "message": "Edge case handled successfully",
+      "timestamp": "2025-09-11T21:34:35.834Z"
+    },
+    {
+      "test": "Edge Case - Only Whitespace",
+      "success": true,
+      "message": "Edge case handled successfully",
+      "timestamp": "2025-09-11T21:34:35.834Z"
+    },
+    {
+      "test": "Edge Case - Special Characters",
+      "success": true,
+      "message": "Edge case handled successfully",
+      "timestamp": "2025-09-11T21:34:35.835Z"
+    },
+    {
+      "test": "Edge Case - Mixed Content Types",
+      "success": true,
+      "message": "Edge case handled successfully",
+      "timestamp": "2025-09-11T21:34:35.835Z"
+    },
+    {
+      "test": "Performance Validation",
+      "success": true,
+      "message": "Validation completed in 0ms",
+      "timestamp": "2025-09-11T21:34:35.836Z"
+    },
+    {
+      "test": "Validation Metrics",
+      "success": true,
+      "message": "Metrics: 3 validations, 100.0% valid",
+      "timestamp": "2025-09-11T21:34:35.838Z"
+    },
+    {
+      "test": "Content Limits",
+      "success": true,
+      "message": "Found 5 limit categories, 6 strategies",
+      "timestamp": "2025-09-11T21:34:35.839Z"
+    },
+    {
+      "test": "Quick Operations",
+      "success": true,
+      "message": "Length check and truncation working (64 → 48)",
+      "timestamp": "2025-09-11T21:34:35.840Z"
+    },
+    {
+      "test": "Complex Content Scenarios",
+      "success": true,
+      "message": "Complex content handled with 6 fixes",
+      "timestamp": "2025-09-11T21:34:35.844Z"
+    },
+    {
+      "test": "Invalid Input - Circular Reference",
+      "success": [
+        {
+          "title": "Default Section",
+          "content": "This presentation contains default content."
+        }
+      ],
+      "message": "Invalid input handled with fallback",
+      "timestamp": "2025-09-11T21:34:35.845Z"
+    },
+    {
+      "test": "Invalid Input - Function Input",
+      "success": [
+        {
+          "title": "Safe Content",
+          "content": "This presentation was generated using safe fallback content due to validation constraints."
+        }
+      ],
+      "message": "Invalid input handled with fallback",
+      "timestamp": "2025-09-11T21:34:35.859Z"
+    },
+    {
+      "test": "Invalid Input - Symbol Input",
+      "success": [
+        {
+          "title": "Safe Content",
+          "content": "This presentation was generated using safe fallback content due to validation constraints."
+        }
+      ],
+      "message": "Invalid input handled with fallback",
+      "timestamp": "2025-09-11T21:34:35.859Z"
+    },
+    {
+      "test": "Invalid Input - Date Input",
+      "success": [
+        {
+          "title": "Default Section",
+          "content": "This presentation contains default content."
+        }
+      ],
+      "message": "Invalid input handled with fallback",
+      "timestamp": "2025-09-11T21:34:35.860Z"
+    },
+    {
+      "test": "Truncation Accuracy - smart",
+      "success": true,
+      "message": "smart: 144 → 44 chars",
+      "timestamp": "2025-09-11T21:34:35.860Z"
+    },
+    {
+      "test": "Truncation Accuracy - sentence",
+      "success": true,
+      "message": "sentence: 144 → 98 chars",
+      "timestamp": "2025-09-11T21:34:35.861Z"
+    },
+    {
+      "test": "Truncation Accuracy - word",
+      "success": true,
+      "message": "word: 144 → 89 chars",
+      "timestamp": "2025-09-11T21:34:35.861Z"
+    },
+    {
+      "test": "Truncation Accuracy - ellipsis",
+      "success": true,
+      "message": "ellipsis: 144 → 100 chars",
+      "timestamp": "2025-09-11T21:34:35.862Z"
+    },
+    {
+      "test": "Content Preservation",
+      "success": true,
+      "message": "Important content elements preserved during validation",
+      "timestamp": "2025-09-11T21:34:35.862Z"
+    },
+    {
+      "test": "System Resilience - Concurrent Validations",
+      "success": true,
+      "message": "10 concurrent validations completed",
+      "timestamp": "2025-09-11T21:34:35.864Z"
+    },
+    {
+      "test": "System Resilience - Memory Usage",
+      "success": true,
+      "message": "Memory increase: 0.56MB",
+      "timestamp": "2025-09-11T21:34:35.866Z"
+    }
+  ],
+  "summary": {
+    "totalTests": 45,
+    "successRate": 86.66666666666667,
+    "validationCapabilities": {
+      "lengthValidation": true,
+      "contentSanitization": true,
+      "smartTruncation": true,
+      "structureValidation": true,
+      "autoFix": true,
+      "fallbackGeneration": true
+    },
+    "performanceMetrics": {
+      "averageValidationTime": 8.648235294117647,
+      "truncationEfficiency": 3,
+      "sanitizationEfficiency": 0
+    }
+  }
+}

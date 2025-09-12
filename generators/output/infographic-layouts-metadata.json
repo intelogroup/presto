@@ -1,0 +1,45 @@
+{
+  "title": "Infographic & Lucid Icons Layouts Showcase",
+  "generatedAt": "2025-09-11T23:57:42.348Z",
+  "slides": 7,
+  "layoutTypes": [
+    "Infographic Dashboard",
+    "Timeline Process",
+    "Hero Illustration",
+    "Icon Grid Features",
+    "Split Infographic"
+  ],
+  "assetsUsed": {
+    "lucideIcons": 0,
+    "undrawIllustrations": 0,
+    "humaaansIllustrations": 0,
+    "assetBreakdown": {
+      "heroIllustrations": 1,
+      "dashboardIcons": 3,
+      "timelineIcons": 5,
+      "featureGridIcons": 8,
+      "infographicIcons": 6
+    },
+    "assetLibraries": [
+      "Lucide Icons (180+ icons)",
+      "Undraw Illustrations",
+      "Humaaans Illustrations",
+      "Dynamic Charts & Visualizations"
+    ]
+  },
+  "features": [
+    "Dynamic Lucide icon integration",
+    "Chart-powered infographics",
+    "Hero illustration layouts",
+    "Responsive grid systems",
+    "Professional color schemes",
+    "Automated asset selection"
+  ],
+  "dynamicGenerator": {
+    "systemVersion": "2.0.0",
+    "assetIntegration": true,
+    "layoutOptimization": true,
+    "infographicSupport": true,
+    "lucideIconSystem": true
+  }
+}

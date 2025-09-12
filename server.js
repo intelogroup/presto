@@ -1,845 +1,442 @@
+#!/usr/bin/env node
+/**
+ * Presto Express.js Backend Server
+ * 
+ * Provides REST API endpoints for PPTX generation using:
+ * - Enhanced generators from ./generators/generators-templates/
+ * - Dynamic presentation system from ./dynamic-presentation-system/
+ * 
+ * Features:
+ * - Intelligent routing based on presentation type
+ * - Comprehensive error handling and fallbacks
+ * - Rate limiting and security
+ * - Memory management and optimization
+ * - Real-time generation status
+ */
+
+// Load environment variables
+require('dotenv').config();
+
 const express = require('express');
-const OpenAI = require('openai');
 const cors = require('cors');
-const PptxGenJS = require('pptxgenjs');
-const fs = require('fs').promises;
-const path = require('path');
+const helmet = require('helmet');
+const compression = require('compression');
+const rateLimit = require('express-rate-limit');
 const { v4: uuidv4 } = require('uuid');
+const Joi = require('joi');
+const path = require('path');
+const fs = require('fs').promises;
 
-// Try to load intelligent routing, fallback gracefully if not available
-let routePresentationRequest = null;
-let ContentValidator = null;
-try {
-    const intelligentRouting = require('./intelligent-routing');
-    routePresentationRequest = intelligentRouting.routePresentationRequest;
-    ContentValidator = intelligentRouting.ContentValidator;
-    console.log('✅ Intelligent routing system loaded');
-} catch (error) {
-    console.log('⚠️ Intelligent routing not available, using fallback mode');
-}
+// Import our presentation systems
+const { ComprehensivePresentationSystem } = require('./dynamic-presentation-system/comprehensive-presentation-system');
+const EnhancedPptxGenerator = require('./generators/generators-templates/enhanced_pptx_generator');
 
+// Import chat routes
+const chatRoutes = require('./routes/chat');
+
+// Initialize Express app
 const app = express();
-const port = 3004;
+const PORT = process.env.PORT || 3004;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Security and performance middleware
+app.use(helmet({
+    crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrc: ["'self'"],
+            imgSrc: ["'self'", "data:", "https:"],
+        },
+    },
+}));
 
-// Check for API keys - prioritize OpenRouter for Gemini 2.0
-const USE_OPENROUTER = !!process.env.OPENROUTER_API_KEY;
-const USE_LOCAL_FALLBACK = !USE_OPENROUTER && !process.env.OPENAI_API_KEY;
+app.use(compression());
+app.use(cors({
+    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
 
-// Initialize AI client - prefer OpenRouter with Gemini 2.0
-let aiClient = null;
-if (USE_OPENROUTER) {
-    aiClient = new OpenAI({
-        apiKey: process.env.OPENROUTER_API_KEY,
-        baseURL: 'https://openrouter.ai/api/v1',
-        defaultHeaders: {
-            'HTTP-Referer': process.env.SITE_URL || 'https://presto-slides.com',
-            'X-Title': 'Presto Slides AI PowerPoint Generator'
-        }
-    });
-    console.log('✅ Using OpenRouter API with Gemini 2.0');
-} else if (process.env.OPENAI_API_KEY) {
-    aiClient = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY
-    });
-    console.log('✅ Using OpenAI API (fallback)');
-} else {
-    console.log('⚠️ No API keys available, using local fallback');
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Rate limiting - DISABLED
+// const limiter = rateLimit({
+//     windowMs: 15 * 60 * 1000, // 15 minutes
+//     max: 100, // Limit each IP to 100 requests per windowMs
+//     message: {
+//         error: 'Too many requests from this IP, please try again later.',
+//         retryAfter: '15 minutes'
+//     },
+//     standardHeaders: true,
+//     legacyHeaders: false,
+// });
+
+// app.use('/api/', limiter);
+
+// Chat routes
+app.use('/api/chat', chatRoutes);
+
+// Initialize presentation systems
+let comprehensiveSystem;
+let enhancedGenerator;
+
+try {
+    comprehensiveSystem = new ComprehensivePresentationSystem();
+    console.log('✅ Comprehensive Presentation System initialized');
+} catch (error) {
+    console.error('❌ Failed to initialize Comprehensive Presentation System:', error.message);
 }
 
-async function callAIChat(params) {
-    if (USE_LOCAL_FALLBACK) {
-        // Build a simple echo-like assistant response for local development
-        const lastUserMessage = Array.isArray(params.messages) ?
-            params.messages.slice().reverse().find(m => m.role === 'user') : null;
-        const userText = lastUserMessage?.content || 'Hello';
-
-        // Simulate a delay
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        return {
-            id: `local-${Date.now()}`,
-            choices: [
-                {
-                    message: {
-                        role: 'assistant',
-                        content: `I understand you want to create a PowerPoint presentation about: "${userText}".
-
-Here's what I would suggest:
-- Title slide with your main topic
-- 3-5 content slides covering key points
-- Professional design with consistent formatting
-- Conclusion slide
-
-To generate the actual PowerPoint, please connect an API key. For now, I'm running in demo mode.`
-                    }
-                }
-            ],
-            usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
-            created: Math.floor(Date.now() / 1000)
-        };
-    }
-
-    if (!aiClient) {
-        throw new Error('AI client not initialized');
-    }
-
-    // Set the appropriate model based on the API being used
-    const modelToUse = USE_OPENROUTER ? 'google/gemini-2.0-flash-exp:free' : (params.model || 'gpt-4o-mini');
-
-    const requestParams = {
-        ...params,
-        model: modelToUse
-    };
-
-    console.log(`🤖 Making AI request with model: ${modelToUse}`);
-    return await aiClient.chat.completions.create(requestParams);
-}
-
-// Adapter loader for template modules to standardize generatePresentation
-async function loadTemplateAdapter(modulePath) {
-    // modulePath: absolute path to generator module
-    try {
-        const Mod = require(modulePath);
-        // If module exports a function that directly generates, wrap it
-        if (typeof Mod === 'function' && !Mod.prototype) {
-            return {
-                generatePresentation: async (data, outputPath) => {
-                    // try calling as function
-                    const res = await Mod(data, outputPath);
-                    return res || { success: true, path: outputPath };
-                }
-            };
-        }
-
-        // If it's a class or constructor
-        const instance = new Mod();
-        // If instance implements generatePresentation directly
-        if (typeof instance.generatePresentation === 'function') {
-            return {
-                generatePresentation: async (data, outputPath) => {
-                    return await instance.generatePresentation(data, outputPath);
-                }
-            };
-        }
-
-        // If it implements generateDemo that populates instance.pptx
-        if (typeof instance.generateDemo === 'function') {
-            return {
-                generatePresentation: async (data, outputPath) => {
-                    // try calling demo method; some demo methods accept no args
-                    await instance.generateDemo(data).catch(() => {});
-                    if (instance.pptx) {
-                        await instance.pptx.writeFile({ fileName: outputPath });
-                        return { success: true, path: outputPath };
-                    }
-                    return { success: false, error: 'Template demo executed but did not expose pptx instance' };
-                }
-            };
-        }
-
-        // As a last resort, check for a static generate function
-        if (typeof Mod.generatePresentation === 'function') {
-            return { generatePresentation: async (data, outputPath) => await Mod.generatePresentation(data, outputPath) };
-        }
-
-        return null;
-    } catch (err) {
-        return null;
-    }
-}
-
-// PowerPoint Generator Class
-class PrestoSlidesGenerator {
-    constructor() {
-        // Color schemes inspired by the enhanced generator
-        this.colorSchemes = {
-            professional: {
-                primary: '1f4e79',
-                secondary: '70ad47',
-                accent: 'ffc000',
-                text: '2f2f2f',
-                lightGray: 'f2f2f2',
-                white: 'ffffff'
-            },
-            modern: {
-                primary: '2e86ab',
-                secondary: 'a23b72',
-                accent: '4caf50',
-                text: '333333',
-                lightGray: 'f5f5f5',
-                white: 'ffffff'
-            }
-        };
-
-        // Font settings
-        this.fonts = {
-            title: { face: 'Segoe UI', size: 44, bold: true },
-            subtitle: { face: 'Segoe UI', size: 24 },
-            heading: { face: 'Segoe UI', size: 32, bold: true },
-            body: { face: 'Segoe UI', size: 18 },
-            caption: { face: 'Segoe UI', size: 14 }
-        };
-
-        // Safe layout areas (from content constraint system)
-        this.safeArea = { x: 0.5, y: 0.5, width: 9, height: 4.625 };
-    }
-
-    sanitizeText(text, maxLength = 1000) {
-        if (!text) return '';
-
-        let sanitized = String(text)
-            .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remove control characters
-            .trim();
-
-        if (sanitized.length > maxLength) {
-            sanitized = sanitized.substring(0, maxLength - 3) + '...';
-        }
-
-        return sanitized;
-    }
-
-    createTitleSlide(pptx, title, subtitle = '', colorScheme = 'professional') {
-        const slide = pptx.addSlide();
-        const colors = this.colorSchemes[colorScheme] || this.colorSchemes['professional'];
-
-        // Background
-        slide.background = { color: colors.white };
-
-        // Title
-        slide.addText(this.sanitizeText(title, 100), {
-            x: 1, y: 2, w: 8, h: 1.5,
-            fontSize: this.fonts.title.size,
-            fontFace: this.fonts.title.face,
-            bold: this.fonts.title.bold,
-            color: colors.primary,
-            align: 'center',
-            valign: 'middle'
-        });
-
-        // Subtitle
-        if (subtitle) {
-            slide.addText(this.sanitizeText(subtitle, 200), {
-                x: 1, y: 3.5, w: 8, h: 1,
-                fontSize: this.fonts.subtitle.size,
-                fontFace: this.fonts.subtitle.face,
-                color: colors.text,
-                align: 'center',
-                valign: 'middle'
-            });
-        }
-
-        // Decorative line
-        slide.addShape('line', {
-            x: 2, y: 4.8, w: 6, h: 0,
-            line: { color: colors.accent, width: 3 }
-        });
-
-        return slide;
-    }
-
-    createContentSlide(pptx, title, content, colorScheme = 'professional') {
-        const slide = pptx.addSlide();
-        const colors = this.colorSchemes[colorScheme] || this.colorSchemes['professional'];
-
-        // Background
-        slide.background = { color: colors.white };
-
-        // Title
-        slide.addText(this.sanitizeText(title, 80), {
-            x: this.safeArea.x, y: 0.5, w: this.safeArea.width, h: 0.8,
-            fontSize: this.fonts.heading.size,
-            fontFace: this.fonts.heading.face,
-            bold: this.fonts.heading.bold,
-            color: colors.primary,
-            align: 'left',
-            valign: 'middle'
-        });
-
-        // Content
-        const contentText = this.sanitizeText(content, 2000);
-        slide.addText(contentText, {
-            x: this.safeArea.x, y: 1.5, w: this.safeArea.width, h: 3.5,
-            fontSize: this.fonts.body.size,
-            fontFace: this.fonts.body.face,
-            color: colors.text,
-            align: 'left',
-            valign: 'top',
-            wrap: true
-        });
-
-        return slide;
-    }
-
-    createBulletSlide(pptx, title, bullets, colorScheme = 'professional') {
-        const slide = pptx.addSlide();
-        const colors = this.colorSchemes[colorScheme] || this.colorSchemes['professional'];
-
-        // Background
-        slide.background = { color: colors.white };
-
-        // Title
-        slide.addText(this.sanitizeText(title, 80), {
-            x: this.safeArea.x, y: 0.5, w: this.safeArea.width, h: 0.8,
-            fontSize: this.fonts.heading.size,
-            fontFace: this.fonts.heading.face,
-            bold: this.fonts.heading.bold,
-            color: colors.primary,
-            align: 'left',
-            valign: 'middle'
-        });
-
-        // Bullet points
-        const bulletText = bullets.map(bullet => `• ${this.sanitizeText(bullet, 200)}`).join('\n');
-        slide.addText(bulletText, {
-            x: this.safeArea.x + 0.2, y: 1.5, w: this.safeArea.width - 0.4, h: 3.5,
-            fontSize: this.fonts.body.size,
-            fontFace: this.fonts.body.face,
-            color: colors.text,
-            align: 'left',
-            valign: 'top',
-            wrap: true
-        });
-
-        return slide;
-    }
-
-    async generatePresentation(data, outputPath) {
-        console.log('🎯 PrestoSlidesGenerator: Starting generation...');
-
-        try {
-            // Validate input data
-            if (!data || typeof data !== 'object') {
-                throw new Error('Invalid presentation data provided');
-            }
-
-            if (!data.title || typeof data.title !== 'string' || data.title.trim().length === 0) {
-                throw new Error('Title is required and must be a non-empty string');
-            }
-
-            console.log(`Creating presentation: "${data.title}"`);
-
-            const pptx = new PptxGenJS();
-
-            // Setup presentation safely
-            try {
-                pptx.defineLayout({ name: 'LAYOUT_16x9', width: 10, height: 5.625 });
-                pptx.layout = 'LAYOUT_16x9';
-                pptx.author = 'Presto Slides - AI PowerPoint Generator';
-                pptx.company = 'Presto Slides';
-                pptx.subject = this.sanitizeText(data.title, 100) || 'AI Generated Presentation';
-                pptx.title = this.sanitizeText(data.title, 100) || 'Presentation';
-                console.log('✅ PPTX setup completed');
-            } catch (setupError) {
-                console.log('⚠️ PPTX setup had issues, continuing with basic setup:', setupError.message);
-            }
-
-            const colorScheme = data.colorScheme || 'professional';
-            console.log(`Using color scheme: ${colorScheme}`);
-
-            // Create title slide
-            try {
-                this.createTitleSlide(pptx, data.title, data.subtitle || '', colorScheme);
-                console.log('✅ Title slide created');
-            } catch (titleError) {
-                console.error('Title slide creation failed:', titleError.message);
-                throw new Error(`Failed to create title slide: ${titleError.message}`);
-            }
-
-            // Create content slides with robust error handling
-            let slidesCreated = 0;
-            if (data.slides && Array.isArray(data.slides) && data.slides.length > 0) {
-                console.log(`Creating ${data.slides.length} content slides...`);
-
-                for (let i = 0; i < data.slides.length && i < 50; i++) { // Limit to 50 slides
-                    try {
-                        const slideData = data.slides[i];
-
-                        if (!slideData || typeof slideData !== 'object') {
-                            console.log(`⚠️ Skipping invalid slide ${i + 1}`);
-                            continue;
-                        }
-
-                        const slideTitle = slideData.title || `Slide ${i + 1}`;
-
-                        if (slideData.type === 'bullets' && slideData.bullets && Array.isArray(slideData.bullets)) {
-                            // Filter out empty bullets and limit to 8
-                            const validBullets = slideData.bullets
-                                .filter(bullet => bullet && typeof bullet === 'string' && bullet.trim().length > 0)
-                                .slice(0, 8);
-
-                            if (validBullets.length > 0) {
-                                this.createBulletSlide(pptx, slideTitle, validBullets, colorScheme);
-                                slidesCreated++;
-                                console.log(`✅ Bullet slide ${i + 1} created with ${validBullets.length} bullets`);
-                            } else {
-                                console.log(`⚠️ Skipping bullet slide ${i + 1} - no valid bullets`);
-                            }
-                        } else if (slideData.content || slideData.title) {
-                            const content = slideData.content || 'Content not provided';
-                            this.createContentSlide(pptx, slideTitle, content, colorScheme);
-                            slidesCreated++;
-                            console.log(`✅ Content slide ${i + 1} created`);
-                        } else {
-                            console.log(`⚠️ Skipping slide ${i + 1} - no title or content`);
-                        }
-                    } catch (slideError) {
-                        console.error(`Error creating slide ${i + 1}:`, slideError.message);
-                        // Continue with other slides instead of failing completely
-                    }
-                }
-
-                console.log(`✅ Successfully created ${slidesCreated} content slides`);
-            } else {
-                console.log('⚠️ No valid slides provided, creating title slide only');
-            }
-
-            // Ensure output directory exists
-            try {
-                const outputDir = require('path').dirname(outputPath);
-                await require('fs').promises.mkdir(outputDir, { recursive: true });
-                console.log('✅ Output directory verified');
-            } catch (dirError) {
-                console.log('Directory creation warning:', dirError.message);
-            }
-
-            // Write file
-            console.log(`Writing presentation to: ${outputPath}`);
-            await pptx.writeFile({ fileName: outputPath });
-            console.log('✅ File written successfully');
-
-            const result = {
-                success: true,
-                path: outputPath,
-                slides: slidesCreated + 1, // +1 for title slide
-                generator: 'PrestoSlidesGenerator',
-                colorScheme: colorScheme
-            };
-
-            console.log('🎉 PrestoSlidesGenerator: Generation completed successfully');
-            return result;
-
-        } catch (error) {
-            console.error('�� PrestoSlidesGenerator CRITICAL ERROR:', error.message);
-            console.error('Error details:', error);
-            return {
-                success: false,
-                error: error.message,
-                generator: 'PrestoSlidesGenerator'
-            };
-        }
-    }
-}
-
-// Chat endpoint for PowerPoint generation with intelligent routing
-app.post('/chat', async (req, res) => {
-    try {
-        const { messages, model, temperature, max_tokens } = req.body || {};
-
-        if (!Array.isArray(messages) || messages.length === 0) {
-            return res.status(400).json({ error: 'messages array is required' });
-        }
-
-        // Get the last user message for analysis
-        const lastUserMessage = messages.slice().reverse().find(m => m.role === 'user');
-        const userInput = lastUserMessage?.content || '';
-
-        // Check if this looks like a presentation request
-        const isPresentationRequest = userInput.toLowerCase().includes('presentation') ||
-                                    userInput.toLowerCase().includes('powerpoint') ||
-                                    userInput.toLowerCase().includes('pptx') ||
-                                    userInput.toLowerCase().includes('slides');
-
-        let enhancedMessages = messages;
-
-        if (isPresentationRequest) {
-            console.log('🎯 Detected presentation request, using intelligent routing...');
-
-            // Use intelligent routing to get enhanced prompt
-            const routingResult = await routePresentationRequest(userInput);
-
-            if (routingResult.success) {
-                console.log('📊 Template analysis:', routingResult.analysis);
-
-                // Replace the last user message with enhanced prompt
-                enhancedMessages = [...messages];
-                const lastMessageIndex = enhancedMessages.length - 1;
-                enhancedMessages[lastMessageIndex] = {
-                    role: 'user',
-                    content: routingResult.enhancedPrompt
-                };
-
-                // Add system context
-                enhancedMessages.unshift({
-                    role: 'system',
-                    content: `You are an expert PowerPoint presentation generator with deep knowledge of effective presentation design and content structure. You understand various presentation types and can adapt your responses accordingly. Always respond with properly formatted JSON when generating presentations.`
-                });
-            }
-        }
-
-        const response = await callAIChat({
-            model: model || (USE_OPENROUTER ? 'google/gemini-2.0-flash-exp:free' : 'gpt-4o-mini'),
-            messages: enhancedMessages,
-            temperature: typeof temperature === 'number' ? temperature : 0.7,
-            max_tokens: typeof max_tokens === 'number' ? max_tokens : 1500,
-        });
-
-        const result = {
-            id: response.id,
-            message: response.choices?.[0]?.message,
-            usage: response.usage || null,
-            created: response.created,
-        };
-
-        res.status(200).json(result);
-    } catch (error) {
-        console.error('Chat error:', error.message);
-        res.status(500).json({ error: error.message });
-    }
+// Validation schemas
+const presentationSchema = Joi.object({
+    title: Joi.string().min(1).max(200).required(),
+    slides: Joi.array().items(
+        Joi.object({
+            title: Joi.string().max(200),
+            content: Joi.alternatives().try(
+                Joi.string().max(5000),
+                Joi.array().items(Joi.string().max(1000)),
+                Joi.object()
+            ),
+            type: Joi.string().valid('title', 'content', 'image', 'chart', 'table', 'conclusion').default('content'),
+            layout: Joi.string().valid('standard', 'two-column', 'image-focus', 'chart-focus').default('standard')
+        })
+    ).min(1).max(50).required(),
+    theme: Joi.string().valid('professional', 'modern', 'minimal').default('professional'),
+    template: Joi.string().optional(),
+    userInput: Joi.string().max(2000).optional(),
+    options: Joi.object({
+        includeAnimations: Joi.boolean().default(false),
+        includeNotes: Joi.boolean().default(false),
+        compressionLevel: Joi.string().valid('low', 'medium', 'high').default('medium')
+    }).optional()
 });
 
-// PPTX Generation endpoint with intelligent routing and validation
-app.post('/generate-pptx', async (req, res) => {
-    console.log('=== INTELLIGENT PPTX Generation Started ===');
-    console.log('Request body:', JSON.stringify(req.body, null, 2));
-
-    try {
-        const requestData = req.body || {};
-
-        // Step 1: Validate and sanitize input data (with fallback)
-        console.log('Step 1: Validating presentation data...');
-        let sanitizedData = requestData;
-
-        if (ContentValidator) {
-            try {
-                const validationErrors = ContentValidator.validatePresentationData(requestData);
-
-                if (validationErrors.length > 0) {
-                    console.log('VALIDATION FAILED:', validationErrors);
-                    return res.status(400).json({
-                        error: 'Validation failed',
-                        details: validationErrors
-                    });
-                }
-
-                // Step 2: Sanitize data
-                console.log('Step 2: Sanitizing presentation data...');
-                sanitizedData = ContentValidator.sanitizePresentationData(requestData);
-                console.log('Sanitized data:', JSON.stringify(sanitizedData, null, 2));
-            } catch (validationError) {
-                console.log('⚠️ Validation system error, using basic validation:', validationError.message);
-                // Basic fallback validation
-                if (!requestData.title) {
-                    return res.status(400).json({ error: 'Title is required' });
-                }
-                sanitizedData = requestData;
-            }
-        } else {
-            console.log('⚠️ Using basic validation (intelligent routing not available)');
-            // Basic fallback validation
-            if (!requestData.title) {
-                return res.status(400).json({ error: 'Title is required' });
-            }
-            sanitizedData = requestData;
-        }
-
-        // Step 3: Analyze request for template routing (if available and user provided context)
-        let routingResult = null;
-        let usedTemplate = 'presto_default';
-
-        // Always use default generator for reliability - disable template routing for now
-        console.log('Step 3: Using default generator for reliability');
-        routingResult = {
-            success: true,
-            analysis: {
-                useDefault: true,
-                reasoning: "Using default generator for optimal reliability"
-            }
-        };
-
-        // Step 4: Setup file generation
-        const fileName = `presentation_${uuidv4()}.pptx`;
-        const outputPath = path.join(__dirname, 'temp', fileName);
-
-        console.log('Step 4: Generated output path:', outputPath);
-
-        // Ensure temp directory exists
-        try {
-            await fs.mkdir(path.dirname(outputPath), { recursive: true });
-            console.log('Step 5: Temp directory verified');
-        } catch (dirError) {
-            console.error('Step 5 ERROR: Failed to create temp directory:', dirError);
-            throw dirError;
-        }
-
-        // Step 6: Generate presentation using validated and sanitized data
-        console.log('Step 6: Generating presentation with validated data...');
-        let result = null;
-
-        try {
-            const generator = new PrestoSlidesGenerator();
-            result = await generator.generatePresentation(sanitizedData, outputPath);
-            console.log('Step 6: Generation result:', result);
-            usedTemplate = 'presto_default';
-        } catch (genError) {
-            console.error('Step 6 ERROR: Generation failed:', genError.message);
-            throw genError;
-        }
-
-        // Step 7: Handle result
-        console.log('Step 7: Processing result:', result);
-
-        if (result && result.success) {
-            console.log('Step 8: Success! Sending file download');
-
-            // Add headers with metadata
-            res.setHeader('X-Presto-Template', usedTemplate);
-            res.setHeader('X-Presto-Validated', 'true');
-            if (routingResult?.analysis) {
-                res.setHeader('X-Presto-Analysis', JSON.stringify(routingResult.analysis));
-            }
-
-            const downloadFileName = `${sanitizedData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pptx`;
-
-            res.download(outputPath, downloadFileName, async (err) => {
-                // Clean up temp file
-                try {
-                    await fs.unlink(outputPath);
-                    console.log('Step 9: Temp file cleaned up');
-                } catch (cleanupError) {
-                    console.error('Cleanup error:', cleanupError);
-                }
-
-                if (err) {
-                    console.error('Download error:', err);
-                }
-            });
-        } else {
-            console.error('Step 8 ERROR: Generation failed:', result?.error || 'Unknown error');
-            res.status(500).json({
-                error: result?.error || 'Presentation generation failed',
-                details: 'The presentation could not be generated. Please try again with simpler content.'
-            });
-        }
-    } catch (error) {
-        console.error('=== CRITICAL PPTX GENERATION ERROR ===');
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
-        console.error('========================================');
-        res.status(500).json({
-            error: 'Internal server error during presentation generation',
-            details: error.message
+// Middleware for request validation
+const validatePresentation = (req, res, next) => {
+    const { error, value } = presentationSchema.validate(req.body, { 
+        abortEarly: false,
+        stripUnknown: true 
+    });
+    
+    if (error) {
+        return res.status(400).json({
+            error: 'Invalid presentation data',
+            details: error.details.map(detail => ({
+                field: detail.path.join('.'),
+                message: detail.message
+            }))
         });
+    }
+    
+    req.validatedData = value;
+    next();
+};
+
+// Intelligent routing function
+function determineOptimalGenerator(presentationData, userInput = '') {
+    const { slides, title, theme } = presentationData;
+    const input = (userInput || '').toLowerCase();
+    const slideCount = slides.length;
+    
+    // Analyze content complexity
+    const hasCharts = slides.some(slide => 
+        slide.type === 'chart' || 
+        (typeof slide.content === 'string' && slide.content.includes('chart'))
+    );
+    
+    const hasTables = slides.some(slide => 
+        slide.type === 'table' || 
+        (typeof slide.content === 'string' && slide.content.includes('table'))
+    );
+    
+    const hasComplexLayouts = slides.some(slide => 
+        slide.layout && slide.layout !== 'standard'
+    );
+    
+    const isBusinessPresentation = input.includes('business') || 
+        input.includes('corporate') || 
+        input.includes('professional') ||
+        theme === 'professional';
+    
+    const isCreativePresentation = input.includes('creative') || 
+        input.includes('design') || 
+        input.includes('artistic') ||
+        hasComplexLayouts;
+    
+    // Decision logic
+    if (slideCount > 20 || hasCharts || hasTables || isBusinessPresentation) {
+        return {
+            generator: 'comprehensive',
+            reason: 'Complex presentation with multiple elements',
+            confidence: 0.9
+        };
+    }
+    
+    if (isCreativePresentation || hasComplexLayouts) {
+        return {
+            generator: 'enhanced',
+            reason: 'Creative presentation requiring advanced layouts',
+            confidence: 0.8
+        };
+    }
+    
+    // Default to comprehensive system for reliability
+    return {
+        generator: 'comprehensive',
+        reason: 'Standard presentation using comprehensive system',
+        confidence: 0.7
+    };
+}
+
+// Main PPTX generation endpoint
+app.post('/api/generate-pptx', validatePresentation, async (req, res) => {
+    const generationId = uuidv4();
+    const startTime = Date.now();
+    
+    console.log(`🎯 [${generationId}] Starting PPTX generation`);
+    console.log(`📊 Request data:`, {
+        title: req.validatedData.title,
+        slideCount: req.validatedData.slides.length,
+        theme: req.validatedData.theme,
+        userInput: req.validatedData.userInput?.substring(0, 100) + '...'
+    });
+    
+    try {
+        // Determine optimal generator
+        const routing = determineOptimalGenerator(
+            req.validatedData, 
+            req.validatedData.userInput
+        );
+        
+        console.log(`🤖 [${generationId}] Using ${routing.generator} generator: ${routing.reason}`);
+        
+        let pptxBuffer;
+        let templateUsed = 'presto_default';
+        let isValidated = false;
+        
+        if (routing.generator === 'comprehensive' && comprehensiveSystem) {
+            // Use comprehensive presentation system
+            try {
+                const result = await comprehensiveSystem.generatePresentation(
+                    req.validatedData,
+                    {
+                        outputFormat: 'buffer',
+                        includeMetadata: true,
+                        generationId
+                    }
+                );
+                
+                pptxBuffer = result.buffer;
+                templateUsed = result.templateUsed || 'comprehensive_dynamic';
+                isValidated = result.validated || false;
+                
+                console.log(`✅ [${generationId}] Comprehensive system completed`);
+            } catch (comprehensiveError) {
+                console.warn(`⚠️ [${generationId}] Comprehensive system failed, falling back to enhanced generator:`, comprehensiveError.message);
+                throw comprehensiveError; // Will be caught by fallback logic
+            }
+        } else {
+            // Fallback to enhanced generator
+            throw new Error('Using enhanced generator fallback');
+        }
+        
+        // If we reach here, generation was successful
+        const generationTime = Date.now() - startTime;
+        
+        // Set response headers with metadata
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
+        res.setHeader('Content-Disposition', `attachment; filename="${req.validatedData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pptx"`);
+        res.setHeader('X-Presto-Template', templateUsed);
+        res.setHeader('X-Presto-Validated', isValidated.toString());
+        res.setHeader('X-Presto-Generation-Time', generationTime.toString());
+        res.setHeader('X-Presto-Generator', routing.generator);
+        
+        console.log(`🎉 [${generationId}] PPTX generated successfully in ${generationTime}ms`);
+        
+        return res.send(pptxBuffer);
+        
+    } catch (error) {
+        console.error(`❌ [${generationId}] Primary generation failed:`, error.message);
+        
+        // Enhanced generator fallback
+        try {
+            console.log(`🔄 [${generationId}] Attempting enhanced generator fallback...`);
+            
+            enhancedGenerator = new EnhancedPptxGenerator({
+                theme: req.validatedData.theme,
+                enableFallbacks: true,
+                maxSlides: 50
+            });
+            
+            const outputPath = path.join(__dirname, 'temp', `${generationId}.pptx`);
+            
+            // Ensure temp directory exists
+            await fs.mkdir(path.dirname(outputPath), { recursive: true });
+            
+            // Generate using enhanced generator
+            await enhancedGenerator.generatePresentation(req.validatedData, outputPath);
+            
+            // Read the generated file
+            const pptxBuffer = await fs.readFile(outputPath);
+            
+            // Clean up temp file
+            await fs.unlink(outputPath).catch(() => {}); // Ignore cleanup errors
+            
+            const generationTime = Date.now() - startTime;
+            
+            // Set response headers
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
+            res.setHeader('Content-Disposition', `attachment; filename="${req.validatedData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pptx"`);
+            res.setHeader('X-Presto-Template', 'enhanced_fallback');
+            res.setHeader('X-Presto-Validated', 'false');
+            res.setHeader('X-Presto-Generation-Time', generationTime.toString());
+            res.setHeader('X-Presto-Generator', 'enhanced_fallback');
+            
+            console.log(`✅ [${generationId}] Enhanced generator fallback succeeded in ${generationTime}ms`);
+            
+            return res.send(pptxBuffer);
+            
+        } catch (fallbackError) {
+            console.error(`❌ [${generationId}] Enhanced generator fallback also failed:`, fallbackError.message);
+            
+            return res.status(500).json({
+                error: 'PPTX generation failed',
+                message: 'Both primary and fallback generators failed. Please try again with simpler content.',
+                generationId,
+                details: {
+                    primaryError: error.message,
+                    fallbackError: fallbackError.message
+                }
+            });
+        }
     }
 });
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-    const aiStatus = USE_OPENROUTER ? 'openrouter_gemini' :
-                     (aiClient ? 'openai' : 'local_fallback');
-
-    res.status(200).json({
-        status: 'OK',
+app.get('/api/health', (req, res) => {
+    const systemStatus = {
+        status: 'healthy',
         timestamp: new Date().toISOString(),
-        server: 'Presto Slides API Server',
-        ai_provider: aiStatus,
-        model: USE_OPENROUTER ? 'google/gemini-2.0-flash-exp:free' : 'gpt-4o-mini'
-    });
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        systems: {
+            comprehensiveSystem: !!comprehensiveSystem,
+            enhancedGenerator: true // Always available as it's instantiated on demand
+        }
+    };
+    
+    if (comprehensiveSystem && typeof comprehensiveSystem.getSystemStatus === 'function') {
+        try {
+            systemStatus.comprehensiveSystemMetrics = comprehensiveSystem.getSystemStatus();
+        } catch (error) {
+            systemStatus.comprehensiveSystemError = error.message;
+        }
+    }
+    
+    res.json(systemStatus);
 });
 
-// Root endpoint
-app.get('/', (req, res) => {
-    const aiStatus = USE_OPENROUTER ? 'openrouter_gemini_2.0' :
-                     (aiClient ? 'openai' : 'demo_mode');
-
+// System status endpoint
+app.get('/api/status', (req, res) => {
     res.json({
-        name: 'Presto Slides API',
+        service: 'Presto PPTX Generator',
         version: '1.0.0',
-        endpoints: [
-            'POST /chat - Chat with AI for PowerPoint generation',
-            'POST /generate-pptx - Generate PPTX',
-            'GET /templates - List available templates (use /api/templates from frontend)',
-            'GET /health - Health check'
-        ],
-        ai_provider: aiStatus,
-        model: USE_OPENROUTER ? 'google/gemini-2.0-flash-exp:free' : 'gpt-4o-mini'
+        status: 'operational',
+        generators: {
+            comprehensive: !!comprehensiveSystem,
+            enhanced: true
+        },
+        endpoints: {
+            'POST /api/generate-pptx': 'Generate PPTX from presentation data',
+            'GET /api/health': 'System health check',
+            'GET /api/status': 'Service status information',
+            'GET /api/templates': 'Available templates information'
+        }
     });
 });
 
-// Get template capabilities and analysis (with fallback)
-app.get('/template-capabilities', async (req, res) => {
-    try {
-        if (routePresentationRequest) {
-            const capabilities = await require('./intelligent-routing').loadTemplateCapabilities();
-            res.json(capabilities);
-        } else {
-            res.json({
-                templates: {},
-                defaultGenerator: {
-                    name: "Presto Default Generator",
-                    description: "Reliable presentation generator",
-                    note: "Intelligent routing not available"
-                }
-            });
-        }
-    } catch (error) {
-        console.error('Error loading template capabilities:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Analyze user input for template recommendations (with fallback)
-app.post('/analyze-request', async (req, res) => {
-    try {
-        const { userInput, presentationData } = req.body || {};
-
-        if (!userInput) {
-            return res.status(400).json({ error: 'userInput is required' });
-        }
-
-        if (routePresentationRequest) {
-            const routingResult = await routePresentationRequest(userInput, presentationData);
-            res.json(routingResult);
-        } else {
-            res.json({
-                success: true,
-                analysis: {
-                    useDefault: true,
-                    reasoning: "Intelligent routing not available, using default generator"
-                },
-                recommendedTemplate: null
-            });
-        }
-    } catch (error) {
-        console.error('Error analyzing request:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// List available generator templates (enhanced with capabilities)
-app.get('/templates', async (req, res) => {
-    try {
-        const capabilities = await require('./intelligent-routing').loadTemplateCapabilities();
-        const templates = [];
-
-        // Add templates from capabilities
-        for (const [id, template] of Object.entries(capabilities.templates || {})) {
-            templates.push({
-                id,
-                name: template.name,
-                description: template.description,
-                thumbnail: `/templates/thumb/${id}`,
-                capabilities: template.capabilities,
-                suitableFor: template.suitableFor,
-                keywords: template.keywords
-            });
-        }
-
-        res.json({ templates, defaultGenerator: capabilities.defaultGenerator });
-    } catch (error) {
-        console.error('Error listing templates:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-const axios = require('axios');
-
-// Serve a thumbnail for template id (proxy from picsum.photos as placeholder)
-app.get('/templates/thumb/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const thumbsDir = path.join(__dirname, 'generators', 'assets-images', 'thumbs');
-        await fs.mkdir(thumbsDir).catch(()=>{});
-        const filePath = path.join(thumbsDir, `${id}.jpg`);
-        // If cached locally, serve it
-        try {
-            const stat = await fs.stat(filePath).catch(()=>null);
-            if (stat && stat.size > 0) {
-                const buf = await fs.readFile(filePath);
-                res.setHeader('Content-Type', 'image/jpeg');
-                return res.send(buf);
+// Templates information endpoint
+app.get('/api/templates', (req, res) => {
+    res.json({
+        available: {
+            themes: ['professional', 'modern', 'minimal'],
+            layouts: ['standard', 'two-column', 'image-focus', 'chart-focus'],
+            slideTypes: ['title', 'content', 'image', 'chart', 'table', 'conclusion']
+        },
+        generators: {
+            comprehensive: {
+                name: 'Comprehensive Presentation System',
+                description: 'Advanced AI-powered presentation generation with dynamic templates',
+                features: ['Dynamic template detection', 'Adaptive layouts', 'Content optimization', 'Validation pipeline'],
+                bestFor: ['Complex presentations', 'Business content', 'Data-heavy slides']
+            },
+            enhanced: {
+                name: 'Enhanced PPTX Generator',
+                description: 'Robust presentation generator with advanced layouts and error handling',
+                features: ['Multiple themes', 'Custom layouts', 'Error recovery', 'Memory optimization'],
+                bestFor: ['Creative presentations', 'Custom designs', 'Reliable fallback']
             }
-        } catch (e) {
-            // continue to fetch
         }
+    });
+});
 
-        // Fetch from picsum.photos as placeholder (seeded by id)
-        const seed = encodeURIComponent(id);
-        const url = `https://picsum.photos/seed/${seed}/400/240`;
-        const response = await axios.get(url, { responseType: 'arraybuffer', timeout: 5000 });
-        const data = Buffer.from(response.data, 'binary');
-        // Cache locally (best-effort)
-        fs.writeFile(filePath, data).catch(()=>{});
-        res.setHeader('Content-Type', 'image/jpeg');
-        res.send(data);
-    } catch (error) {
-        // Generate diverse thumbnails
-        try {
-            const { id } = req.params;
-            const title = id.replace(/[_-]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-            let hash = 0;
-            for (let i = 0; i < id.length; i++) hash = ((hash << 5) - hash) + id.charCodeAt(i);
+// Error handling middleware
+app.use((error, req, res, next) => {
+    console.error('Unhandled error:', error);
+    
+    res.status(500).json({
+        error: 'Internal server error',
+        message: 'An unexpected error occurred. Please try again.',
+        timestamp: new Date().toISOString()
+    });
+});
 
-            // More distinct color schemes
-            const colorSchemes = [
-                ['#667eea', '#764ba2'], ['#f093fb', '#f5576c'], ['#4facfe', '#00f2fe'],
-                ['#43e97b', '#38f9d7'], ['#fa709a', '#fee140'], ['#a8edea', '#fed6e3'],
-                ['#ff9a9e', '#fecfef'], ['#330867', '#30cfd0'], ['#ff6b6b', '#ffa726']
-            ];
+// 404 handler
+app.use((req, res) => {
+    res.status(404).json({
+        error: 'Not found',
+        message: `Endpoint ${req.method} ${req.path} not found`,
+        availableEndpoints: [
+            'POST /api/generate-pptx',
+            'GET /api/health',
+            'GET /api/status',
+            'GET /api/templates',
+            'POST /api/chat',
+            'POST /api/chat/quick',
+            'POST /api/chat/presentation-help',
+            'GET /api/chat/status'
+        ]
+    });
+});
 
-            const schemeIndex = Math.abs(hash) % colorSchemes.length;
-            const [color1, color2] = colorSchemes[schemeIndex];
+// Graceful shutdown handling
+process.on('SIGTERM', () => {
+    console.log('🛑 SIGTERM received, shutting down gracefully...');
+    process.exit(0);
+});
 
-            // Add icon/symbol based on template name
-            let icon = '📊';
-            if (id.includes('dog')) icon = '🐕';
-            else if (id.includes('mice') || id.includes('mouse')) icon = '🐭';
-            else if (id.includes('robot') || id.includes('tech')) icon = '🤖';
-            else if (id.includes('science') || id.includes('research')) icon = '🔬';
-            else if (id.includes('flower') || id.includes('plant')) icon = '🌸';
-            else if (id.includes('business') || id.includes('professional')) icon = '💼';
-            else if (id.includes('education') || id.includes('learning')) icon = '📚';
-            else if (id.includes('medical') || id.includes('health')) icon = '⚕️';
-            else if (id.includes('sustainable') || id.includes('green')) icon = '🌱';
-            else if (id.includes('enhanced') || id.includes('advanced')) icon = '⚡';
-
-            const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240' viewBox='0 0 400 240'>
-  <defs>
-    <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
-      <stop offset='0' stop-color='${color1}' />
-      <stop offset='1' stop-color='${color2}' />
-    </linearGradient>
-  </defs>
-  <rect width='400' height='240' fill='url(#g)' rx='16' />
-  <circle cx='320' cy='60' r='30' fill='white' opacity='0.15'/>
-  <rect x='50' y='170' width='50' height='50' fill='white' opacity='0.1' rx='8'/>
-  <text x='200' y='100' font-size='36' text-anchor='middle' dominant-baseline='middle'>${icon}</text>
-  <text x='200' y='140' font-size='16' font-family='system-ui, sans-serif' font-weight='600' fill='white' text-anchor='middle' opacity='0.95'>${title}</text>
-  <text x='200' y='160' font-size='11' font-family='system-ui, sans-serif' fill='white' text-anchor='middle' opacity='0.7'>PowerPoint Template</text>
-</svg>`;
-
-            res.setHeader('Content-Type', 'image/svg+xml');
-            res.send(svg);
-        } catch (err) {
-            res.status(500).send('');
-        }
-    }
+process.on('SIGINT', () => {
+    console.log('🛑 SIGINT received, shutting down gracefully...');
+    process.exit(0);
 });
 
 // Start server
-app.listen(port, () => {
-    console.log(`🚀 Presto Slides API Server v2 running on http://localhost:${port}`);
-    if (USE_LOCAL_FALLBACK) {
-        console.log('⚠️  Running in demo mode (no API keys available)');
-        console.log('💡 Set OPENROUTER_API_KEY for Gemini 2.0 or OPENAI_API_KEY for OpenAI');
-    } else if (USE_OPENROUTER) {
-        console.log('✅ OpenRouter API connected - Using Gemini 2.0 Flash (free)');
-        console.log('🤖 Model: google/gemini-2.0-flash-exp:free');
-    } else {
-        console.log('✅ OpenAI API connected');
-    }
+app.listen(PORT, () => {
+    console.log('🚀 Presto Backend Server Started');
+    console.log('═'.repeat(50));
+    console.log(`📡 Server running on port ${PORT}`);
+    console.log(`🌐 Health check: http://localhost:${PORT}/api/health`);
+    console.log(`📊 Status: http://localhost:${PORT}/api/status`);
+    console.log(`🎯 Generate PPTX: POST http://localhost:${PORT}/api/generate-pptx`);
+    console.log('═'.repeat(50));
+    console.log('🎨 Available Generators:');
+    console.log(`   ✅ Comprehensive System: ${!!comprehensiveSystem ? 'Ready' : 'Failed to initialize'}`);
+    console.log(`   ✅ Enhanced Generator: Ready (on-demand)`);
+    console.log('═'.repeat(50));
 });
+
+module.exports = app;

@@ -1,0 +1,17 @@
+{
+  "name": "Test Data",
+  "version": "1.0.0",
+  "data": {
+    "items": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "config": {
+      "enabled": true,
+      "timeout": 5000
+    }
+  }
+}

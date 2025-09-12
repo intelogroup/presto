@@ -1,0 +1,110 @@
+{
+  "templates": {
+    "business_professional": {
+      "id": "business_professional",
+      "name": "Business Professional",
+      "description": "Clean, professional template for business presentations",
+      "suitableFor": ["business", "corporate", "professional", "reports"],
+      "keywords": ["business", "corporate", "professional", "strategy", "analysis", "revenue", "growth", "market"],
+      "capabilities": {
+        "maxSlides": 50,
+        "supportsCharts": true,
+        "supportsImages": true,
+        "supportsBullets": true,
+        "supportsCustomLayouts": true
+      },
+      "themes": ["professional", "corporate", "minimal"],
+      "generatorPath": "../generators/generators-templates/enhanced_pptx_generator.js"
+    },
+    "academic_research": {
+      "id": "academic_research",
+      "name": "Academic Research",
+      "description": "Structured template for academic and research presentations",
+      "suitableFor": ["academic", "research", "scientific", "educational"],
+      "keywords": ["research", "study", "analysis", "methodology", "results", "conclusion", "hypothesis", "data"],
+      "capabilities": {
+        "maxSlides": 40,
+        "supportsCharts": true,
+        "supportsImages": true,
+        "supportsBullets": true,
+        "supportsCustomLayouts": true
+      },
+      "themes": ["academic", "clean", "structured"],
+      "generatorPath": "../generators/generators-templates/enhanced_pptx_generator.js"
+    },
+    "creative_modern": {
+      "id": "creative_modern",
+      "name": "Creative Modern",
+      "description": "Modern, visually appealing template for creative presentations",
+      "suitableFor": ["creative", "design", "marketing", "artistic"],
+      "keywords": ["creative", "design", "modern", "visual", "artistic", "innovative", "brand", "marketing"],
+      "capabilities": {
+        "maxSlides": 30,
+        "supportsCharts": true,
+        "supportsImages": true,
+        "supportsBullets": true,
+        "supportsCustomLayouts": true
+      },
+      "themes": ["modern", "creative", "colorful"],
+      "generatorPath": "../generators/generators-templates/enhanced_pptx_generator.js"
+    },
+    "technical_detailed": {
+      "id": "technical_detailed",
+      "name": "Technical Detailed",
+      "description": "Comprehensive template for technical and detailed presentations",
+      "suitableFor": ["technical", "engineering", "software", "detailed"],
+      "keywords": ["technical", "engineering", "software", "system", "architecture", "implementation", "code", "development"],
+      "capabilities": {
+        "maxSlides": 60,
+        "supportsCharts": true,
+        "supportsImages": true,
+        "supportsBullets": true,
+        "supportsCustomLayouts": true
+      },
+      "themes": ["technical", "detailed", "structured"],
+      "generatorPath": "../generators/generators-templates/enhanced_pptx_generator.js"
+    },
+    "sustainable_tech": {
+      "id": "sustainable_tech",
+      "name": "Sustainable Technology",
+      "description": "Template focused on sustainability and green technology",
+      "suitableFor": ["sustainability", "environment", "green", "technology"],
+      "keywords": ["sustainable", "green", "environment", "renewable", "clean", "eco", "climate", "energy"],
+      "capabilities": {
+        "maxSlides": 25,
+        "supportsCharts": true,
+        "supportsImages": true,
+        "supportsBullets": true,
+        "supportsCustomLayouts": true
+      },
+      "themes": ["green", "sustainable", "modern"],
+      "generatorPath": "../generators/generators-templates/sustainable_tech_presentation.js"
+    }
+  },
+  "defaultGenerator": {
+    "id": "enhanced_default",
+    "name": "Enhanced Default Generator",
+    "description": "Fallback generator with comprehensive capabilities",
+    "generatorPath": "../generators/generators-templates/enhanced_pptx_generator.js",
+    "capabilities": {
+      "maxSlides": 50,
+      "supportsCharts": true,
+      "supportsImages": true,
+      "supportsBullets": true,
+      "supportsCustomLayouts": true
+    }
+  },
+  "fallbackStrategies": {
+    "contentOverflow": "truncate",
+    "unsupportedFeatures": "skip",
+    "templateNotFound": "useDefault",
+    "generationFailure": "useMinimal"
+  },
+  "validationRules": {
+    "maxTitleLength": 100,
+    "maxContentLength": 2000,
+    "maxSlides": 50,
+    "minSlides": 1,
+    "requiredFields": ["title"]
+  }
+}

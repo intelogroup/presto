@@ -1,0 +1,915 @@
+{
+  "source": "svgrepo",
+  "collection": "infographic",
+  "downloaded": [
+    {
+      "filename": "icon-pusher.svg",
+      "url": "https://www.svgrepo.com/download/516996/icon-pusher.svg",
+      "iconPage": "https://www.svgrepo.com/svg/516996/icon-pusher",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:58:50.273Z"
+    },
+    {
+      "filename": "icon-pack-studio.svg",
+      "url": "https://www.svgrepo.com/download/516995/icon-pack-studio.svg",
+      "iconPage": "https://www.svgrepo.com/svg/516995/icon-pack-studio",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:58:51.283Z"
+    },
+    {
+      "filename": "icon-request.svg",
+      "url": "https://www.svgrepo.com/download/504473/icon-request.svg",
+      "iconPage": "https://www.svgrepo.com/svg/504473/icon-request",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:58:52.508Z"
+    },
+    {
+      "filename": "icon-2.svg",
+      "url": "https://www.svgrepo.com/download/498106/icon-2.svg",
+      "iconPage": "https://www.svgrepo.com/svg/498106/icon-2",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:58:54.153Z"
+    },
+    {
+      "filename": "icon-3.svg",
+      "url": "https://www.svgrepo.com/download/498105/icon-3.svg",
+      "iconPage": "https://www.svgrepo.com/svg/498105/icon-3",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:58:55.497Z"
+    },
+    {
+      "filename": "icon-1.svg",
+      "url": "https://www.svgrepo.com/download/498102/icon-1.svg",
+      "iconPage": "https://www.svgrepo.com/svg/498102/icon-1",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:58:56.410Z"
+    },
+    {
+      "filename": "icon.svg",
+      "url": "https://www.svgrepo.com/download/498101/icon.svg",
+      "iconPage": "https://www.svgrepo.com/svg/498101/icon",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:58:57.264Z"
+    },
+    {
+      "filename": "icon-more-menu.svg",
+      "url": "https://www.svgrepo.com/download/493984/icon-more-menu.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493984/icon-more-menu",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:58:58.860Z"
+    },
+    {
+      "filename": "icon-for-s-that-can-be-used-in-business-part-3.svg",
+      "url": "https://www.svgrepo.com/download/485231/icon-for-s-that-can-be-used-in-business-part-3.svg",
+      "iconPage": "https://www.svgrepo.com/svg/485231/icon-for-s-that-can-be-used-in-business-part-3",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:58:59.996Z"
+    },
+    {
+      "filename": "icon-for-s-that-can-be-used-in-business-part-2.svg",
+      "url": "https://www.svgrepo.com/download/485123/icon-for-s-that-can-be-used-in-business-part-2.svg",
+      "iconPage": "https://www.svgrepo.com/svg/485123/icon-for-s-that-can-be-used-in-business-part-2",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:59:01.015Z"
+    },
+    {
+      "filename": "icon-for-s-that-can-be-used-in-business-part-4.svg",
+      "url": "https://www.svgrepo.com/download/485091/icon-for-s-that-can-be-used-in-business-part-4.svg",
+      "iconPage": "https://www.svgrepo.com/svg/485091/icon-for-s-that-can-be-used-in-business-part-4",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:59:02.036Z"
+    },
+    {
+      "filename": "icon-of-s-that-can-be-used-in-business.svg",
+      "url": "https://www.svgrepo.com/download/485062/icon-of-s-that-can-be-used-in-business.svg",
+      "iconPage": "https://www.svgrepo.com/svg/485062/icon-of-s-that-can-be-used-in-business",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:59:03.376Z"
+    },
+    {
+      "filename": "icon-of-bag-for-commuting.svg",
+      "url": "https://www.svgrepo.com/download/484971/icon-of-bag-for-commuting.svg",
+      "iconPage": "https://www.svgrepo.com/svg/484971/icon-of-bag-for-commuting",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:59:04.321Z"
+    },
+    {
+      "filename": "icon-of-woman-raising-both-hands.svg",
+      "url": "https://www.svgrepo.com/download/483773/icon-of-woman-raising-both-hands.svg",
+      "iconPage": "https://www.svgrepo.com/svg/483773/icon-of-woman-raising-both-hands",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:59:10.433Z"
+    },
+    {
+      "filename": "icon-of-a-woman-wearing-glasses.svg",
+      "url": "https://www.svgrepo.com/download/483720/icon-of-a-woman-wearing-glasses.svg",
+      "iconPage": "https://www.svgrepo.com/svg/483720/icon-of-a-woman-wearing-glasses",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:59:11.353Z"
+    },
+    {
+      "filename": "icon-of-a-man-wearing-glasses.svg",
+      "url": "https://www.svgrepo.com/download/483719/icon-of-a-man-wearing-glasses.svg",
+      "iconPage": "https://www.svgrepo.com/svg/483719/icon-of-a-man-wearing-glasses",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:59:12.561Z"
+    },
+    {
+      "filename": "icon-of-a-person-who-is-obsessed-with-time.svg",
+      "url": "https://www.svgrepo.com/download/483629/icon-of-a-person-who-is-obsessed-with-time.svg",
+      "iconPage": "https://www.svgrepo.com/svg/483629/icon-of-a-person-who-is-obsessed-with-time",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:59:13.710Z"
+    },
+    {
+      "filename": "icon-of-a-person-full-of-love.svg",
+      "url": "https://www.svgrepo.com/download/483539/icon-of-a-person-full-of-love.svg",
+      "iconPage": "https://www.svgrepo.com/svg/483539/icon-of-a-person-full-of-love",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:59:14.635Z"
+    },
+    {
+      "filename": "icon-for-people-who-love-money-dollar-edition.svg",
+      "url": "https://www.svgrepo.com/download/483510/icon-for-people-who-love-money-dollar-edition.svg",
+      "iconPage": "https://www.svgrepo.com/svg/483510/icon-for-people-who-love-money-dollar-edition",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:59:15.681Z"
+    },
+    {
+      "filename": "icon-of-attache-case-filled-with-bitcoin.svg",
+      "url": "https://www.svgrepo.com/download/483236/icon-of-attache-case-filled-with-bitcoin.svg",
+      "iconPage": "https://www.svgrepo.com/svg/483236/icon-of-attache-case-filled-with-bitcoin",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T18:59:17.598Z"
+    },
+    {
+      "filename": "icon-like-saving-bitcoin.svg",
+      "url": "https://www.svgrepo.com/download/483120/icon-like-saving-bitcoin.svg",
+      "iconPage": "https://www.svgrepo.com/svg/483120/icon-like-saving-bitcoin",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:01:44.479Z"
+    },
+    {
+      "filename": "icon-of-hands-clasping-a-dollar.svg",
+      "url": "https://www.svgrepo.com/download/483001/icon-of-hands-clasping-a-dollar.svg",
+      "iconPage": "https://www.svgrepo.com/svg/483001/icon-of-hands-clasping-a-dollar",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:01:46.183Z"
+    },
+    {
+      "filename": "icon-of-a-dove-holding-an-olive.svg",
+      "url": "https://www.svgrepo.com/download/481229/icon-of-a-dove-holding-an-olive.svg",
+      "iconPage": "https://www.svgrepo.com/svg/481229/icon-of-a-dove-holding-an-olive",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:01:47.411Z"
+    },
+    {
+      "filename": "icon-of-a-hand-holding-a-pencil.svg",
+      "url": "https://www.svgrepo.com/download/479727/icon-of-a-hand-holding-a-pencil.svg",
+      "iconPage": "https://www.svgrepo.com/svg/479727/icon-of-a-hand-holding-a-pencil",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:01:48.384Z"
+    },
+    {
+      "filename": "icon-night.svg",
+      "url": "https://www.svgrepo.com/download/436430/icon-night.svg",
+      "iconPage": "https://www.svgrepo.com/svg/436430/icon-night",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:01:49.872Z"
+    },
+    {
+      "filename": "icon-holodeck.svg",
+      "url": "https://www.svgrepo.com/download/436429/icon-holodeck.svg",
+      "iconPage": "https://www.svgrepo.com/svg/436429/icon-holodeck",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:01:50.977Z"
+    },
+    {
+      "filename": "icon-photography-camera-2.svg",
+      "url": "https://www.svgrepo.com/download/427268/icon-photography-camera-2.svg",
+      "iconPage": "https://www.svgrepo.com/svg/427268/icon-photography-camera-2",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:01:52.431Z"
+    },
+    {
+      "filename": "icon-photography-backup.svg",
+      "url": "https://www.svgrepo.com/download/427263/icon-photography-backup.svg",
+      "iconPage": "https://www.svgrepo.com/svg/427263/icon-photography-backup",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:01:53.355Z"
+    },
+    {
+      "filename": "icon-photography-tripod.svg",
+      "url": "https://www.svgrepo.com/download/427262/icon-photography-tripod.svg",
+      "iconPage": "https://www.svgrepo.com/svg/427262/icon-photography-tripod",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:01:54.477Z"
+    },
+    {
+      "filename": "icon-photography-hdd.svg",
+      "url": "https://www.svgrepo.com/download/427261/icon-photography-hdd.svg",
+      "iconPage": "https://www.svgrepo.com/svg/427261/icon-photography-hdd",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:01:55.606Z"
+    },
+    {
+      "filename": "icon-chart-people-population-majority.svg",
+      "url": "https://www.svgrepo.com/download/307363/icon-chart-people-population-majority.svg",
+      "iconPage": "https://www.svgrepo.com/svg/307363/icon-chart-people-population-majority",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:01:57.343Z"
+    },
+    {
+      "filename": "circle-exclamation-check.svg",
+      "url": "https://www.svgrepo.com/download/533721/circle-exclamation-check.svg",
+      "iconPage": "https://www.svgrepo.com/svg/533721/circle-exclamation-check",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:01:58.980Z"
+    },
+    {
+      "filename": "arrow-circle-left.svg",
+      "url": "https://www.svgrepo.com/download/533572/arrow-circle-left.svg",
+      "iconPage": "https://www.svgrepo.com/svg/533572/arrow-circle-left",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:02:00.312Z"
+    },
+    {
+      "filename": "business.svg",
+      "url": "https://www.svgrepo.com/download/530577/business.svg",
+      "iconPage": "https://www.svgrepo.com/svg/530577/business",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:06.278Z"
+    },
+    {
+      "filename": "business-card.svg",
+      "url": "https://www.svgrepo.com/download/530255/business-card.svg",
+      "iconPage": "https://www.svgrepo.com/svg/530255/business-card",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:07.396Z"
+    },
+    {
+      "filename": "business-suite.svg",
+      "url": "https://www.svgrepo.com/download/515211/business-suite.svg",
+      "iconPage": "https://www.svgrepo.com/svg/515211/business-suite",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:08.417Z"
+    },
+    {
+      "filename": "business-kalender.svg",
+      "url": "https://www.svgrepo.com/download/515210/business-kalender.svg",
+      "iconPage": "https://www.svgrepo.com/svg/515210/business-kalender",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:09.646Z"
+    },
+    {
+      "filename": "business-strategy.svg",
+      "url": "https://www.svgrepo.com/download/499959/business-strategy.svg",
+      "iconPage": "https://www.svgrepo.com/svg/499959/business-strategy",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:11.184Z"
+    },
+    {
+      "filename": "business-service.svg",
+      "url": "https://www.svgrepo.com/download/499818/business-service.svg",
+      "iconPage": "https://www.svgrepo.com/svg/499818/business-service",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:12.955Z"
+    },
+    {
+      "filename": "business-person-making-a-phone-call.svg",
+      "url": "https://www.svgrepo.com/download/493564/business-person-making-a-phone-call.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493564/business-person-making-a-phone-call",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:15.182Z"
+    },
+    {
+      "filename": "business-person-with-headset.svg",
+      "url": "https://www.svgrepo.com/download/493563/business-person-with-headset.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493563/business-person-with-headset",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:16.518Z"
+    },
+    {
+      "filename": "business-woman-talking-remotely.svg",
+      "url": "https://www.svgrepo.com/download/493560/business-woman-talking-remotely.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493560/business-woman-talking-remotely",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:18.481Z"
+    },
+    {
+      "filename": "business-person-taking-an-ok-pose.svg",
+      "url": "https://www.svgrepo.com/download/493451/business-person-taking-an-ok-pose.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493451/business-person-taking-an-ok-pose",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:19.482Z"
+    },
+    {
+      "filename": "business-person-to-guide-right-hand.svg",
+      "url": "https://www.svgrepo.com/download/493449/business-person-to-guide-right-hand.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493449/business-person-to-guide-right-hand",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:21.016Z"
+    },
+    {
+      "filename": "business-person-to-explain-right-hand.svg",
+      "url": "https://www.svgrepo.com/download/493446/business-person-to-explain-right-hand.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493446/business-person-to-explain-right-hand",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:23.576Z"
+    },
+    {
+      "filename": "business-person-pointing-finger-right-hand.svg",
+      "url": "https://www.svgrepo.com/download/493445/business-person-pointing-finger-right-hand.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493445/business-person-pointing-finger-right-hand",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:24.905Z"
+    },
+    {
+      "filename": "business-woman-shaking-hands.svg",
+      "url": "https://www.svgrepo.com/download/493430/business-woman-shaking-hands.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493430/business-woman-shaking-hands",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:26.855Z"
+    },
+    {
+      "filename": "business-woman-hitting-a-computer.svg",
+      "url": "https://www.svgrepo.com/download/493114/business-woman-hitting-a-computer.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493114/business-woman-hitting-a-computer",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:27.986Z"
+    },
+    {
+      "filename": "business-person-looking-at-wristwatch-male.svg",
+      "url": "https://www.svgrepo.com/download/493050/business-person-looking-at-wristwatch-male.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493050/business-person-looking-at-wristwatch-male",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:29.001Z"
+    },
+    {
+      "filename": "business-person-looking-at-wristwatch-trouble-woman.svg",
+      "url": "https://www.svgrepo.com/download/493048/business-person-looking-at-wristwatch-trouble-woman.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493048/business-person-looking-at-wristwatch-trouble-woman",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:30.130Z"
+    },
+    {
+      "filename": "business-person-looking-at-wristwatch-female.svg",
+      "url": "https://www.svgrepo.com/download/493046/business-person-looking-at-wristwatch-female.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493046/business-person-looking-at-wristwatch-female",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:31.138Z"
+    },
+    {
+      "filename": "business-person-female-taking-notes.svg",
+      "url": "https://www.svgrepo.com/download/493044/business-person-female-taking-notes.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493044/business-person-female-taking-notes",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:32.174Z"
+    },
+    {
+      "filename": "business-person-male-who-consults.svg",
+      "url": "https://www.svgrepo.com/download/493042/business-person-male-who-consults.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493042/business-person-male-who-consults",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:04:33.095Z"
+    },
+    {
+      "filename": "business-person-woman-who-consults.svg",
+      "url": "https://www.svgrepo.com/download/493041/business-person-woman-who-consults.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493041/business-person-woman-who-consults",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:30.772Z"
+    },
+    {
+      "filename": "business-person-male-taking-notes.svg",
+      "url": "https://www.svgrepo.com/download/493040/business-person-male-taking-notes.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493040/business-person-male-taking-notes",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:31.874Z"
+    },
+    {
+      "filename": "business-person-who-smokes-woman-in-her-40s-and-50s.svg",
+      "url": "https://www.svgrepo.com/download/493029/business-person-who-smokes-woman-in-her-40s-and-50s.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493029/business-person-who-smokes-woman-in-her-40s-and-50s",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:33.924Z"
+    },
+    {
+      "filename": "business-person-who-smokes-40-50s.svg",
+      "url": "https://www.svgrepo.com/download/493026/business-person-who-smokes-40-50s.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493026/business-person-who-smokes-40-50s",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:35.055Z"
+    },
+    {
+      "filename": "business-person-smoking-an-electronic-cigarette-female.svg",
+      "url": "https://www.svgrepo.com/download/493025/business-person-smoking-an-electronic-cigarette-female.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493025/business-person-smoking-an-electronic-cigarette-female",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:36.379Z"
+    },
+    {
+      "filename": "business-person-smoking-an-electronic-cigarette.svg",
+      "url": "https://www.svgrepo.com/download/493024/business-person-smoking-an-electronic-cigarette.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493024/business-person-smoking-an-electronic-cigarette",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:37.488Z"
+    },
+    {
+      "filename": "business-person-who-smokes-female.svg",
+      "url": "https://www.svgrepo.com/download/493023/business-person-who-smokes-female.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493023/business-person-who-smokes-female",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:38.709Z"
+    },
+    {
+      "filename": "business-person-smoking.svg",
+      "url": "https://www.svgrepo.com/download/493021/business-person-smoking.svg",
+      "iconPage": "https://www.svgrepo.com/svg/493021/business-person-smoking",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:39.928Z"
+    },
+    {
+      "filename": "business-person-female-with-a-cane.svg",
+      "url": "https://www.svgrepo.com/download/492943/business-person-female-with-a-cane.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492943/business-person-female-with-a-cane",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:41.173Z"
+    },
+    {
+      "filename": "business-person-male-with-a-cane.svg",
+      "url": "https://www.svgrepo.com/download/492942/business-person-male-with-a-cane.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492942/business-person-male-with-a-cane",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:42.461Z"
+    },
+    {
+      "filename": "business-person-pointing-finger-female.svg",
+      "url": "https://www.svgrepo.com/download/492933/business-person-pointing-finger-female.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492933/business-person-pointing-finger-female",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:44.109Z"
+    },
+    {
+      "filename": "business-person-female-who-takes-a-guts-pose.svg",
+      "url": "https://www.svgrepo.com/download/492931/business-person-female-who-takes-a-guts-pose.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492931/business-person-female-who-takes-a-guts-pose",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:45.195Z"
+    },
+    {
+      "filename": "business-person-pointing-finger.svg",
+      "url": "https://www.svgrepo.com/download/492930/business-person-pointing-finger.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492930/business-person-pointing-finger",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:46.314Z"
+    },
+    {
+      "filename": "business-person-with-a-personal-computer-female.svg",
+      "url": "https://www.svgrepo.com/download/492929/business-person-with-a-personal-computer-female.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492929/business-person-with-a-personal-computer-female",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:47.442Z"
+    },
+    {
+      "filename": "business-person-taking-a-guts-pose.svg",
+      "url": "https://www.svgrepo.com/download/492928/business-person-taking-a-guts-pose.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492928/business-person-taking-a-guts-pose",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:48.574Z"
+    },
+    {
+      "filename": "business-person-with-computer.svg",
+      "url": "https://www.svgrepo.com/download/492926/business-person-with-computer.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492926/business-person-with-computer",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:49.692Z"
+    },
+    {
+      "filename": "business-person-with-a-resolved-expression-shirt.svg",
+      "url": "https://www.svgrepo.com/download/492889/business-person-with-a-resolved-expression-shirt.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492889/business-person-with-a-resolved-expression-shirt",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:50.824Z"
+    },
+    {
+      "filename": "business-person-with-a-resolved-expression.svg",
+      "url": "https://www.svgrepo.com/download/492886/business-person-with-a-resolved-expression.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492886/business-person-with-a-resolved-expression",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:52.061Z"
+    },
+    {
+      "filename": "business-person-showing-a-smartphone.svg",
+      "url": "https://www.svgrepo.com/download/492810/business-person-showing-a-smartphone.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492810/business-person-showing-a-smartphone",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:53.823Z"
+    },
+    {
+      "filename": "business-person-pointing-at-smartphonefinger.svg",
+      "url": "https://www.svgrepo.com/download/492808/business-person-pointing-at-smartphonefinger.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492808/business-person-pointing-at-smartphonefinger",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:05:54.923Z"
+    },
+    {
+      "filename": "technology-device-cooler-electric-fan-computer.svg",
+      "url": "https://www.svgrepo.com/download/504050/technology-device-cooler-electric-fan-computer.svg",
+      "iconPage": "https://www.svgrepo.com/svg/504050/technology-device-cooler-electric-fan-computer",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:07:21.427Z"
+    },
+    {
+      "filename": "technology-pc-computer-microchip-processor-chipset.svg",
+      "url": "https://www.svgrepo.com/download/504045/technology-pc-computer-microchip-processor-chipset.svg",
+      "iconPage": "https://www.svgrepo.com/svg/504045/technology-pc-computer-microchip-processor-chipset",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:07:22.662Z"
+    },
+    {
+      "filename": "technology-2.svg",
+      "url": "https://www.svgrepo.com/download/494041/technology-2.svg",
+      "iconPage": "https://www.svgrepo.com/svg/494041/technology-2",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:07:23.898Z"
+    },
+    {
+      "filename": "technology.svg",
+      "url": "https://www.svgrepo.com/download/494038/technology.svg",
+      "iconPage": "https://www.svgrepo.com/svg/494038/technology",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:07:25.243Z"
+    },
+    {
+      "filename": "technology-round.svg",
+      "url": "https://www.svgrepo.com/download/438889/technology-round.svg",
+      "iconPage": "https://www.svgrepo.com/svg/438889/technology-round",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:07:26.253Z"
+    },
+    {
+      "filename": "technology-device-laptop-computer.svg",
+      "url": "https://www.svgrepo.com/download/381253/technology-device-laptop-computer.svg",
+      "iconPage": "https://www.svgrepo.com/svg/381253/technology-device-laptop-computer",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:07:27.993Z"
+    },
+    {
+      "filename": "technology-digital-transformation-machinery-engineering-industry.svg",
+      "url": "https://www.svgrepo.com/download/341462/technology-digital-transformation-machinery-engineering-industry.svg",
+      "iconPage": "https://www.svgrepo.com/svg/341462/technology-digital-transformation-machinery-engineering-industry",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:07:29.411Z"
+    },
+    {
+      "filename": "technology-idea.svg",
+      "url": "https://www.svgrepo.com/download/291508/technology-idea.svg",
+      "iconPage": "https://www.svgrepo.com/svg/291508/technology-idea",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:07:30.363Z"
+    },
+    {
+      "filename": "medical-kit.svg",
+      "url": "https://www.svgrepo.com/download/529716/medical-kit.svg",
+      "iconPage": "https://www.svgrepo.com/svg/529716/medical-kit",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:01.646Z"
+    },
+    {
+      "filename": "medical-pack.svg",
+      "url": "https://www.svgrepo.com/download/499283/medical-pack.svg",
+      "iconPage": "https://www.svgrepo.com/svg/499283/medical-pack",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:06.562Z"
+    },
+    {
+      "filename": "medical-examination-pregnancy.svg",
+      "url": "https://www.svgrepo.com/download/492897/medical-examination-pregnancy.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492897/medical-examination-pregnancy",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:07.943Z"
+    },
+    {
+      "filename": "medical-examination-male.svg",
+      "url": "https://www.svgrepo.com/download/492693/medical-examination-male.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492693/medical-examination-male",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:09.244Z"
+    },
+    {
+      "filename": "medical-examination-female.svg",
+      "url": "https://www.svgrepo.com/download/492691/medical-examination-female.svg",
+      "iconPage": "https://www.svgrepo.com/svg/492691/medical-examination-female",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:10.704Z"
+    },
+    {
+      "filename": "medical-supply.svg",
+      "url": "https://www.svgrepo.com/download/487566/medical-supply.svg",
+      "iconPage": "https://www.svgrepo.com/svg/487566/medical-supply",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:11.928Z"
+    },
+    {
+      "filename": "medical-scale.svg",
+      "url": "https://www.svgrepo.com/download/487565/medical-scale.svg",
+      "iconPage": "https://www.svgrepo.com/svg/487565/medical-scale",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:13.477Z"
+    },
+    {
+      "filename": "medical-scanner.svg",
+      "url": "https://www.svgrepo.com/download/487564/medical-scanner.svg",
+      "iconPage": "https://www.svgrepo.com/svg/487564/medical-scanner",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:14.904Z"
+    },
+    {
+      "filename": "medical-circle.svg",
+      "url": "https://www.svgrepo.com/download/487562/medical-circle.svg",
+      "iconPage": "https://www.svgrepo.com/svg/487562/medical-circle",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:16.537Z"
+    },
+    {
+      "filename": "medical-bill.svg",
+      "url": "https://www.svgrepo.com/download/487561/medical-bill.svg",
+      "iconPage": "https://www.svgrepo.com/svg/487561/medical-bill",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:17.869Z"
+    },
+    {
+      "filename": "medical.svg",
+      "url": "https://www.svgrepo.com/download/487558/medical.svg",
+      "iconPage": "https://www.svgrepo.com/svg/487558/medical",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:19.406Z"
+    },
+    {
+      "filename": "medical-square.svg",
+      "url": "https://www.svgrepo.com/download/471665/medical-square.svg",
+      "iconPage": "https://www.svgrepo.com/svg/471665/medical-square",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:20.737Z"
+    },
+    {
+      "filename": "medical-cross.svg",
+      "url": "https://www.svgrepo.com/download/471662/medical-cross.svg",
+      "iconPage": "https://www.svgrepo.com/svg/471662/medical-cross",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:21.965Z"
+    },
+    {
+      "filename": "medical-receipt-left-3.svg",
+      "url": "https://www.svgrepo.com/download/467127/medical-receipt-left-3.svg",
+      "iconPage": "https://www.svgrepo.com/svg/467127/medical-receipt-left-3",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:23.807Z"
+    },
+    {
+      "filename": "medical-record.svg",
+      "url": "https://www.svgrepo.com/download/467125/medical-record.svg",
+      "iconPage": "https://www.svgrepo.com/svg/467125/medical-record",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:25.140Z"
+    },
+    {
+      "filename": "medical-report.svg",
+      "url": "https://www.svgrepo.com/download/467124/medical-report.svg",
+      "iconPage": "https://www.svgrepo.com/svg/467124/medical-report",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:26.378Z"
+    },
+    {
+      "filename": "medical-receipt-3.svg",
+      "url": "https://www.svgrepo.com/download/467123/medical-receipt-3.svg",
+      "iconPage": "https://www.svgrepo.com/svg/467123/medical-receipt-3",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:27.607Z"
+    },
+    {
+      "filename": "medical-receipt-2.svg",
+      "url": "https://www.svgrepo.com/download/467122/medical-receipt-2.svg",
+      "iconPage": "https://www.svgrepo.com/svg/467122/medical-receipt-2",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:28.924Z"
+    },
+    {
+      "filename": "medical-receipt-left-2.svg",
+      "url": "https://www.svgrepo.com/download/467121/medical-receipt-left-2.svg",
+      "iconPage": "https://www.svgrepo.com/svg/467121/medical-receipt-left-2",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:30.156Z"
+    },
+    {
+      "filename": "medical-receipt.svg",
+      "url": "https://www.svgrepo.com/download/467120/medical-receipt.svg",
+      "iconPage": "https://www.svgrepo.com/svg/467120/medical-receipt",
+      "license": "Check item page; many on SVGRepo are CC0/Public Domain",
+      "source": "svgrepo",
+      "collection": "infographic",
+      "downloadedAt": "2025-09-10T19:10:31.492Z"
+    }
+  ]
+}

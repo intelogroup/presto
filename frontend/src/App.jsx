@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Target, Presentation, BookOpen, Users, Star, Lightbulb, Zap, Sparkles, Rocket, CheckCircle, Palette, FileText, ChevronRight, Image, Upload, X } from 'lucide-react'
+import SlideDetails from './components/SlideDetails'
 
 function Message({ role, content, isFormatted }) {
   const renderContent = () => {
@@ -46,12 +47,26 @@ function TopBar() {
   return (
     <div className="topbar" role="banner">
       <div className="brand">
-        <div className="dot" />
-        <span>Presto Slides : Ai Powerpoint Generator</span>
+        <div className="logo-shape">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="8" fill="url(#gradient)" />
+            <path d="M8 12h16v2H8v-2zm0 4h12v2H8v-2zm0 4h16v2H8v-2z" fill="white" />
+            <defs>
+              <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                <stop offset="0%" stopColor="#0ea5e9" />
+                <stop offset="100%" stopColor="#0284c7" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div className="brand-text">
+          <span className="brand-name">Presto</span>
+          <span className="brand-tagline">slides</span>
+        </div>
+        <span className="ai-label">AI PowerPoint Generator</span>
       </div>
       <div className="top-actions">
-        <a href="https://www.builder.io/c/docs/projects" target="_blank" rel="noreferrer" className="link">Docs</a>
-        <a href="#" className="link">Contact</a>
+        <button className="cta-button">Get Started</button>
       </div>
     </div>
   )
@@ -169,16 +184,69 @@ function PresentationOutline({ pptxData }) {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', fontWeight: '500' }}>
         <CheckCircle size={16} />
-        <span>Your presentation is ready! Click "Generate PowerPoint" below to download it.</span>
+        <span>Please review this outline and confirm the details. I will generate the PowerPoint only after you confirm. ✅</span>
+      </div>
+      
+      <div style={{ marginTop: '16px', textAlign: 'center' }}>
+        <button 
+          className="primary"
+          onClick={() => {
+            // This will be handled by the parent component
+            window.dispatchEvent(new CustomEvent('generatePresentation', { detail: pptxData }))
+          }}
+          style={{ padding: '12px 24px', fontSize: '16px' }}
+        >
+          🚀 Generate Presentation
+        </button>
       </div>
     </div>
   )
 }
 
 export default function App() {
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hi! I\'m here to help you create amazing PowerPoint presentations. Just describe what you need and I\'ll generate it for you!' }
-  ])
+  // Chat history management
+  const CHAT_HISTORY_KEY = 'presto_chat_history'
+  const MAX_MESSAGES = 50 // Limit to prevent localStorage from growing too large
+  
+  const loadChatHistory = () => {
+    try {
+      const saved = localStorage.getItem(CHAT_HISTORY_KEY)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.slice(-MAX_MESSAGES) // Keep only recent messages
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to load chat history:', e)
+    }
+    // Return default welcome message if no history
+    return [{ role: 'assistant', content: 'Hey there! 👋 I\'m your AI assistant. I\'m here to help with any questions or tasks you might have!' }]
+  }
+  
+  const saveChatHistory = (messages) => {
+    try {
+      // Only save the last MAX_MESSAGES to prevent localStorage bloat
+      const messagesToSave = messages.slice(-MAX_MESSAGES)
+      localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(messagesToSave))
+    } catch (e) {
+      console.warn('Failed to save chat history:', e)
+    }
+  }
+  
+  const clearChatHistory = () => {
+    try {
+      localStorage.removeItem(CHAT_HISTORY_KEY)
+      const defaultMessage = [{ role: 'assistant', content: 'Hey there! 👋 I\'m your AI assistant. I\'m here to help with any questions or tasks you might have!' }]
+      setMessages(defaultMessage)
+      setLastPptxData(null)
+      setIntelligentAnalysis(null)
+    } catch (e) {
+      console.warn('Failed to clear chat history:', e)
+    }
+  }
+
+  const [messages, setMessages] = useState(loadChatHistory())
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [pptxLoading, setPptxLoading] = useState(false)
@@ -190,10 +258,54 @@ export default function App() {
   const [selectedImages, setSelectedImages] = useState([])
   const [imageUrl, setImageUrl] = useState('')
   const [showImageInput, setShowImageInput] = useState(false)
+  const [showPresentationOutline, setShowPresentationOutline] = useState(false)
+  const [presentationData, setPresentationData] = useState(null)
+  const [slideDetailsData, setSlideDetailsData] = useState(null)
+  const [aiResponseComplete, setAiResponseComplete] = useState(true)
+  const [pendingPptxData, setPendingPptxData] = useState(null)
   const listRef = useRef(null)
   const fileInputRef = useRef(null)
 
   const canSend = (input.trim().length > 0 || selectedImages.length > 0) && !loading
+
+  // Handle generate presentation event
+  useEffect(() => {
+    const handleGeneratePresentation = (event) => {
+      const pptxData = event.detail
+      setPptxLoading(true)
+      
+      // Generate the actual presentation
+      fetch('/api/generate-pptx', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pptxData)
+      })
+      .then(res => res.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `${pptxData.title || 'presentation'}.pptx`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        window.URL.revokeObjectURL(url)
+        
+        setMessages(m => [...m, { role: 'assistant', content: '🎉 Your presentation has been generated and downloaded! Feel free to ask if you need any modifications.' }])
+        setShowPresentationOutline(false)
+        setPresentationData(null)
+      })
+      .catch(err => {
+        setMessages(m => [...m, { role: 'assistant', content: `❌ Sorry, there was an error generating your presentation: ${err.message}` }])
+      })
+      .finally(() => {
+        setPptxLoading(false)
+      })
+    }
+
+    window.addEventListener('generatePresentation', handleGeneratePresentation)
+    return () => window.removeEventListener('generatePresentation', handleGeneratePresentation)
+  }, [])
 
   const handleFileUpload = (event) => {
     const files = Array.from(event.target.files)
@@ -262,6 +374,8 @@ export default function App() {
 
   useEffect(() => {
     scrollToBottom()
+    // Save chat history whenever messages change
+    saveChatHistory(messages)
   }, [messages])
 
   useEffect(() => {
@@ -324,7 +438,21 @@ export default function App() {
 
           if (!res.ok) {
             const err = await res.json().catch(() => ({}))
-            throw new Error(err.error || `Backup server failed: ${res.status}`)
+            // Handle specific error types with conversational responses
+            if (res.status === 429 || err.type === 'rate_limit') {
+              let waitTimeMsg = 'You have reached the model rate limit. Please wait about 1 minute before trying again.'
+              if (err.details && err.details.includes('15 minutes')) {
+                waitTimeMsg = 'You have reached the model rate limit. Please wait about 15 minutes before trying again.'
+              }
+              throw new Error(err.error || waitTimeMsg)
+            }
+            if (res.status === 408 || err.type === 'timeout') {
+              throw new Error(err.error || 'The model timed out. Please wait a few seconds and try again.')
+            }
+            if (res.status === 503 || err.type === 'service_unavailable') {
+              throw new Error(err.error || 'I\'m having some technical difficulties right now. 🔧 But I\'ll be back soon!')
+            }
+            throw new Error(err.error || `Something went wrong! 😔 Let me try to help you anyway - what kind of presentation are you looking to create?`)
           }
 
           isBackupUsed = true
@@ -415,55 +543,43 @@ export default function App() {
     setInput('')
     setSelectedImages([])
     setLoading(true)
+    setAiResponseComplete(false) // Mark AI response as incomplete when starting new request
+    
+    // Hide presentation outline and slide details when user sends a new message
+    if (showPresentationOutline) {
+      setShowPresentationOutline(false)
+      setPresentationData(null)
+    }
+    if (showSlideDetails) {
+      setShowSlideDetails(false)
+      setSlideDetailsData(null)
+    }
+
+    // Check for simple greetings and respond casually
+    const inputText = typeof messageContent === 'string' ? messageContent.toLowerCase().trim() : 
+      (Array.isArray(messageContent) ? messageContent.find(item => item.type === 'text')?.text?.toLowerCase().trim() || '' : '')
+    
+    const simpleGreetings = ['hi', 'hello', 'hey', 'sup', 'yo', 'howdy', 'greetings']
+    const isSimpleGreeting = simpleGreetings.some(greeting => 
+      inputText === greeting || inputText === greeting + '!' || inputText === greeting + '.'
+    )
+
+    if (isSimpleGreeting) {
+      setLoading(false)
+      const casualResponses = [
+        'Hey! 😊 I\'m your friendly AI assistant. Ready to help with whatever you need?',
+        'Hi there! 👋 I\'m an AI assistant here to help with questions, ideas, and conversations. What\'s on your mind?',
+        'Hello! 🎯 I\'m your helpful AI companion. Whether you need information, advice, or just want to chat - I\'m here for you!',
+        'Hey hey! ✨ I\'m your AI assistant. Feel free to ask me anything or just say hello!'
+      ]
+      const randomResponse = casualResponses[Math.floor(Math.random() * casualResponses.length)]
+      setMessages(m => [...m, { role: 'assistant', content: randomResponse }])
+      return
+    }
 
     try {
       // Enhanced prompt for PowerPoint generation
-      const enhancedMessages = next.map(({ role, content }) => {
-        if (role === 'user' && next.length > 1) {
-          // Handle multi-modal content properly
-          if (Array.isArray(content)) {
-            // For multi-modal messages, add the enhancement as additional text content
-            const enhancementText = "\n\nIf this is a request for a PowerPoint presentation, please structure your response as a JSON object with this format:\n{\n  \"title\": \"Presentation Title\",\n  \"subtitle\": \"Optional subtitle\",\n  \"slides\": [\n    {\"title\": \"Slide Title\", \"content\": \"Slide content\"},\n    {\"title\": \"Slide Title\", \"type\": \"bullets\", \"bullets\": [\"Point 1\", \"Point 2\"]}\n  ],\n  \"colorScheme\": \"professional\"\n}";
-
-            // Find text content and enhance it
-            const enhancedContent = content.map(item => {
-              if (item.type === 'text') {
-                return {
-                  ...item,
-                  text: item.text + enhancementText
-                };
-              }
-              return item;
-            });
-
-            // If no text content, add the enhancement as new text
-            if (!enhancedContent.some(item => item.type === 'text')) {
-              enhancedContent.unshift({
-                type: 'text',
-                text: enhancementText
-              });
-            }
-
-            return { role, content: enhancedContent };
-          } else {
-            // For text-only messages
-            return {
-              role,
-              content: `${content}\n\nIf this is a request for a PowerPoint presentation, please structure your response as a JSON object with this format:
-{
-  "title": "Presentation Title",
-  "subtitle": "Optional subtitle",
-  "slides": [
-    {"title": "Slide Title", "content": "Slide content"},
-    {"title": "Slide Title", "type": "bullets", "bullets": ["Point 1", "Point 2"]}
-  ],
-  "colorScheme": "professional"
-}`
-            };
-          }
-        }
-        return { role, content };
-      })
+      const enhancedMessages = next; // Remove JSON-format injection to avoid premature structure generation
 
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -473,46 +589,141 @@ export default function App() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
-        throw new Error(err.error || `Request failed: ${res.status}`)
+        // Handle specific error types with conversational responses
+        if (res.status === 429 || err.type === 'rate_limit') {
+          let waitTimeMsg = 'You have reached the model rate limit. Please wait about 1 minute before trying again.'
+          if (err.details && err.details.includes('15 minutes')) {
+            waitTimeMsg = 'You have reached the model rate limit. Please wait about 15 minutes before trying again.'
+          }
+          throw new Error(err.error || waitTimeMsg)
+        }
+        if (res.status === 408 || err.type === 'timeout') {
+          throw new Error(err.error || 'The model timed out. Please wait a few seconds and try again.')
+        }
+        if (res.status === 503 || err.type === 'service_unavailable') {
+          throw new Error(err.error || 'I\'m having some technical difficulties right now. 🔧 But I\'ll be back soon!')
+        }
+        throw new Error(err.error || `Something went wrong! 😔 Let me try to help you anyway - what kind of presentation are you looking to create?`)
       }
 
       const data = await res.json()
-      const assistant = data?.message?.content || 'No response.'
+      const assistant = data?.response || 'No response.'
+      const presentationState = data?.presentationState || null
+      const canGeneratePPTX = data?.canGeneratePPTX || false
 
-      // Check if this is a presentation request and analyze it
-      const isPresentationRequest = input.toLowerCase().includes('presentation') ||
-                                  input.toLowerCase().includes('powerpoint') ||
-                                  input.toLowerCase().includes('pptx') ||
-                                  input.toLowerCase().includes('slides')
-
-      if (isPresentationRequest) {
-        // Analyze the request for intelligent routing
-        await analyzeRequest(input)
+      // Handle presentation state and generate button visibility
+      if (presentationState && canGeneratePPTX) {
+        // User has completed all steps and agreed to generate - prepare data for PPTX generation
+        const pptxData = {
+          title: presentationState.title || 'AI Generated Presentation',
+          subtitle: presentationState.subtitle || '',
+          slides: presentationState.slides || [
+            { title: 'Introduction', type: 'content', content: 'Welcome to our presentation' },
+            { title: 'Main Content', type: 'bullets', bullets: ['Key point 1', 'Key point 2', 'Key point 3'] },
+            { title: 'Conclusion', type: 'content', content: 'Thank you for your attention' }
+          ],
+          theme: presentationState.theme || 'professional',
+          colorScheme: presentationState.colorScheme || 'professional'
+        };
+        
+        // Store pending data but don't show generate button until AI response is complete
+          setPendingPptxData(pptxData)
+          setMessages(m => [...m, { role: 'assistant', content: assistant }])
+          
+          // Mark AI response as complete and show generate button
+          setTimeout(() => {
+            setAiResponseComplete(true)
+            setLastPptxData(pptxData)
+            setPendingPptxData(null)
+          }, 500) // Small delay to ensure message is fully rendered
+        
+        return
       }
 
-      // Try to detect and parse JSON for PPTX generation
-      const jsonMatch = assistant.match(/\{[\s\S]*\}/)
-      if (jsonMatch) {
-        try {
-          const pptxData = JSON.parse(jsonMatch[0])
-          if (pptxData.title && pptxData.slides) {
-            setLastPptxData(pptxData)
-            // Create a nicely formatted response instead of showing raw JSON
-            const formattedResponse = <PresentationOutline pptxData={pptxData} />
-            setMessages(m => [...m, { role: 'assistant', content: formattedResponse, isFormatted: true }])
+      // Check for presentation outline marker (legacy support)
+      if (assistant.includes('```SHOW_PRESENTATION_OUTLINE```')) {
+        const parts = assistant.split('```SHOW_PRESENTATION_OUTLINE```')
+        const messageContent = parts[0].trim()
+        const jsonPart = parts[1]?.trim()
+        
+        if (jsonPart) {
+          try {
+            const pptxData = JSON.parse(jsonPart)
+            if (pptxData.title && pptxData.slides) {
+              // Show the message content first
+            setMessages(m => [...m, { role: 'assistant', content: messageContent }])
+            
+            // Then show the presentation outline
+            setPresentationData(pptxData)
+            setShowPresentationOutline(true)
+            
+            // Mark AI response as complete
+            setTimeout(() => {
+              setAiResponseComplete(true)
+            }, 300)
+            
             return
+            }
+          } catch (e) {
+            console.warn('Failed to parse presentation outline JSON:', e)
           }
-        } catch (e) {
-          // Not valid JSON, ignore
+        }
+      }
+
+      // Check for slide details marker
+      if (assistant.includes('```SHOW_SLIDE_DETAILS```')) {
+        const parts = assistant.split('```SHOW_SLIDE_DETAILS```')
+        const messageContent = parts[0].trim()
+        const jsonPart = parts[1]?.trim()
+        
+        if (jsonPart) {
+          try {
+            const slideDetailsJson = JSON.parse(jsonPart)
+            setSlideDetailsData(slideDetailsJson)
+            setShowSlideDetails(true)
+            
+            // Add only the message content (without the JSON)
+            setMessages(m => [...m, { role: 'assistant', content: messageContent }])
+            
+            // Mark AI response as complete
+            setTimeout(() => {
+              setAiResponseComplete(true)
+            }, 300)
+            
+            return
+          } catch (e) {
+            console.warn('Failed to parse slide details JSON:', e)
+          }
         }
       }
 
       setMessages(m => [...m, { role: 'assistant', content: assistant }])
+      
+      // Mark AI response as complete
+      setTimeout(() => {
+        setAiResponseComplete(true)
+      }, 300)
+      
     } catch (e) {
+      // Provide conversational error responses
+      let errorMessage = e.message
+      // If it's a generic error message, make it more conversational
+      if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
+        errorMessage = 'Hmm, I\'m having trouble connecting right now. 🌐 Could you try again in a moment?'
+      } else if (errorMessage.includes('timeout')) {
+        errorMessage = 'The model timed out. Please wait a few seconds and try again.'
+      } else if (errorMessage.includes('rate limit')) {
+        errorMessage = 'You have reached the model rate limit. Please wait about 1 minute before trying again.'
+      }
       setMessages(m => [
         ...m,
-        { role: 'assistant', content: `Error: ${e.message}` }
+        { role: 'assistant', content: errorMessage }
       ])
+      
+      // Mark AI response as complete even for errors
+      setTimeout(() => {
+        setAiResponseComplete(true)
+      }, 300)
     } finally {
       setLoading(false)
     }
@@ -531,41 +742,38 @@ export default function App() {
       <div className="app-wrap">
         <div className="container">
           <div className="card" role="group" aria-label="Chat">
-          <div style={{ padding: '0 16px 12px', display: 'flex', justifyContent: 'flex-end' }}>
-            {!lastPptxData && (
-              <button className="small" onClick={async () => {
-                // Finalize: request structured JSON plan from the AI using current messages
-                const messagesForAI = messages.map(({role, content})=>({role, content}));
-                setPptxLoading(true);
-                try {
-                  const res = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ messages: messagesForAI.concat([{ role: 'system', content: 'You are a presentation assistant. When asked, produce a JSON representation of the slides in the format: {"title":"","subtitle":"","slides":[{"title":"","type":"","content":"","bullets":[]}]}. Do not output any additional text. This output is for the application to consume.' }]) }) });
-                  const data = await res.json();
-                  const assistant = data?.message?.content || '';
-                  const jsonMatch = assistant.match(/\{[\s\S]*\}/);
-                  if (jsonMatch) {
-                    try {
-                      const pptxData = JSON.parse(jsonMatch[0]);
-                      setLastPptxData(pptxData);
-                      setMessages(m=>[...m, { role: 'assistant', content: 'Plan finalized. Click Generate to build the PowerPoint.' }]);
-                    } catch(e) {
-                      setMessages(m=>[...m, { role: 'assistant', content: 'Could not parse plan. Please refine.' }]);
-                    }
-                  } else {
-                    setMessages(m=>[...m, { role: 'assistant', content: 'No plan returned. Please ask the assistant to provide a slide plan.' }]);
-                  }
-                } catch(e) {
-                  setMessages(m=>[...m, { role: 'assistant', content: `Error finalizing plan: ${e.message}` }]);
-                } finally { setPptxLoading(false) }
-              }}>Finalize plan</button>
-            )}
-          </div>
+          {/* Generate button will be shown only when lastPptxData exists */}
           <div className="header">
             <div style={{ width: 10, height: 10, background: 'var(--primary)', borderRadius: 999 }} />
             <div>
-              <h1>Create Presentation</h1>
-              <div className="sub">Describe your PowerPoint and let AI build it</div>
+              <h1>AI Chat Assistant</h1>
+              <div className="sub">Ask me anything - I'm here to help!</div>
             </div>
             <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, alignItems: 'center' }}>
+              <button 
+                onClick={clearChatHistory}
+                style={{
+                  padding: '4px 8px',
+                  fontSize: '11px',
+                  background: 'transparent',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '4px',
+                  color: '#6b7280',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.background = '#f3f4f6'
+                  e.target.style.color = '#374151'
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = 'transparent'
+                  e.target.style.color = '#6b7280'
+                }}
+                title="Clear chat history"
+              >
+                Clear History
+              </button>
               <div style={{ fontSize: 12, color: 'var(--muted)' }}>Template</div>
               <div style={{ display: 'flex', gap: 8 }}>
                 {templates.slice(0,5).map(t => (
@@ -590,8 +798,22 @@ export default function App() {
             </div>
           )}
 
+          {showPresentationOutline && presentationData && (
+            <div style={{ padding: '16px', background: '#f8fafc', margin: '8px 16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <PresentationOutline pptxData={presentationData} />
+            </div>
+          )}
+
+          {showSlideDetails && slideDetailsData && (
+            <div style={{ margin: '20px 0' }}>
+              <SlideDetails 
+                slideData={slideDetailsData}
+                onGenerate={handleGeneratePresentation}
+              />
+            </div>
+          )}
+
           <div style={{ padding: '8px 16px', display: 'flex', gap: 8, alignItems: 'center' }}>
-            <button className="small" onClick={() => setShowSlideDetails(s => !s)}>{showSlideDetails ? 'Hide slide details' : 'Show slide details'}</button>
             <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--muted)' }}>
               Selected template: {selectedTemplate || 'Auto-detect'}
             </div>
@@ -761,7 +983,7 @@ export default function App() {
         </div>
 
         <section className="pptx-area" aria-label="Presentation preview">
-          {lastPptxData ? (
+          {lastPptxData && aiResponseComplete ? (
             <div className="pptx-ready">
               <div className="pptx-preview">
                 <h3>📊 {lastPptxData.title}</h3>
@@ -803,6 +1025,56 @@ export default function App() {
             </div>
           )}
         </section>
+        </div>
+      </div>
+      
+      {/* Testimonials Section */}
+      <div className="testimonials-section">
+        <div className="testimonials-container">
+          <h2 className="testimonials-title">Trusted by thousands of professionals</h2>
+          <div className="testimonials-grid">
+            <div className="testimonial-card">
+              <div className="testimonial-content">
+                <div className="stars">★★★★★</div>
+                <p>"Presto has revolutionized how I create presentations. What used to take hours now takes minutes!"</p>
+              </div>
+              <div className="testimonial-author">
+                <div className="author-avatar">S</div>
+                <div>
+                  <div className="author-name">Sarah Chen</div>
+                  <div className="author-title">Marketing Director</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="testimonial-card">
+              <div className="testimonial-content">
+                <div className="stars">★★★★★</div>
+                <p>"The AI understands exactly what I need. Professional presentations in seconds!"</p>
+              </div>
+              <div className="testimonial-author">
+                <div className="author-avatar">M</div>
+                <div>
+                  <div className="author-name">Michael Rodriguez</div>
+                  <div className="author-title">Sales Manager</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="testimonial-card">
+              <div className="testimonial-content">
+                <div className="stars">★★★★★</div>
+                <p>"Game-changer for our team. Beautiful slides with zero design experience needed."</p>
+              </div>
+              <div className="testimonial-author">
+                <div className="author-avatar">E</div>
+                <div>
+                  <div className="author-name">Emily Johnson</div>
+                  <div className="author-title">Product Manager</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>
