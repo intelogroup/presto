@@ -1,45 +1,30 @@
-# Railway configuration for Ollama LLM service
-# This deploys Ollama with Llama 3.1 and Mistral models
+# Railway configuration for Express.js Presto Backend
 
 [build]
-# Use the Ollama-specific Dockerfile
-dockerfilePath = "Dockerfile.ollama"
+# Use the standard Dockerfile for Node.js
+dockerfilePath = "Dockerfile"
 
 [deploy]
-# Service configuration
-startCommand = "/home/ollama/start-ollama.sh"
+# Service configuration for Express server
+startCommand = "node server.js"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
 
 # Health check configuration
-healthcheckPath = "/api/tags"
+healthcheckPath = "/api/health"
 healthcheckTimeout = 30
 
 # Resource configuration
-# Ollama needs more memory for model loading
 [deploy.resources]
-# Request higher memory for model storage
-memory = "4Gi"
-cpu = "2000m"
+memory = "1Gi"
+cpu = "500m"
 
 # Environment variables
 [env]
-OLLAMA_HOST = "0.0.0.0"
-OLLAMA_PORT = "11434"
-# Control which models to pull
-PULL_LLAMA = "true"
-PULL_MISTRAL = "true"
-# Ollama configuration
-OLLAMA_NUM_PARALLEL = "1"
-OLLAMA_MAX_LOADED_MODELS = "2"
-OLLAMA_FLASH_ATTENTION = "1"
+NODE_ENV = "production"
+PORT = "3004"
 
 # Networking
 [networking]
-# Expose Ollama API port
-ports = [11434]
-
-# Volume for model storage (if supported)
-[volumes]
-# Store models persistently
-models = "/home/ollama/.ollama"
+# Expose Express server port
+ports = [3004]
