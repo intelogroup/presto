@@ -1,0 +1,3 @@
+/api/* https://express-production-f02d.up.railway.app/api/:splat 200
+/templates/* https://express-production-f02d.up.railway.app/templates/:splat 200
+/* /index.html 200
