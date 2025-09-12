@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { ComprehensivePresentationSystem } = require('./dynamic-presentation-system/comprehensive-presentation-system');
+const ComprehensivePresentationSystem = require('./dynamic-presentation-system/comprehensive-presentation-system');
 const fs = require('fs');
 const path = require('path');
 

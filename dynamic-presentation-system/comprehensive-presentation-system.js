@@ -319,4 +319,4 @@ class ComprehensivePresentationSystem {
   }
 }
 
-module.exports = { ComprehensivePresentationSystem };
+module.exports = ComprehensivePresentationSystem;

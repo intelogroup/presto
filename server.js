@@ -28,7 +28,7 @@ const path = require('path');
 const fs = require('fs').promises;
 
 // Import our presentation systems
-const { ComprehensivePresentationSystem } = require('./dynamic-presentation-system/comprehensive-presentation-system');
+const ComprehensivePresentationSystem = require('./dynamic-presentation-system/comprehensive-presentation-system');
 const EnhancedPptxGenerator = require('./generators/generators-templates/enhanced_pptx_generator');
 
 // Import chat routes
