@@ -12,9 +12,9 @@ const openai = new OpenAI({
 });
 
 // Model configuration with fallbacks
-// Primary model set to RunPod Llama for local processing
-// Fallback to cloud models if RunPod is unavailable
-const PRIMARY_MODEL = 'runpod/llama';
+// Primary model set to Ollama Llama for local processing
+// Fallback to cloud models if Ollama is unavailable
+const PRIMARY_MODEL = 'ollama/llama';
 const FALLBACK_MODELS = [
   'nvidia/nemotron-nano-9b-v2',
   'google/gemini-2.5-flash',
@@ -204,21 +204,22 @@ async function createChatCompletion(messages, options = {}) {
     try {
       console.log(`Attempting with model: ${model}${isPreferredModel ? ' (preferred)' : i > 0 ? ' (fallback)' : ''}`);
       
-      // Check if this is a RunPod model - route to RunPod directly
-      if (model === 'runpod/llama') {
-        const { createChatCompletionWithRunPod } = require('./runpod-config');
+      // Check if this is an Ollama model - route to Ollama directly
+      if (model.startsWith('ollama/')) {
+        const { createChatCompletionWithOllama } = require('./ollama-config');
         try {
-          console.log('🚀 Routing to RunPod for primary model');
-          const result = await createChatCompletionWithRunPod(messages, {
+          console.log(`🚀 Routing to Ollama for model: ${model}`);
+          const modelType = model.split('/')[1]; // Extract 'llama' or 'mistral'
+          const result = await createChatCompletionWithOllama(messages, {
             ...options,
-            runPodOnly: true // Use RunPod exclusively for this model
-          }, modelStateManager);
+            model: modelType
+          });
           modelStateManager.recordSuccess(model);
           return result;
-        } catch (runpodError) {
-          console.warn(`⚠️ RunPod failed: ${runpodError.message}. Continuing with fallback models...`);
+        } catch (ollamaError) {
+          console.warn(`⚠️ Ollama failed: ${ollamaError.message}. Continuing with fallback models...`);
           modelStateManager.recordFailure(model);
-          lastError = runpodError;
+          lastError = ollamaError;
           continue; // Continue to next model in sequence
         }
       }

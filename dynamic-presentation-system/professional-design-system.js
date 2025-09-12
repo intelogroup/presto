@@ -370,6 +370,37 @@ class ProfessionalDesignSystem {
     }
 
     /**
+     * Apply design to presentation layouts
+     */
+    async applyDesign(adaptiveLayouts, theme = 'professional') {
+        const colorScheme = this.getColorScheme(theme);
+        
+        // Handle both layouts array (from AdaptiveLayoutEngine) and slides array
+        const slidesToProcess = adaptiveLayouts.layouts || adaptiveLayouts.slides || [];
+        
+        // Apply design to each slide in the adaptive layouts
+        const designedPresentation = {
+            ...adaptiveLayouts,
+            theme,
+            colorScheme,
+            slides: slidesToProcess.map(slideOrLayout => {
+                // Handle layout objects from AdaptiveLayoutEngine
+                const slide = slideOrLayout.slide || slideOrLayout;
+                const slideType = slide.type || 'content';
+                const style = this.generateSlideStyle(slideType, colorScheme);
+                
+                return {
+                    ...slide,
+                    style,
+                    designApplied: true
+                };
+            })
+        };
+        
+        return designedPresentation;
+    }
+
+    /**
      * Get system information
      */
     getSystemInfo() {

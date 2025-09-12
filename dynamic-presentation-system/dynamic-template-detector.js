@@ -294,10 +294,19 @@ class ContentAnalyzer {
         return analysis;
     }
 
+    // Helper function to get content as string
+    getContentAsString(slide) {
+        if (!slide.content) return '';
+        if (Array.isArray(slide.content)) {
+            return slide.content.join(' ');
+        }
+        return String(slide.content);
+    }
+
     calculateContentMetrics(data) {
         const slides = data.slides || [];
         const totalContent = slides.reduce((total, slide) => {
-            return total + (slide.content || '').length + 
+            return total + this.getContentAsString(slide).length + 
                    (slide.bullets || []).join(' ').length;
         }, 0);
 
@@ -320,24 +329,26 @@ class ContentAnalyzer {
         }
 
         // Check for images (placeholder detection)
-        if (slides.some(slide => 
-            (slide.content || '').toLowerCase().includes('image') ||
-            (slide.content || '').toLowerCase().includes('chart') ||
-            (slide.content || '').toLowerCase().includes('graph')
-        )) {
+        if (slides.some(slide => {
+            const content = this.getContentAsString(slide).toLowerCase();
+            return content.includes('image') ||
+                   content.includes('chart') ||
+                   content.includes('graph');
+        })) {
             features.push('images');
         }
 
         // Check for charts/data visualization
-        if (slides.some(slide => 
-            (slide.content || '').toLowerCase().includes('chart') ||
-            (slide.content || '').toLowerCase().includes('graph') ||
-            (slide.content || '').toLowerCase().includes('data') ||
-            (slide.bullets || []).some(bullet => 
-                bullet.toLowerCase().includes('chart') ||
-                bullet.toLowerCase().includes('data')
-            )
-        )) {
+        if (slides.some(slide => {
+            const content = this.getContentAsString(slide).toLowerCase();
+            return content.includes('chart') ||
+                   content.includes('graph') ||
+                   content.includes('data') ||
+                   (slide.bullets || []).some(bullet => 
+                       bullet.toLowerCase().includes('chart') ||
+                       bullet.toLowerCase().includes('data')
+                   );
+        })) {
             features.push('charts');
         }
 
@@ -353,7 +364,7 @@ class ContentAnalyzer {
 
         // Factor in content density
         const avgContentLength = slides.reduce((sum, slide) => 
-            sum + (slide.content || '').length, 0) / slides.length;
+            sum + this.getContentAsString(slide).length, 0) / slides.length;
         complexityScore += Math.min(avgContentLength / 500, 1) * 0.3;
 
         // Factor in bullet point complexity
@@ -365,7 +376,7 @@ class ContentAnalyzer {
         const technicalTerms = ['methodology', 'analysis', 'research', 'data', 'algorithm', 'process'];
         const hasTechnicalContent = slides.some(slide => 
             technicalTerms.some(term => 
-                (slide.content || '').toLowerCase().includes(term) ||
+                this.getContentAsString(slide).toLowerCase().includes(term) ||
                 (slide.title || '').toLowerCase().includes(term)
             )
         );

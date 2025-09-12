@@ -47,9 +47,9 @@ class TaskComplexityAnalyzer {
     // Model capability tiers
     this.modelTiers = {
       tier0_local: {
-        models: ['runpod/llama'],
+        models: ['ollama/llama', 'ollama/mistral'],
         maxComplexity: 0.8,
-        description: 'Local RunPod Llama model for fast processing'
+        description: 'Local Ollama models (Llama 3.1 & Mistral) for fast processing'
       },
       tier1_free: {
         models: ['google/gemma-3-12b-it:free', 'nvidia/nemotron-nano-9b-v2'],

@@ -127,6 +127,7 @@ class AdaptiveLayoutEngine {
       
       layouts.push({
         slideIndex: layouts.length,
+        slide: slide, // Include original slide data
         layout: adaptedLayout,
         validation: validationResult,
         templateInfo: templateDetection
@@ -135,6 +136,7 @@ class AdaptiveLayoutEngine {
     
     return {
       layouts,
+      slides: presentationData.slides, // Also include slides array for compatibility
       strategy: 'adaptive',
       quality: this.calculateLayoutQuality(layouts)
     };

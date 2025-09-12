@@ -1044,6 +1044,106 @@ class AssetManagementSystem {
     resetMetrics() {
         this.assetMetrics = this.initializeAssetMetrics();
     }
+
+    /**
+     * Process assets in presentation data
+     */
+    async processAssets(presentationData) {
+        try {
+            // Process slides and their assets
+            const processedSlides = await Promise.all(
+                (presentationData.slides || []).map(async (slide) => {
+                    const processedSlide = { ...slide };
+                    
+                    // Process slide images
+                    if (slide.image && slide.image.path) {
+                        try {
+                            const asset = await this.loadAsset(slide.image.path, {
+                                type: 'image',
+                                optimize: true,
+                                fallback: true
+                            });
+                            processedSlide.image = {
+                                ...slide.image,
+                                asset,
+                                processed: true
+                            };
+                        } catch (error) {
+                            console.warn(`Failed to process image for slide: ${error.message}`);
+                            processedSlide.image = {
+                                ...slide.image,
+                                processed: false,
+                                error: error.message
+                            };
+                        }
+                    }
+                    
+                    // Process slide icons
+                    if (slide.icon && slide.icon.path) {
+                        try {
+                            const asset = await this.loadAsset(slide.icon.path, {
+                                type: 'image',
+                                optimize: true,
+                                fallback: true
+                            });
+                            processedSlide.icon = {
+                                ...slide.icon,
+                                asset,
+                                processed: true
+                            };
+                        } catch (error) {
+                            console.warn(`Failed to process icon for slide: ${error.message}`);
+                            processedSlide.icon = {
+                                ...slide.icon,
+                                processed: false,
+                                error: error.message
+                            };
+                        }
+                    }
+                    
+                    // Process background images
+                    if (slide.backgroundImage && slide.backgroundImage.path) {
+                        try {
+                            const asset = await this.loadAsset(slide.backgroundImage.path, {
+                                type: 'image',
+                                optimize: true,
+                                fallback: true
+                            });
+                            processedSlide.backgroundImage = {
+                                ...slide.backgroundImage,
+                                asset,
+                                processed: true
+                            };
+                        } catch (error) {
+                            console.warn(`Failed to process background image for slide: ${error.message}`);
+                            processedSlide.backgroundImage = {
+                                ...slide.backgroundImage,
+                                processed: false,
+                                error: error.message
+                            };
+                        }
+                    }
+                    
+                    return processedSlide;
+                })
+            );
+            
+            return {
+                ...presentationData,
+                slides: processedSlides,
+                assetsProcessed: true,
+                assetMetrics: this.getAssetMetrics()
+            };
+            
+        } catch (error) {
+            console.error('Asset processing failed:', error.message);
+            return {
+                ...presentationData,
+                assetsProcessed: false,
+                assetProcessingError: error.message
+            };
+        }
+    }
 }
 
 module.exports = AssetManagementSystem;
