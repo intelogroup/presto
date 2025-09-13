@@ -1,0 +1,35 @@
+# Railway configuration for Presto Frontend (React/Vite)
+
+[build]
+# Build the React frontend
+buildCommand = "npm run build"
+
+[deploy]
+# Static site deployment
+startCommand = "npx serve -s dist -l 3000"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+# Health check for static site
+healthcheckPath = "/"
+healthcheckTimeout = 30
+
+# Resource configuration (static site needs minimal resources)
+[deploy.resources]
+memory = "512Mi"
+cpu = "200m"
+
+# Environment variables
+[env]
+NODE_ENV = "production"
+
+# API Configuration - Update with your deployed backend URL
+VITE_API_BASE_URL = "https://your-presto-backend.railway.app"
+
+# Optional: Add analytics, etc.
+# VITE_ANALYTICS_ID = "your-analytics-id"
+
+# Networking
+[networking]
+# Expose the frontend port (Railway will assign external port)
+ports = [3000]

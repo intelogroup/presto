@@ -1,0 +1,47 @@
+# Railway configuration for vLLM service
+# Deploys Llama 3.1 8B model using vLLM
+
+[build]
+# Use the vLLM-specific Dockerfile
+dockerfilePath = "Dockerfile.vllm"
+
+[deploy]
+# Service configuration
+startCommand = "/start-vllm.sh"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+# Health check configuration
+healthcheckPath = "/health"
+healthcheckTimeout = 120
+
+# Resource configuration
+# vLLM needs significant memory for model loading
+[deploy.resources]
+# Higher memory allocation for Llama 3.1 8B
+memory = "8Gi"
+cpu = "4000m"
+
+# Environment variables
+[env]
+# Model configuration
+MODEL_NAME = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+HOST = "0.0.0.0"
+PORT = "8000"
+
+# Hugging Face token (set this in Railway dashboard)
+# HUGGING_FACE_HUB_TOKEN = "your-hf-token-here"
+
+# vLLM optimization settings
+VLLM_WORKER_USE_RAY = "false"
+VLLM_ATTENTION_BACKEND = "FLASHINFER"
+
+# Networking
+[networking]
+# Expose vLLM API port
+ports = [8000]
+
+# Volume for model caching (optional)
+[volumes]
+# Cache models to avoid re-downloading
+models = "/root/.cache/huggingface"

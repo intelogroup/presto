@@ -28,7 +28,7 @@ const path = require('path');
 const fs = require('fs').promises;
 
 // Import our presentation systems
-const ComprehensivePresentationSystem = require('./dynamic-presentation-system/comprehensive-presentation-system');
+const { ComprehensivePresentationSystem } = require('./dynamic-presentation-system/comprehensive-presentation-system');
 const EnhancedPptxGenerator = require('./generators/generators-templates/enhanced_pptx_generator');
 
 // Import chat routes
@@ -53,7 +53,7 @@ app.use(helmet({
 
 app.use(compression());
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    origin: ['http://localhost:5173', 'http://localhost:3000', 'https://presto-frontend-production.up.railway.app'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -75,6 +75,19 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // });
 
 // app.use('/api/', limiter);
+
+// Serve static files from frontend/dist with fallback to index.html for SPA routing
+app.use(express.static(path.join(__dirname, 'frontend/dist'), {
+    index: false // Don't automatically serve index.html
+}));
+
+// Handle React Router - serve index.html for non-API routes
+app.use((req, res, next) => {
+    if (req.path.startsWith('/api/')) {
+        return next();
+    }
+    res.sendFile(path.join(__dirname, 'frontend/dist/index.html'));
+});
 
 // Chat routes
 app.use('/api/chat', chatRoutes);

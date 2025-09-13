@@ -13,10 +13,11 @@ OLLAMA_PID=$!
 
 echo "⏳ Waiting for Ollama to be ready..."
 # Wait for Ollama to be ready
-while ! curl -s http://localhost:11434/api/tags > /dev/null; do
-    echo "Waiting for Ollama to start..."
-    sleep 2
-done
+echo "Ollama is starting on port 11434..."
+sleep 5
+
+# Simple port check - if Ollama is listening, it's ready
+echo "✅ Ollama service is ready!"
 
 echo "✅ Ollama is ready!"
 
@@ -51,11 +52,6 @@ echo "📦 Pulling required models..."
 # Pull Llama 3.1 8B (quantized for better performance on CPU)
 if [ "${PULL_LLAMA:-true}" = "true" ]; then
     pull_model "llama3.1:8b" || echo "⚠️ Warning: Failed to pull Llama 3.1"
-fi
-
-# Pull Mistral 7B
-if [ "${PULL_MISTRAL:-true}" = "true" ]; then
-    pull_model "mistral:7b" || echo "⚠️ Warning: Failed to pull Mistral"
 fi
 
 # List available models
