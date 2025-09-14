@@ -1,104 +1,12 @@
 const express = require('express');
 const { createChatCompletion, getQuickResponse, GENERAL_CHAT_PROMPT } = require('../config/openai-config');
+
+// Import modular utilities
+const logger = require('./utils/logger');
+const presentationManager = require('./utils/presentationStateManager');
+const errorHandler = require('./utils/errorHandler');
+
 const router = express.Router();
-
-// Enhanced logging utility
-const logRequest = (req, endpoint) => {
-  const timestamp = new Date().toISOString();
-  const requestId = req.headers['x-request-id'] || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  console.log(`🔵 [${timestamp}] ${endpoint} - Request ID: ${requestId}`);
-  const ip = req.ip || (req.connection && req.connection.remoteAddress) || (req.socket && req.socket.remoteAddress) || 'unknown';
-  console.log(`   📍 IP: ${ip}`);
-  let bodySize = 0;
-  try {
-    bodySize = req.body ? JSON.stringify(req.body).length : 0;
-  } catch (e) {
-    bodySize = 0;
-  }
-  console.log(`   📦 Body size: ${bodySize} chars`);
-  if (req.body && req.body.message) {
-    const preview = typeof req.body.message === 'string' ? req.body.message : JSON.stringify(req.body.message);
-    console.log(`   💬 Message preview: "${preview.substring(0, 100)}${preview.length > 100 ? '...' : ''}"`);
-  }
-  return requestId;
-};
-
-const logResponse = (requestId, endpoint, success, responseData, duration) => {
-  const timestamp = new Date().toISOString();
-  const status = success ? '✅' : '❌';
-  console.log(`${status} [${timestamp}] ${endpoint} - Request ID: ${requestId} (${duration}ms)`);
-  if (success && responseData) {
-    console.log(`   📤 Response size: ${JSON.stringify(responseData).length} chars`);
-    if (responseData.response) {
-      console.log(`   💭 Response preview: "${responseData.response.substring(0, 100)}${responseData.response.length > 100 ? '...' : ''}"`);
-    }
-  }
-};
-
-const logError = (requestId, endpoint, error, context = {}) => {
-  const timestamp = new Date().toISOString();
-  console.error(`🔴 [${timestamp}] ${endpoint} - Request ID: ${requestId} - ERROR`);
-  console.error(`   🚨 Error Type: ${error.name || 'Unknown'}`);
-  console.error(`   📝 Error Message: ${error.message}`);
-  console.error(`   🔍 Error Code: ${error.code || 'N/A'}`);
-  console.error(`   📊 Context:`, context);
-  
-  // Log stack trace for debugging
-  if (error.stack) {
-    console.error(`   📚 Stack Trace:`);
-    error.stack.split('\n').slice(0, 5).forEach(line => {
-      console.error(`      ${line}`);
-    });
-  }
-  
-  // Categorize error types
-  let errorCategory = 'UNKNOWN';
-  if (error.message.includes('API key')) errorCategory = 'AUTH_ERROR';
-  else if (error.message.includes('rate limit')) errorCategory = 'RATE_LIMIT';
-  else if (error.message.includes('timeout')) errorCategory = 'TIMEOUT';
-  else if (error.message.includes('network')) errorCategory = 'NETWORK_ERROR';
-  else if (error.message.includes('All AI models failed')) errorCategory = 'MODEL_FAILURE';
-  else if (error.code === 'ECONNREFUSED') errorCategory = 'CONNECTION_REFUSED';
-  
-  console.error(`   🏷️  Error Category: ${errorCategory}`);
-  return errorCategory;
-};
-
-// Presentation state tracking
-const presentationStates = new Map();
-
-// Helper function to detect presentation intent
-function detectPresentationIntent(message) {
-  const presentationKeywords = [
-    'presentation', 'slides', 'powerpoint', 'pptx', 'slideshow',
-    'pitch deck', 'slide deck', 'present about', 'create slides'
-  ];
-  
-  return presentationKeywords.some(keyword => 
-    message.toLowerCase().includes(keyword)
-  );
-}
-
-// Helper function to get presentation state
-function getPresentationState(requestId) {
-  return presentationStates.get(requestId) || {
-    stage: 'initial',
-    title: null,
-    audience: null,
-    slideCount: null,
-    outline: null,
-    fullContent: null,
-    userApproved: false
-  };
-}
-
-// Helper function to update presentation state
-function updatePresentationState(requestId, updates) {
-  const currentState = getPresentationState(requestId);
-  const newState = { ...currentState, ...updates };
-  presentationStates.set(requestId, newState);
-  return newState;
-}
 
 // POST /api/chat - General chat endpoint
 router.post('/', async (req, res) => {
