@@ -249,6 +249,15 @@ export default function App() {
     const id = setTimeout(() => ctrl.abort(), timeoutMs)
     try {
       return await fetch(url, { ...opts, signal: ctrl.signal })
+    } catch (error) {
+      // Improve error messaging for common issues
+      if (error.name === 'AbortError') {
+        throw new Error(`Request timeout after ${timeoutMs}ms`)
+      }
+      if (error.message.includes('Failed to fetch')) {
+        throw new Error(`Network error: Unable to reach ${url}`)
+      }
+      throw error
     } finally {
       clearTimeout(id)
     }
@@ -1142,7 +1151,7 @@ export default function App() {
             
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <div className="stars">★★★★★</div>
+                <div className="stars">★��★★★</div>
                 <p>"Game-changer for our team. Beautiful slides with zero design experience needed."</p>
               </div>
               <div className="testimonial-author">
