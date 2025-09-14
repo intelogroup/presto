@@ -9,9 +9,16 @@ const logRequest = (req, endpoint) => {
   console.log(`🔵 [${timestamp}] ${endpoint} - Request ID: ${requestId}`);
   const ip = req.ip || (req.connection && req.connection.remoteAddress) || (req.socket && req.socket.remoteAddress) || 'unknown';
   console.log(`   📍 IP: ${ip}`);
-  console.log(`   📦 Body size: ${JSON.stringify(req.body).length} chars`);
-  if (req.body.message) {
-    console.log(`   💬 Message preview: "${req.body.message.substring(0, 100)}${req.body.message.length > 100 ? '...' : ''}"`);
+  let bodySize = 0;
+  try {
+    bodySize = req.body ? JSON.stringify(req.body).length : 0;
+  } catch (e) {
+    bodySize = 0;
+  }
+  console.log(`   📦 Body size: ${bodySize} chars`);
+  if (req.body && req.body.message) {
+    const preview = typeof req.body.message === 'string' ? req.body.message : JSON.stringify(req.body.message);
+    console.log(`   💬 Message preview: "${preview.substring(0, 100)}${preview.length > 100 ? '...' : ''}"`);
   }
   return requestId;
 };
