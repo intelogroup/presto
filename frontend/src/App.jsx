@@ -271,13 +271,36 @@ export default function App() {
   // Helper: normalize slides to backend schema
   // API base helper - uses VITE_API_BASE_URL when set in environment
   const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
-  const apiFetch = (path, opts = {}) => {
+  const apiFetch = async (path, opts = {}) => {
+    const base = (API_BASE || '').replace(/\/$/, '')
+    const absUrl = base ? base + path : null
+
+    const logErrorDetail = (label, err) => {
+      try {
+        console.error(`[apiFetch] ${label}:`, err && (err.message || err))
+      } catch (e) {}
+    }
+
+    // Try absolute URL first (if configured)
+    if (absUrl) {
+      try {
+        const res = await fetch(absUrl, { ...opts, credentials: 'same-origin' })
+        return res
+      } catch (err) {
+        // Network/CORS error when calling absolute URL from preview or deployed frontend
+        logErrorDetail(`absolute fetch failed (${absUrl})`, err)
+        // fallthrough to try relative path
+      }
+    }
+
+    // Fallback to relative path (proxy or same origin)
     try {
-      const base = API_BASE.replace(/\/$/, '')
-      const url = base ? base + path : path
-      return fetch(url, opts)
-    } catch (e) {
-      return Promise.reject(e)
+      const res = await fetch(path, opts)
+      return res
+    } catch (err) {
+      logErrorDetail(`relative fetch failed (${path})`, err)
+      // Surface consolidated error
+      throw new Error(`Network request failed for ${absUrl || path}: ${err.message || err}`)
     }
   }
   const normalizePptxRequest = (data) => {
