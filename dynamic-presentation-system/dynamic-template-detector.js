@@ -12,19 +12,39 @@ class DynamicTemplateDetector {
         this.templateCapabilities = null;
         this.contentAnalyzer = new ContentAnalyzer();
         this.presentationClassifier = new PresentationClassifier();
-        this.loadTemplateCapabilities();
+        this.capabilitiesLoaded = false;
+        this.loadingPromise = null;
     }
 
     /**
-     * Load template capabilities from configuration
+     * Load template capabilities from configuration (async, lazy-loaded)
      */
-    loadTemplateCapabilities() {
+    async loadTemplateCapabilities() {
+        if (this.capabilitiesLoaded) {
+            return this.templateCapabilities;
+        }
+        
+        if (this.loadingPromise) {
+            return this.loadingPromise;
+        }
+        
+        this.loadingPromise = this._loadCapabilitiesAsync();
+        return this.loadingPromise;
+    }
+    
+    async _loadCapabilitiesAsync() {
         try {
             const capabilitiesPath = path.join(__dirname, 'template-capabilities.json');
-            this.templateCapabilities = JSON.parse(fs.readFileSync(capabilitiesPath, 'utf8'));
+            const fs = require('fs').promises;
+            const data = await fs.readFile(capabilitiesPath, 'utf8');
+            this.templateCapabilities = JSON.parse(data);
+            this.capabilitiesLoaded = true;
+            return this.templateCapabilities;
         } catch (error) {
             console.error('Failed to load template capabilities:', error);
             this.templateCapabilities = { templates: {}, defaultGenerator: {} };
+            this.capabilitiesLoaded = true;
+            return this.templateCapabilities;
         }
     }
 
@@ -35,6 +55,9 @@ class DynamicTemplateDetector {
      */
     async detectOptimalTemplate(presentationData) {
         try {
+            // Ensure template capabilities are loaded
+            await this.loadTemplateCapabilities();
+            
             // Step 1: Analyze content characteristics
             const contentAnalysis = this.contentAnalyzer.analyzeContent(presentationData);
             

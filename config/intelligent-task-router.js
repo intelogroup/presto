@@ -46,25 +46,41 @@ class TaskComplexityAnalyzer {
     
     // Model capability tiers
     this.modelTiers = {
-      tier0_local: {
-        models: ['ollama/llama', 'ollama/mistral'],
+      tier0_primary: {
+        models: ['vllm/llama'],
+        priority: 1,
+        maxComplexity: 1.0,
+        description: 'Primary vLLM Llama 3.1 model for all tasks'
+      },
+      tier1_secondary: {
+        models: ['nvidia/nemotron-nano-9b-v2'],
+        priority: 2,
         maxComplexity: 0.8,
-        description: 'Local Ollama models (Llama 3.1 & Mistral) for fast processing'
+        description: 'Secondary Nemotron model for backup and specialized tasks'
       },
-      tier1_free: {
-        models: ['google/gemma-3-12b-it:free', 'nvidia/nemotron-nano-9b-v2'],
+      tier2_local: {
+        models: ['vllm/mistral'],
+        priority: 3,
+        maxComplexity: 0.7,
+        description: 'Additional vLLM models for local processing'
+      },
+      tier3_free: {
+        models: ['google/gemma-3-12b-it:free'],
+        priority: 4,
         maxComplexity: 0.4,
-        description: 'Fast free models for simple tasks'
+        description: 'Free models for simple tasks'
       },
-      tier2_balanced: {
+      tier4_balanced: {
         models: ['google/gemini-2.5-flash'],
+        priority: 5,
         maxComplexity: 0.7,
         description: 'Balanced models for medium complexity'
       },
-      tier3_premium: {
+      tier5_premium: {
         models: ['openai/gpt-4o', 'openai/gpt-4-turbo'],
+        priority: 6,
         maxComplexity: 1.0,
-        description: 'Premium models for complex tasks'
+        description: 'Premium models for complex tasks (fallback)'
       }
     };
   }
@@ -77,7 +93,7 @@ class TaskComplexityAnalyzer {
    */
   analyzeComplexity(userMessage, context = {}) {
     if (!userMessage || typeof userMessage !== 'string') {
-      return { complexity: 0.1, reasoning: ['Invalid or empty message'], tier: 'tier1_free' };
+      return { complexity: 0.1, reasoning: ['Invalid or empty message'], tier: 'tier0_primary' };
     }
     
     const message = userMessage.toLowerCase();
@@ -130,7 +146,7 @@ class TaskComplexityAnalyzer {
     const finalComplexity = Math.min(1.0, Math.max(0.1, totalComplexity));
     
     // Determine appropriate tier - ALWAYS prioritize local RunPod model first
-    let selectedTier = 'tier0_local'; // Always default to local RunPod model
+    let selectedTier = 'tier0_primary'; // Always default to primary vLLM Llama 3.1 model
     
     // RunPod should be tried first for ALL complexity levels
     // The fallback logic will handle other models if RunPod fails
@@ -172,7 +188,7 @@ class TaskComplexityAnalyzer {
     
     // For high complexity tasks, add premium models if not already included
     if (analysis.complexity > 0.7) {
-      for (const model of this.modelTiers.tier3_premium.models) {
+      for (const model of this.modelTiers.tier5_premium.models) {
         if (availableModels.includes(model) && !sequence.includes(model)) {
           sequence.push(model);
         }

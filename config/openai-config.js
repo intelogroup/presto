@@ -12,9 +12,9 @@ const openai = new OpenAI({
 });
 
 // Model configuration with fallbacks
-// Primary model set to Ollama Llama for local processing
-// Fallback to cloud models if Ollama is unavailable
-const PRIMARY_MODEL = 'ollama/llama';
+// Primary model set to vLLM for local processing
+// Fallback to cloud models if vLLM is unavailable
+const PRIMARY_MODEL = 'vllm/llama';
 const FALLBACK_MODELS = [
   'nvidia/nemotron-nano-9b-v2',
   'google/gemini-2.5-flash',
@@ -204,22 +204,22 @@ async function createChatCompletion(messages, options = {}) {
     try {
       console.log(`Attempting with model: ${model}${isPreferredModel ? ' (preferred)' : i > 0 ? ' (fallback)' : ''}`);
       
-      // Check if this is an Ollama model - route to Ollama directly
-      if (model.startsWith('ollama/')) {
-        const { createChatCompletionWithOllama } = require('./ollama-config');
+      // Check if this is a vLLM model - route to vLLM directly
+      if (model.startsWith('vllm/')) {
+        const { createChatCompletionWithVLLM } = require('./vllm-config');
         try {
-          console.log(`🚀 Routing to Ollama for model: ${model}`);
-          const modelType = model.split('/')[1]; // Extract 'llama' or 'mistral'
-          const result = await createChatCompletionWithOllama(messages, {
+          console.log(`🚀 Routing to vLLM for model: ${model}`);
+          const modelType = model.split('/')[1]; // Extract 'llama' or other model type
+          const result = await createChatCompletionWithVLLM(messages, {
             ...options,
             model: modelType
           });
           modelStateManager.recordSuccess(model);
           return result;
-        } catch (ollamaError) {
-          console.warn(`⚠️ Ollama failed: ${ollamaError.message}. Continuing with fallback models...`);
+        } catch (vllmError) {
+          console.warn(`⚠️ vLLM failed: ${vllmError.message}. Continuing with fallback models...`);
           modelStateManager.recordFailure(model);
-          lastError = ollamaError;
+          lastError = vllmError;
           continue; // Continue to next model in sequence
         }
       }
@@ -360,6 +360,22 @@ async function getQuickResponse(userMessage, systemPrompt = null) {
   return await createChatCompletion(messages);
 }
 
+// Test connection function for warmup
+async function testConnection() {
+  try {
+    const response = await openai.chat.completions.create({
+      model: MODEL_CONFIG.PRIMARY_MODEL,
+      messages: [{ role: 'user', content: 'ping' }],
+      max_tokens: 1,
+      timeout: 5000
+    });
+    return true;
+  } catch (error) {
+    console.warn('Connection test failed:', error.message);
+    return false;
+  }
+}
+
 module.exports = {
   openai,
   createChatCompletion,
@@ -369,6 +385,7 @@ module.exports = {
   ALL_MODELS,
   GENERAL_CHAT_PROMPT,
   modelStateManager,
+  testConnection,
   // Legacy export for backward compatibility
   DEEPSEEK_MODEL: PRIMARY_MODEL
 };

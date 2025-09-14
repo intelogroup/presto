@@ -353,6 +353,45 @@ app.get('/api/health', (req, res) => {
     res.json(systemStatus);
 });
 
+// Warm-up endpoint to pre-initialize heavy components
+app.get('/api/warmup', async (req, res) => {
+    try {
+        console.log('🔥 Warming up application components...');
+        const startTime = Date.now();
+        
+        // Pre-load template capabilities
+         if (comprehensiveSystem?.templateDetector) {
+             await comprehensiveSystem.templateDetector.loadTemplateCapabilities();
+         }
+        
+        // Test OpenAI connection with a minimal request
+        try {
+            const { testConnection } = require('./config/openai-config');
+            if (testConnection) {
+                await testConnection();
+            }
+        } catch (error) {
+            console.warn('OpenAI connection test failed during warmup:', error.message);
+        }
+        
+        const warmupTime = Date.now() - startTime;
+        console.log(`✅ Warmup completed in ${warmupTime}ms`);
+        
+        res.json({ 
+            status: 'warmed-up', 
+            warmupTime,
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('❌ Warmup failed:', error);
+        res.status(500).json({ 
+            status: 'warmup-failed', 
+            error: error.message,
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
 // System status endpoint
 app.get('/api/status', (req, res) => {
     res.json({

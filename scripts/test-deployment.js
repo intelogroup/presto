@@ -66,19 +66,19 @@ async function runTests() {
     log('🚀 Railway Deployment Validation', 'blue');
     log('=' .repeat(50), 'blue');
 
-    const ollamaUrl = process.env.OLLAMA_SERVICE_URL || 'http://localhost:11434';
+    const vllmUrl = process.env.VLLM_BASE_URL || 'http://localhost:8000';
     const prestoUrl = process.env.PRESTO_SERVICE_URL || 'http://localhost:3004';
 
-    log(`Target Ollama Service: ${ollamaUrl}`, 'yellow');
+    log(`Target vLLM Service: ${vllmUrl}`, 'yellow');
     log(`Target Presto Service: ${prestoUrl}`, 'yellow');
     log('');
 
-    // Test Ollama service
-    log('🔍 Testing Ollama Service...', 'blue');
-    const ollamaHealth = await testEndpoint(`${ollamaUrl}/api/tags`, 'Ollama API Tags');
+    // Test vLLM service
+    log('🔍 Testing vLLM Service...', 'blue');
+    const vllmHealth = await testEndpoint(`${vllmUrl}/v1/models`, 'vLLM API Models');
 
-    if (ollamaHealth.success) {
-        const models = ollamaHealth.data.models || [];
+    if (vllmHealth.success) {
+        const models = vllmHealth.data.data || [];
         log(`   📋 Available models: ${models.length}`, 'yellow');
         models.forEach(model => log(`     - ${model.name}`, 'yellow'));
     }
@@ -117,7 +117,7 @@ async function runTests() {
     log('📊 Test Summary', 'blue');
 
     const tests = [
-        { name: 'Ollama Health', result: ollamaHealth.success },
+        { name: 'vLLM Health', result: vllmHealth.success },
         { name: 'Presto Health', result: prestoHealth.success },
         { name: 'Presto Status', result: prestoStatus.success },
         { name: 'Presto Templates', result: prestoTemplates.success },

@@ -59,13 +59,9 @@ railway service presto-frontend
 # Update main service environment variables
 echo "⚙️ Updating main service environment variables..."
 if [ "$SERVICE_TYPE" = "vllm" ]; then
-    railway variables --set "OLLAMA_BASE_URL=http://llm-vllm.railway.internal:8000/v1"
-    railway variables --set "OLLAMA_ENABLED=true"
-    railway variables --set "OLLAMA_LLAMA_MODEL=llama3.1"
+    # vLLM configuration - no Ollama needed
 else
-    railway variables --set "OLLAMA_BASE_URL=http://llm-tgi.railway.internal:8000/v1"
-    railway variables --set "OLLAMA_ENABLED=true"
-    railway variables --set "OLLAMA_LLAMA_MODEL=tgi"
+    # TGI configuration - no Ollama needed
 fi
 
 echo "✅ LLM service deployment complete!"

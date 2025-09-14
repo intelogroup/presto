@@ -13,7 +13,7 @@ class LatencyBenchmark {
         ];
         this.results = {
             openrouter: [],
-            ollama: []
+            vllm: []
         };
     }
 
@@ -134,57 +134,57 @@ class LatencyBenchmark {
         }
     }
 
-    compareModels(openrouterStats, ollamaStats) {
+    compareModels(openrouterStats, vllmStats) {
         console.log('\n🏆 PERFORMANCE COMPARISON:');
         console.log('=' .repeat(60));
         
         // Determine winner based on multiple factors
         let openrouterScore = 0;
-        let ollamaScore = 0;
+        let vllmScore = 0;
         
         // Success rate comparison (40% weight)
-        if (openrouterStats.successRate > ollamaStats.successRate) {
+        if (openrouterStats.successRate > vllmStats.successRate) {
             openrouterScore += 40;
-            console.log(`✅ Success Rate Winner: OpenRouter (${openrouterStats.successRate.toFixed(1)}% vs ${ollamaStats.successRate.toFixed(1)}%)`);
-        } else if (ollamaStats.successRate > openrouterStats.successRate) {
-            ollamaScore += 40;
-            console.log(`✅ Success Rate Winner: Ollama (${ollamaStats.successRate.toFixed(1)}% vs ${openrouterStats.successRate.toFixed(1)}%)`);
+            console.log(`✅ Success Rate Winner: OpenRouter (${openrouterStats.successRate.toFixed(1)}% vs ${vllmStats.successRate.toFixed(1)}%)`);
+        } else if (vllmStats.successRate > openrouterStats.successRate) {
+            vllmScore += 40;
+            console.log(`✅ Success Rate Winner: vLLM (${vllmStats.successRate.toFixed(1)}% vs ${openrouterStats.successRate.toFixed(1)}%)`);
         } else {
             console.log(`🤝 Success Rate Tie: Both at ${openrouterStats.successRate.toFixed(1)}%`);
         }
         
         // Average latency comparison (35% weight)
-        if (openrouterStats.avgLatency < ollamaStats.avgLatency && openrouterStats.successfulRequests > 0) {
+        if (openrouterStats.avgLatency < vllmStats.avgLatency && openrouterStats.successfulRequests > 0) {
             openrouterScore += 35;
-            console.log(`⚡ Speed Winner: OpenRouter (${openrouterStats.avgLatency}ms vs ${ollamaStats.avgLatency}ms)`);
-        } else if (ollamaStats.avgLatency < openrouterStats.avgLatency && ollamaStats.successfulRequests > 0) {
-            ollamaScore += 35;
-            console.log(`⚡ Speed Winner: Ollama (${ollamaStats.avgLatency}ms vs ${openrouterStats.avgLatency}ms)`);
+            console.log(`⚡ Speed Winner: OpenRouter (${openrouterStats.avgLatency}ms vs ${vllmStats.avgLatency}ms)`);
+        } else if (vllmStats.avgLatency < openrouterStats.avgLatency && vllmStats.successfulRequests > 0) {
+            vllmScore += 35;
+            console.log(`⚡ Speed Winner: vLLM (${vllmStats.avgLatency}ms vs ${openrouterStats.avgLatency}ms)`);
         }
         
         // Consistency (min latency difference) (25% weight)
         const openrouterRange = openrouterStats.maxLatency - openrouterStats.minLatency;
-        const ollamaRange = ollamaStats.maxLatency - ollamaStats.minLatency;
+        const vllmRange = vllmStats.maxLatency - vllmStats.minLatency;
         
-        if (openrouterRange < ollamaRange && openrouterStats.successfulRequests > 0) {
+        if (openrouterRange < vllmRange && openrouterStats.successfulRequests > 0) {
             openrouterScore += 25;
-            console.log(`📈 Consistency Winner: OpenRouter (${openrouterRange}ms range vs ${ollamaRange}ms range)`);
-        } else if (ollamaRange < openrouterRange && ollamaStats.successfulRequests > 0) {
-            ollamaScore += 25;
-            console.log(`📈 Consistency Winner: Ollama (${ollamaRange}ms range vs ${openrouterRange}ms range)`);
+            console.log(`📈 Consistency Winner: OpenRouter (${openrouterRange}ms range vs ${vllmRange}ms range)`);
+        } else if (vllmRange < openrouterRange && vllmStats.successfulRequests > 0) {
+            vllmScore += 25;
+            console.log(`📈 Consistency Winner: vLLM (${vllmRange}ms range vs ${openrouterRange}ms range)`);
         }
         
         console.log('\n🎯 FINAL RECOMMENDATION:');
         console.log('-' .repeat(40));
         
-        if (openrouterScore > ollamaScore) {
+        if (openrouterScore > vllmScore) {
             console.log(`🥇 PRIMARY MODEL: OpenRouter (Score: ${openrouterScore}/100)`);
-            console.log(`🥈 FALLBACK MODEL: Ollama (Score: ${ollamaScore}/100)`);
+            console.log(`🥈 FALLBACK MODEL: vLLM (Score: ${vllmScore}/100)`);
             return 'openrouter';
-        } else if (ollamaScore > openrouterScore) {
-            console.log(`🥇 PRIMARY MODEL: Ollama (Score: ${ollamaScore}/100)`);
+        } else if (vllmScore > openrouterScore) {
+            console.log(`🥇 PRIMARY MODEL: vLLM (Score: ${vllmScore}/100)`);
             console.log(`🥈 FALLBACK MODEL: OpenRouter (Score: ${openrouterScore}/100)`);
-            return 'ollama';
+            return 'vllm';
         } else {
             console.log(`🤝 TIE: Both models performed equally (${openrouterScore}/100)`);
             console.log(`💡 Recommendation: Use OpenRouter as primary (external reliability)`);
@@ -209,22 +209,22 @@ class LatencyBenchmark {
             console.log('\n⏳ Waiting 5 seconds before testing next model...');
             await new Promise(resolve => setTimeout(resolve, 5000));
             
-            // Test Ollama
-            const ollamaResults = await this.testModel('ollama', iterations);
-            const ollamaStats = this.calculateStats(ollamaResults);
-            this.displayResults('ollama', ollamaStats);
+            // Test vLLM
+            const vllmResults = await this.testModel('vllm', iterations);
+            const vllmStats = this.calculateStats(vllmResults);
+            this.displayResults('vllm', vllmStats);
             
             // Compare and recommend
-            const winner = this.compareModels(openrouterStats, ollamaStats);
+            const winner = this.compareModels(openrouterStats, vllmStats);
             
             // Store results
             this.results.openrouter = { results: openrouterResults, stats: openrouterStats };
-            this.results.ollama = { results: ollamaResults, stats: ollamaStats };
+            this.results.vllm = { results: vllmResults, stats: vllmStats };
             
             return {
                 winner,
                 openrouter: openrouterStats,
-                ollama: ollamaStats,
+                vllm: vllmStats,
                 recommendation: winner
             };
             

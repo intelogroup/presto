@@ -10,7 +10,7 @@ async function testLLMResponse() {
         // Test chat endpoint
         const testMessage = {
             message: 'Hello, can you create a simple presentation about artificial intelligence?',
-            model: 'openrouter' // or 'ollama'
+            model: 'openrouter' // or 'vllm'
         };
         
         console.log('📤 Sending test message:', testMessage.message);
@@ -46,7 +46,7 @@ async function testLLMResponse() {
 
 // Test with different models
 async function testMultipleModels() {
-    const models = ['openrouter', 'ollama'];
+    const models = ['openrouter', 'vllm'];
     
     for (const model of models) {
         console.log(`\n🔄 Testing with ${model.toUpperCase()} model...`);

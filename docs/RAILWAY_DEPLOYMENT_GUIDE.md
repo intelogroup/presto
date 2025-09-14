@@ -4,19 +4,19 @@
 
 Your Presto setup consists of two Railway services:
 1. **Presto Backend** (`railway.toml`) - Express.js PPTX generation API
-2. **Ollama Service** (`railway-ollama.toml`) - Local LLM provider
+2. **vLLM Service** (`railway-vllm.toml`) - Local LLM provider
 
 ## 📋 Deployment Steps
 
-### Phase 1: Deploy Ollama Service First
+### Phase 1: Deploy vLLM Service First
 
-1. **Create Ollama Service in Railway**
-   - Create new service and upload `railway-ollama.toml`
-   - Note down the service name (used for internal DNS)
+1. **Create vLLM Service in Railway**
+- Create new service and upload `railway-vllm.toml`
+- Deploy and wait for successful startup
 
-2. **Configure Ollama Volume (Optional but Recommended)**
-   - In Railway dashboard, go to your Ollama service
-   - Add a volume named `models` mounted to `/home/ollama/.ollama`
+2. **Configure vLLM Resources**
+- In Railway dashboard, go to your vLLM service
+- Ensure adequate GPU/CPU resources for model inference
    - This persists downloaded models between deployments
 
 3. **Update Environment Variables**
@@ -40,8 +40,8 @@ Your Presto setup consists of two Railway services:
    SITE_URL = "https://your-presto-service.railway.app"
    SITE_NAME = "My Presto Generator"
 
-   # Critical: Update with your Ollama service name
-   OLLAMA_BASE_URL = "http://your-ollama-service-name.railway.internal:11434"
+   # Critical: Update with your vLLM service name
+VLLM_BASE_URL = "http://your-vllm-service-name.railway.internal:8000"
    ```
 
 3. **Service Networking**
@@ -50,18 +50,18 @@ Your Presto setup consists of two Railway services:
 
 ## 🔧 Configuration Checklist
 
-- [ ] Ollama service deployed and healthy (`/api/tags` endpoint)
-- [ ] Ollama service name noted for internal URL
+- [ ] vLLM service deployed and healthy (`/v1/models` endpoint)
+- [ ] vLLM service name noted for internal URL
 - [ ] Main service environment variables configured
-- [ ] `OLLAMA_BASE_URL` points to correct Ollama service
+- [ ] `VLLM_BASE_URL` points to correct vLLM service
 - [ ] `OPENROUTER_API_KEY` set in main service
 - [ ] Both services have public domains or private networking set up
 
 ## 🧪 Testing Deployment
 
-1. **Test Ollama Connectivity**
+1. **Test vLLM Connectivity**
    ```bash
-   curl https://your-ollama-service.railway.app/api/tags
+   curl https://your-vllm-service.railway.app/v1/models
    ```
 
 2. **Test Main Service Health**
@@ -78,9 +78,9 @@ Your Presto setup consists of two Railway services:
 
 ## 🚨 Troubleshooting
 
-### "Ollama connection failed"
-- Check `OLLAMA_BASE_URL` is correct
-- Ensure Ollama service is running and healthy
+### "vLLM connection failed"
+- Check `VLLM_BASE_URL` is correct
+- Ensure vLLM service is running and healthy
 - Verify Railway project networking
 
 ### "API key not configured"
@@ -88,15 +88,15 @@ Your Presto setup consists of two Railway services:
 - Ensure key has credits and is valid
 
 ### Model download issues
-- Check Ollama startup logs
+- Check vLLM startup logs
 - Consider increasing deployment timeout
 - Models are large - be patient on first deployment
 
 ## 📊 Resource Usage
 
 - **Main Service**: 1GB RAM, 500m CPU (PPTX generation)
-- **Ollama Service**: 4GB RAM, 2000m CPU (Model inference)
-- **Storage**: ~10GB+ for Ollama models (volume recommended)
+- **vLLM Service**: 4GB RAM, 2000m CPU (Model inference)
+- **Storage**: ~10GB+ for vLLM models (volume recommended)
 
 ## 🔄 Updates & Maintenance
 
@@ -110,5 +110,5 @@ Your Presto setup consists of two Railway services:
 If issues persist:
 1. Check Railway service logs
 2. Verify all environment variables are set
-3. Test Ollama service independently
+3. Test vLLM service independently
 4. Ensure services are in the same project for networking

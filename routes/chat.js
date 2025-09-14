@@ -97,6 +97,18 @@ router.post('/', async (req, res) => {
   const startTime = Date.now();
   const requestId = logRequest(req, 'POST /api/chat');
   
+  // Set request timeout to handle cold starts gracefully
+  const timeout = setTimeout(() => {
+    if (!res.headersSent) {
+      res.status(408).json({
+        error: 'Request timeout - the service may be starting up. Please try again in a few seconds.',
+        errorCategory: 'COLD_START_TIMEOUT',
+        requestId,
+        suggestion: 'This usually happens after periods of inactivity. The service should respond normally on the next request.'
+      });
+    }
+  }, 25000); // 25 second timeout
+  
   try {
     const { message, messages, system_prompt, options } = req.body;
     
@@ -195,6 +207,9 @@ Be helpful but thorough - don't skip any steps.`;
       }
     }
     
+    // Clear timeout on successful response
+    clearTimeout(timeout);
+    
     const responseData = {
       success: true,
       response: response.content,
@@ -211,6 +226,9 @@ Be helpful but thorough - don't skip any steps.`;
     res.json(responseData);
     
   } catch (error) {
+    // Clear timeout on error
+    clearTimeout(timeout);
+    
     const duration = Date.now() - startTime;
     const errorCategory = logError(requestId, 'POST /api/chat', error, {
       duration,

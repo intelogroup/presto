@@ -1,0 +1,21 @@
+{
+  "title": "AI and Machine Learning Overview",
+  "slides": [
+    {
+      "title": "Introduction to AI",
+      "content": "Artificial Intelligence is transforming industries worldwide",
+      "type": "title"
+    },
+    {
+      "title": "Machine Learning Basics",
+      "content": "ML is a subset of AI that learns from data",
+      "type": "content"
+    },
+    {
+      "title": "Applications",
+      "content": ["Healthcare", "Finance", "Transportation", "Education"],
+      "type": "content"
+    }
+  ],
+  "theme": "modern"
+}

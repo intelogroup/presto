@@ -60,25 +60,25 @@ async function quickLatencyTest() {
     // Test both models
     const openrouterResult = await testEndpoint('openrouter');
     await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
-    const ollamaResult = await testEndpoint('ollama');
+    const vllmResult = await testEndpoint('vllm');
     
     console.log('\n📊 SUMMARY:');
     console.log('=' .repeat(40));
     
-    if (openrouterResult.success && ollamaResult.success) {
-        if (openrouterResult.latency < ollamaResult.latency) {
-            console.log(`🏆 Winner: OpenRouter (${openrouterResult.latency}ms vs ${ollamaResult.latency}ms)`);
+    if (openrouterResult.success && vllmResult.success) {
+        if (openrouterResult.latency < vllmResult.latency) {
+            console.log(`🏆 Winner: OpenRouter (${openrouterResult.latency}ms vs ${vllmResult.latency}ms)`);
             console.log('💡 Recommendation: Use OpenRouter as primary');
         } else {
-            console.log(`🏆 Winner: Ollama (${ollamaResult.latency}ms vs ${openrouterResult.latency}ms)`);
-            console.log('💡 Recommendation: Use Ollama as primary');
+            console.log(`🏆 Winner: vLLM (${vllmResult.latency}ms vs ${openrouterResult.latency}ms)`);
+            console.log('💡 Recommendation: Use vLLM as primary');
         }
     } else if (openrouterResult.success) {
         console.log('🏆 Winner: OpenRouter (only working model)');
         console.log('💡 Recommendation: Use OpenRouter as primary');
-    } else if (ollamaResult.success) {
-        console.log('🏆 Winner: Ollama (only working model)');
-        console.log('💡 Recommendation: Use Ollama as primary');
+    } else if (vllmResult.success) {
+        console.log('🏆 Winner: vLLM (only working model)');
+        console.log('💡 Recommendation: Use vLLM as primary');
     } else {
         console.log('❌ Both models failed - check server configuration');
     }
