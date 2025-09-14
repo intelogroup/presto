@@ -268,29 +268,75 @@ export default function App() {
 
   const canSend = (input.trim().length > 0 || selectedImages.length > 0) && !loading
 
+  // Helper: normalize slides to backend schema
+  const normalizePptxRequest = (data) => {
+    const allowedTypes = new Set(['title', 'content', 'image', 'chart', 'table', 'conclusion'])
+    const allowedLayouts = new Set(['standard', 'two-column', 'image-focus', 'chart-focus'])
+
+    const theme = (data.colorScheme && ['professional', 'modern', 'minimal'].includes(data.colorScheme))
+      ? data.colorScheme
+      : (['professional', 'modern', 'minimal'].includes(data.theme) ? data.theme : 'professional')
+
+    const slides = (data.slides || []).slice(0, 50).map((s) => {
+      const hasBullets = Array.isArray(s.bullets) && s.bullets.length > 0
+      const content = hasBullets ? s.bullets : (s.content ?? '')
+      let type = s.type
+      if (type === 'bullets') type = 'content'
+      if (!allowedTypes.has(type)) type = 'content'
+
+      let layout = s.layout
+      if (!allowedLayouts.has(layout)) {
+        if (type === 'image') layout = 'image-focus'
+        else if (type === 'chart' || type === 'table') layout = 'chart-focus'
+        else layout = 'standard'
+      }
+
+      return {
+        title: s.title || 'Slide',
+        content,
+        type,
+        layout
+      }
+    })
+
+    return {
+      title: data.title || 'AI Generated Presentation',
+      slides,
+      theme,
+      template: data.template || undefined,
+      userInput: data.userInput || undefined,
+      options: data.options || undefined
+    }
+  }
+
   // Handle generate presentation event
   useEffect(() => {
     const handleGeneratePresentation = (event) => {
       const pptxData = event.detail
       setPptxLoading(true)
-      
+
+      const normalized = normalizePptxRequest(pptxData)
+
       // Generate the actual presentation
       fetch('/api/generate-pptx', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(pptxData)
+        body: JSON.stringify(normalized)
       })
-      .then(res => res.blob())
+      .then(res => {
+        if (!res.ok) throw new Error(`Server responded ${res.status}`)
+        return res.blob()
+      })
       .then(blob => {
         const url = window.URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = `${pptxData.title || 'presentation'}.pptx`
+        a.download = `${normalized.title || 'presentation'}.pptx`
         document.body.appendChild(a)
         a.click()
         document.body.removeChild(a)
         window.URL.revokeObjectURL(url)
-        
+
         setMessages(m => [...m, { role: 'assistant', content: '🎉 Your presentation has been generated and downloaded! Feel free to ask if you need any modifications.' }])
         setShowPresentationOutline(false)
         setPresentationData(null)
