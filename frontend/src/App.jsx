@@ -625,9 +625,15 @@ export default function App() {
     setMessages(next)
     setInput('')
     setSelectedImages([])
+    if (backendStatus === 'offline') {
+      setLoading(false)
+      setAiResponseComplete(true)
+      setMessages(m => [...m, { role: 'assistant', content: "I can't reach the server right now. Please try again shortly." }])
+      return
+    }
     setLoading(true)
     setAiResponseComplete(false)
-    
+
     if (showPresentationOutline) {
       setShowPresentationOutline(false)
       setPresentationData(null)
