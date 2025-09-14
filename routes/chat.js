@@ -503,13 +503,15 @@ router.get('/status', (req, res) => {
   } catch (error) {
     const duration = Date.now() - startTime;
     const errorCategory = logError(requestId, 'GET /api/chat/status', error, { duration });
-    
+
+    // Temporary: include stack in response to aid remote debugging. Remove before production.
     res.status(500).json({
       error: 'Failed to get status',
       details: error.message,
       errorCategory,
       requestId,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      stack: error.stack ? error.stack.split('\n').slice(0,10) : undefined
     });
   }
 });
