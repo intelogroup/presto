@@ -898,10 +898,14 @@ export default function App() {
         <div className="container">
           <div className="card" role="group" aria-label="Chat">
           <div className="header">
-            <div className="status-dot" />
+            <div className={`status-dot ${backendStatus === 'online' ? 'online' : backendStatus === 'offline' ? 'offline' : 'unknown'}`} />
             <div>
               <h1>AI Chat Assistant</h1>
-              <div className="sub">Ask me anything - I'm here to help!</div>
+              <div className="sub">
+                {backendStatus === 'online' ? 'Connected - Ask me anything!' :
+                 backendStatus === 'offline' ? 'Backend offline - Limited functionality' :
+                 'Connecting...'}
+              </div>
             </div>
             <div className="header-actions">
               <button 
