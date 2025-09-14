@@ -237,6 +237,7 @@ export default function App() {
   const [slideDetailsData, setSlideDetailsData] = useState(null)
   const [aiResponseComplete, setAiResponseComplete] = useState(true)
   const [pendingPptxData, setPendingPptxData] = useState(null)
+  const [backendStatus, setBackendStatus] = useState('unknown') // 'online' | 'offline'
   const listRef = useRef(null)
   const fileInputRef = useRef(null)
 
