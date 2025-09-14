@@ -488,26 +488,39 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      const online = await checkBackendAvailability()
-      setBackendStatus(online ? 'online' : 'offline')
+      try {
+        console.log('🚀 Initializing app and checking backend...')
+        const online = await checkBackendAvailability()
+        setBackendStatus(online ? 'online' : 'offline')
 
-      if (online) {
-        try {
-          const r = await apiFetch('/api/templates')
-          const j = await r.json().catch(() => ({}))
-          const items = j.templates || j.available?.themes?.map((t, i) => ({ id: `${t}-${i}`, name: t, thumbnail: getPlaceholderTemplates()[i%5].thumbnail })) || []
-          setTemplates(items)
-        } catch {
+        if (online) {
+          try {
+            console.log('📋 Fetching templates from backend...')
+            const r = await apiFetch('/api/templates')
+            const j = await r.json().catch(() => ({}))
+            const items = j.templates || j.available?.themes?.map((t, i) => ({ id: `${t}-${i}`, name: t, thumbnail: getPlaceholderTemplates()[i%5].thumbnail })) || []
+            setTemplates(items)
+            console.log(`✅ Loaded ${items.length} templates from backend`)
+          } catch (error) {
+            console.warn('⚠️ Failed to fetch templates from backend, using placeholders:', error.message)
+            setTemplates(getPlaceholderTemplates())
+          }
+        } else {
+          console.log('📋 Using placeholder templates (backend offline)')
           setTemplates(getPlaceholderTemplates())
         }
-      } else {
+
+        try {
+          const saved = localStorage.getItem('presto_selected_template')
+          if (saved) setSelectedTemplate(saved)
+        } catch (error) {
+          console.warn('⚠️ Failed to load saved template:', error.message)
+        }
+      } catch (error) {
+        console.error('❌ App initialization failed:', error)
+        setBackendStatus('offline')
         setTemplates(getPlaceholderTemplates())
       }
-
-      try {
-        const saved = localStorage.getItem('presto_selected_template')
-        if (saved) setSelectedTemplate(saved)
-      } catch {}
     })()
   }, [])
 
