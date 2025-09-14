@@ -325,6 +325,10 @@ export default function App() {
 
   useEffect(() => {
     const handleGeneratePresentation = (event) => {
+      if (backendStatus === 'offline') {
+        setMessages(m => [...m, { role: 'assistant', content: 'Backend is unavailable right now. Please try again later.' }])
+        return
+      }
       const pptxData = event.detail
       setPptxLoading(true)
 
