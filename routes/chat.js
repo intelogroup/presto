@@ -187,6 +187,14 @@ Be helpful but thorough - don't skip any steps.`;
     
     // Analyze response for presentation state updates
     let canGeneratePPTX = false;
+    
+    // Check for GENERATE_POWERPOINT_READY marker (primary detection)
+    if (response.content && response.content.includes('```GENERATE_POWERPOINT_READY```')) {
+      canGeneratePPTX = true;
+      console.log(`   ✅ GENERATE_POWERPOINT_READY marker detected - enabling PPTX generation`);
+    }
+    
+    // Legacy presentation state system (fallback)
     if (isPresentation && response.content) {
       const content = response.content.toLowerCase();
       

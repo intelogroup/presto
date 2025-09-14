@@ -640,6 +640,39 @@ export default function App() {
         return
       }
 
+      // Handle canGeneratePPTX flag when no presentationState (direct JSON response)
+      if (canGeneratePPTX && !presentationState) {
+        // Try to parse the assistant response as JSON for presentation data
+        try {
+          const pptxData = JSON.parse(assistant)
+          if (pptxData.title && pptxData.slides && pptxData.slides.length >= 1) {
+            // Add a user-friendly message
+            const friendlyMessage = "I've created your presentation! Click the button below to generate your PowerPoint file."
+            setMessages(m => [...m, { role: 'assistant', content: friendlyMessage }])
+            
+            // Set up PPTX data for generation
+            const formattedPptxData = {
+              title: pptxData.title,
+              subtitle: pptxData.subtitle || '',
+              slides: pptxData.slides,
+              theme: pptxData.theme || 'professional',
+              colorScheme: pptxData.colorScheme || 'professional'
+            }
+            
+            // Mark AI response as complete and show generate button
+            setTimeout(() => {
+              setAiResponseComplete(true)
+              setLastPptxData(formattedPptxData)
+            }, 500)
+            
+            return
+          }
+        } catch (e) {
+          console.warn('Failed to parse assistant response as JSON for PPTX:', e)
+          // Fall through to normal message handling
+        }
+      }
+
       // Check for presentation outline marker (legacy support)
       if (assistant.includes('```SHOW_PRESENTATION_OUTLINE```')) {
         const parts = assistant.split('```SHOW_PRESENTATION_OUTLINE```')
@@ -670,7 +703,43 @@ export default function App() {
         }
       }
 
-      // Check for slide details marker
+      // Check for PowerPoint ready marker (NEW - primary detection)
+      if (assistant.includes('```GENERATE_POWERPOINT_READY```')) {
+        const parts = assistant.split('```GENERATE_POWERPOINT_READY```')
+        const messageContent = parts[0].trim()
+        const jsonPart = parts[1]?.trim()
+        
+        if (jsonPart) {
+          try {
+            const pptxData = JSON.parse(jsonPart)
+            if (pptxData.title && pptxData.slides && pptxData.slides.length >= 1) {
+              // Add the message content first
+              setMessages(m => [...m, { role: 'assistant', content: messageContent }])
+              
+              // Set up PPTX data for generation
+              const formattedPptxData = {
+                title: pptxData.title,
+                subtitle: pptxData.subtitle || '',
+                slides: pptxData.slides,
+                theme: pptxData.theme || 'professional',
+                colorScheme: pptxData.colorScheme || 'professional'
+              }
+              
+              // Mark AI response as complete and show generate button
+              setTimeout(() => {
+                setAiResponseComplete(true)
+                setLastPptxData(formattedPptxData)
+              }, 500)
+              
+              return
+            }
+          } catch (e) {
+            console.warn('Failed to parse PowerPoint ready JSON:', e)
+          }
+        }
+      }
+
+      // Check for slide details marker (legacy support)
       if (assistant.includes('```SHOW_SLIDE_DETAILS```')) {
         const parts = assistant.split('```SHOW_SLIDE_DETAILS```')
         const messageContent = parts[0].trim()
@@ -983,47 +1052,133 @@ export default function App() {
         </div>
 
         <section className="pptx-area" aria-label="Presentation preview">
-          {lastPptxData && aiResponseComplete ? (
-            <div className="pptx-ready">
-              <div className="pptx-preview">
-                <h3>📊 {lastPptxData.title}</h3>
-                {lastPptxData.subtitle && <p className="subtitle">{lastPptxData.subtitle}</p>}
-                <div className="slides-info">
-                  {lastPptxData.slides?.length} slides • {lastPptxData.colorScheme || 'professional'} theme
-                </div>
-                <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 12 }}>
-                  <button className="button generate-btn" onClick={() => {
-                    // Get user context from recent messages
-                    const userMessages = messages.filter(m => m.role === 'user').slice(-3)
-                    const userContext = userMessages.map(m => m.content).join(' ')
-                    generatePPTX({ ...lastPptxData, template: selectedTemplate }, userContext)
-                  }} disabled={pptxLoading}>
-                    {pptxLoading ? 'Generating...' : '⬇ Generate PowerPoint'}
-                  </button>
-                  <button className="button" onClick={() => setShowSlideDetails(s => !s)} style={{ background: '#eef2ff', color: 'var(--primary)' }}>
-                    {showSlideDetails ? 'Hide details' : 'Show slide details'}
-                  </button>
-                </div>
-
-                {showSlideDetails && (
-                  <div style={{ textAlign: 'left', marginTop: 16 }}>
-                    <h4>Slides preview</h4>
-                    {lastPptxData.slides.map((s, idx) => (
-                      <div key={idx} style={{ padding: 8, borderBottom: '1px solid #eee' }}>
-                        <strong>{idx+1}. {s.title}</strong>
-                        <div style={{ color: 'var(--muted)', marginTop: 6 }}>{s.type === 'bullets' ? s.bullets?.join('\n') : s.content}</div>
-                      </div>
-                    ))}
+          <div className="pptx-ready">
+            <div className="pptx-preview">
+              {lastPptxData && aiResponseComplete ? (
+                <>
+                  <h3>📊 {lastPptxData.title}</h3>
+                  {lastPptxData.subtitle && <p className="subtitle">{lastPptxData.subtitle}</p>}
+                  <div className="slides-info">
+                    {lastPptxData.slides?.length} slides • {lastPptxData.colorScheme || 'professional'} theme
                   </div>
+                </>
+              ) : (
+                <>
+                  <h3 style={{ color: '#9ca3af' }}>📊 Presentation Ready</h3>
+                  <p className="subtitle" style={{ color: '#9ca3af' }}>Ask me to create a presentation and I'll help you generate a PowerPoint file!</p>
+                </>
+              )}
+              
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginTop: 12 }}>
+                {/* Always visible Generate PowerPoint button with clear visual states */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                  <button 
+                    className="button generate-btn" 
+                    onClick={() => {
+                      if (lastPptxData && aiResponseComplete) {
+                        // Get user context from recent messages
+                        const userMessages = messages.filter(m => m.role === 'user').slice(-3)
+                        const userContext = userMessages.map(m => m.content).join(' ')
+                        generatePPTX({ ...lastPptxData, template: selectedTemplate }, userContext)
+                      }
+                    }} 
+                    disabled={pptxLoading || !(lastPptxData && aiResponseComplete)}
+                    style={{
+                      background: pptxLoading ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 
+                                 (lastPptxData && aiResponseComplete) ? 'linear-gradient(135deg, #22c55e, #16a34a)' : 
+                                 'linear-gradient(135deg, #6b7280, #4b5563)',
+                      cursor: (lastPptxData && aiResponseComplete && !pptxLoading) ? 'pointer' : 'not-allowed',
+                      opacity: 1,
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '12px 24px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      color: 'white',
+                      boxShadow: (lastPptxData && aiResponseComplete && !pptxLoading) ? 
+                                '0 4px 12px rgba(34, 197, 94, 0.3)' : 
+                                pptxLoading ? '0 4px 12px rgba(245, 158, 11, 0.3)' :
+                                '0 2px 8px rgba(107, 114, 128, 0.2)',
+                      transform: (lastPptxData && aiResponseComplete && !pptxLoading) ? 'translateY(0)' : 'none',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {pptxLoading ? (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ 
+                          width: '16px', 
+                          height: '16px', 
+                          border: '2px solid transparent',
+                          borderTop: '2px solid white',
+                          borderRadius: '50%',
+                          animation: 'spin 1s linear infinite'
+                        }}></span>
+                        Generating...
+                      </span>
+                    ) : (lastPptxData && aiResponseComplete) ? (
+                      '🚀 Generate PowerPoint'
+                    ) : (
+                      '📋 Generate PowerPoint'
+                    )}
+                  </button>
+                  
+                  {/* User expectation messaging */}
+                  {!(lastPptxData && aiResponseComplete) && !pptxLoading && (
+                    <div style={{ 
+                      fontSize: '13px', 
+                      color: '#6b7280', 
+                      textAlign: 'center',
+                      maxWidth: '280px',
+                      lineHeight: '1.4'
+                    }}>
+                      💡 Ask me to create a presentation and I'll prepare the content for you to generate!
+                    </div>
+                  )}
+                  
+                  {/* Slide count and status when data is available */}
+                  {lastPptxData && aiResponseComplete && (
+                    <div style={{ 
+                      fontSize: '13px', 
+                      color: '#059669', 
+                      textAlign: 'center',
+                      fontWeight: '500'
+                    }}>
+                      ✅ Ready to generate {lastPptxData.slides?.length || 0} slides
+                    </div>
+                  )}
+                </div>
+                
+                {/* Conditional Show Details button - only when data is available */}
+                {lastPptxData && aiResponseComplete && (
+                  <button 
+                    className="button" 
+                    onClick={() => setShowSlideDetails(s => !s)} 
+                    style={{ 
+                      background: '#eef2ff', 
+                      color: 'var(--primary)',
+                      border: '1px solid #e0e7ff',
+                      fontSize: '14px'
+                    }}
+                  >
+                    {showSlideDetails ? 'Hide details' : `Show ${lastPptxData.slides?.length || 0} slide details`}
+                  </button>
                 )}
-
               </div>
+
+              {showSlideDetails && lastPptxData && aiResponseComplete && (
+                <div style={{ textAlign: 'left', marginTop: 16 }}>
+                  <h4>Slides preview</h4>
+                  {lastPptxData.slides.map((s, idx) => (
+                    <div key={idx} style={{ padding: 8, borderBottom: '1px solid #eee' }}>
+                      <strong>{idx+1}. {s.title}</strong>
+                      <div style={{ color: 'var(--muted)', marginTop: 6 }}>{s.type === 'bullets' ? s.bullets?.join('\n') : s.content}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
             </div>
-          ) : (
-            <div className="pptx-placeholder">
-              Ask me to create a presentation and I'll help you generate a PowerPoint file!
-            </div>
-          )}
+          </div>
         </section>
         </div>
       </div>
