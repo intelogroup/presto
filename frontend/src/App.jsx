@@ -269,6 +269,17 @@ export default function App() {
   const canSend = (input.trim().length > 0 || selectedImages.length > 0) && !loading
 
   // Helper: normalize slides to backend schema
+  // API base helper - uses VITE_API_BASE_URL when set in environment
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+  const apiFetch = (path, opts = {}) => {
+    try {
+      const base = API_BASE.replace(/\/$/, '')
+      const url = base ? base + path : path
+      return fetch(url, opts)
+    } catch (e) {
+      return Promise.reject(e)
+    }
+  }
   const normalizePptxRequest = (data) => {
     const allowedTypes = new Set(['title', 'content', 'image', 'chart', 'table', 'conclusion'])
     const allowedLayouts = new Set(['standard', 'two-column', 'image-focus', 'chart-focus'])
@@ -318,7 +329,7 @@ export default function App() {
       const normalized = normalizePptxRequest(pptxData)
 
       // Generate the actual presentation
-      fetch('/api/generate-pptx', {
+      apiFetch('/api/generate-pptx', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(normalized)
@@ -396,7 +407,7 @@ export default function App() {
 
   const analyzeRequest = async (userInput) => {
     try {
-      const res = await fetch('/api/analyze-request', {
+      const res = await apiFetch('/api/analyze-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userInput })
@@ -426,7 +437,7 @@ export default function App() {
 
   useEffect(() => {
     // load templates
-    fetch('/api/templates')
+    apiFetch('/api/templates')
       .then(r => r.json())
       .then(j => setTemplates(j.templates || []))
       .catch(() => setTemplates([]))
@@ -463,7 +474,7 @@ export default function App() {
 
       try {
         // Try main server first
-        res = await fetch('/api/generate-pptx', {
+        res = await apiFetch('/api/generate-pptx', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestBody)
@@ -629,7 +640,7 @@ export default function App() {
       // Enhanced prompt for PowerPoint generation
       const enhancedMessages = next; // Remove JSON-format injection to avoid premature structure generation
 
-      const res = await fetch('/api/chat', {
+      const res = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: enhancedMessages })
