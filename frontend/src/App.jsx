@@ -923,9 +923,15 @@ export default function App() {
 
           {showSlideDetails && slideDetailsData && (
             <div style={{ margin: '20px 0' }}>
-              <SlideDetails 
+              <SlideDetails
                 slideData={slideDetailsData}
-                onGenerate={handleGeneratePresentation}
+                onGenerate={() => {
+                  if (lastPptxData && aiResponseComplete) {
+                    const userMessages = messages.filter(m => m.role === 'user').slice(-3)
+                    const userContext = userMessages.map(m => m.content).join(' ')
+                    generatePPTX({ ...lastPptxData, template: selectedTemplate }, userContext)
+                  }
+                }}
               />
             </div>
           )}
@@ -1252,7 +1258,7 @@ export default function App() {
             
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <div className="stars">★★★���★</div>
+                <div className="stars">★★★★★</div>
                 <p>"The AI understands exactly what I need. Professional presentations in seconds!"</p>
               </div>
               <div className="testimonial-author">
