@@ -450,11 +450,12 @@ export default function App() {
 
     try {
       // Prepare enhanced request with user context for intelligent routing
-      const requestBody = {
+      const basePayload = {
         ...presentationData,
         userInput: userContext || `Generate a presentation about ${presentationData.title}`,
         template: selectedTemplate
       }
+      const requestBody = normalizePptxRequest(basePayload)
 
       console.log('🎯 Generating PPTX with intelligent routing:', requestBody)
 
@@ -476,10 +477,11 @@ export default function App() {
 
         // Fallback to backup server
         try {
+          const backupBody = normalizePptxRequest(presentationData)
           res = await fetch('http://localhost:3005/generate-pptx', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(presentationData) // Backup server uses simpler format
+            body: JSON.stringify(backupBody)
           })
 
           if (!res.ok) {
@@ -517,7 +519,7 @@ export default function App() {
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `${presentationData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pptx`
+      a.download = `${requestBody.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pptx`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
@@ -525,7 +527,7 @@ export default function App() {
 
       setLastPptxData(presentationData)
 
-      let successMessage = `✅ PowerPoint generated successfully! "${presentationData.title}" has been downloaded.`
+      let successMessage = `✅ PowerPoint generated successfully! "${requestBody.title}" has been downloaded.`
 
       if (isBackupUsed) {
         successMessage += ' (Generated using backup server for reliability)'
@@ -1250,7 +1252,7 @@ export default function App() {
             
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <div className="stars">★★★★★</div>
+                <div className="stars">★★★���★</div>
                 <p>"The AI understands exactly what I need. Professional presentations in seconds!"</p>
               </div>
               <div className="testimonial-author">
