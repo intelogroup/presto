@@ -52,8 +52,23 @@ app.use(helmet({
 }));
 
 app.use(compression());
+// Configure CORS origins via environment variable for flexibility in different deploys
+const defaultAllowed = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://presto-frontend-production.up.railway.app',
+    'https://fd7f8df1864a4eca8b8ac8b6c29a17e0-a8e5ca7e-dc0f-4d2d-bd20-6ffef8.fly.dev'
+];
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',').map(s => s.trim()).filter(Boolean) : defaultAllowed;
+
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:3000', 'https://presto-frontend-production.up.railway.app'],
+    origin: (origin, callback) => {
+        // Allow non-browser requests (curl, server-to-server) by letting undefined origin
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        console.warn('Blocked CORS request from origin:', origin);
+        return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
