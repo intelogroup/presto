@@ -244,6 +244,15 @@ export default function App() {
   const canSend = (input.trim().length > 0 || selectedImages.length > 0) && !loading
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+  const timedFetch = async (url, opts = {}, timeoutMs = 5000) => {
+    const ctrl = new AbortController()
+    const id = setTimeout(() => ctrl.abort(), timeoutMs)
+    try {
+      return await fetch(url, { ...opts, signal: ctrl.signal })
+    } finally {
+      clearTimeout(id)
+    }
+  }
   const apiFetch = async (path, opts = {}) => {
     const base = (API_BASE || '').replace(/\/$/, '')
     const absUrl = base ? base + path : null
@@ -254,22 +263,25 @@ export default function App() {
       } catch (e) {}
     }
 
+    // Try relative first
+    try {
+      const res = await fetch(path, opts)
+      return res
+    } catch (err) {
+      logErrorDetail(`relative fetch failed (${path})`, err)
+    }
+
+    // Then absolute
     if (absUrl) {
       try {
-        const res = await fetch(absUrl, { ...opts, credentials: 'same-origin' })
+        const res = await fetch(absUrl, { ...opts })
         return res
       } catch (err) {
         logErrorDetail(`absolute fetch failed (${absUrl})`, err)
       }
     }
 
-    try {
-      const res = await fetch(path, opts)
-      return res
-    } catch (err) {
-      logErrorDetail(`relative fetch failed (${path})`, err)
-      throw new Error(`Network request failed for ${absUrl || path}: ${err.message || err}`)
-    }
+    throw new Error(`Network request failed for ${absUrl || path}`)
   }
   const normalizePptxRequest = (data) => {
     const allowedTypes = new Set(['title', 'content', 'image', 'chart', 'table', 'conclusion'])
