@@ -498,6 +498,10 @@ export default function App() {
   }, [selectedTemplate])
 
   const generatePPTX = async (presentationData, userContext = null) => {
+    if (backendStatus === 'offline') {
+      setMessages(m => [...m, { role: 'assistant', content: 'Backend is unavailable right now. Please try again later or use placeholders.' }])
+      return
+    }
     setPptxLoading(true)
 
     try {
