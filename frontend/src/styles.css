@@ -81,7 +81,15 @@ body{margin:0;background:linear-gradient(180deg,#ffffff 0%, #f7fbff 100%);color:
 .msg-image{max-width:300px;max-height:200px;border-radius:8px;border:1px solid #e5e7eb}
 
 /* Header refinements */
-.status-dot{width:10px;height:10px;background:var(--primary);border-radius:999px}
+.status-dot{width:10px;height:10px;background:var(--primary);border-radius:999px;transition:background-color 0.3s ease}
+.status-dot.online{background:#22c55e}
+.status-dot.offline{background:#ef4444}
+.status-dot.unknown{background:#f59e0b;animation:pulse 2s infinite}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
 .header-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
 .clear-btn{padding:4px 8px;font-size:11px;background:transparent;border:1px solid #e5e7eb;border-radius:4px;color:#6b7280;cursor:pointer;transition:all .2s}
 .clear-btn:hover{background:#f3f4f6;color:#374151}
