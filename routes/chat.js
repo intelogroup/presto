@@ -7,7 +7,8 @@ const logRequest = (req, endpoint) => {
   const timestamp = new Date().toISOString();
   const requestId = req.headers['x-request-id'] || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   console.log(`🔵 [${timestamp}] ${endpoint} - Request ID: ${requestId}`);
-  console.log(`   📍 IP: ${req.ip || req.connection.remoteAddress}`);
+  const ip = req.ip || (req.connection && req.connection.remoteAddress) || (req.socket && req.socket.remoteAddress) || 'unknown';
+  console.log(`   📍 IP: ${ip}`);
   console.log(`   📦 Body size: ${JSON.stringify(req.body).length} chars`);
   if (req.body.message) {
     console.log(`   💬 Message preview: "${req.body.message.substring(0, 100)}${req.body.message.length > 100 ? '...' : ''}"`);
