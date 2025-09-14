@@ -14,7 +14,7 @@ const openai = new OpenAI({
 // Model configuration with fallbacks
 // Primary model set to vLLM for local processing
 // Fallback to cloud models if vLLM is unavailable
-const PRIMARY_MODEL = 'vllm/llama';
+const PRIMARY_MODEL = process.env.PRIMARY_MODEL || 'vllm/llama';
 const FALLBACK_MODELS = [
   'nvidia/nemotron-nano-9b-v2',
   'google/gemini-2.5-flash',
@@ -22,6 +22,11 @@ const FALLBACK_MODELS = [
   'openai/gpt-4-turbo'
 ];
 const ALL_MODELS = [PRIMARY_MODEL, ...FALLBACK_MODELS];
+
+// Clear any cached model state that might reference old 'ollama' models
+if (PRIMARY_MODEL.includes('vllm')) {
+  console.log('🔄 Ensuring vLLM is used as primary model, clearing any ollama references');
+}
 
 // Intelligent model state management
 class ModelStateManager {
@@ -94,10 +99,32 @@ class ModelStateManager {
       stats: Object.fromEntries(this.modelStats)
     };
   }
+
+  // Clear any ollama model references
+  clearOllamaReferences() {
+    // Remove ollama models from failed models set
+    const ollamaModels = Array.from(this.failedModels).filter(model => model.includes('ollama'));
+    ollamaModels.forEach(model => {
+      this.failedModels.delete(model);
+      this.modelStats.delete(model);
+    });
+    
+    // Clear last successful if it was an ollama model
+    if (this.lastSuccessfulModel && this.lastSuccessfulModel.includes('ollama')) {
+      this.lastSuccessfulModel = null;
+    }
+    
+    if (ollamaModels.length > 0) {
+      console.log(`🧹 Cleared ${ollamaModels.length} ollama model references:`, ollamaModels);
+    }
+  }
 }
 
 // Global model state manager instance
 const modelStateManager = new ModelStateManager();
+
+// Clear any ollama references on startup
+modelStateManager.clearOllamaReferences();
 
 // Global task complexity analyzer instance
 const taskComplexityAnalyzer = new TaskComplexityAnalyzer();
