@@ -169,96 +169,56 @@ router.post('/quick', async (req, res) => {
 // POST /api/chat/presentation-help - Presentation-specific AI assistance
 router.post('/presentation-help', async (req, res) => {
   const startTime = Date.now();
-  const requestId = logRequest(req, 'POST /api/chat/presentation-help');
-  
+  const requestId = logger.logRequest(req, 'POST /api/chat/presentation-help');
+
   try {
     const { message, context } = req.body;
-    
+
     // Validate input
     if (!message) {
-      const error = new Error('Message is required');
-      const errorCategory = logError(requestId, 'POST /api/chat/presentation-help', error, {
+      return errorHandler.handleValidationError(res, requestId, 'Message is required', {
         hasMessage: !!message,
         hasContext: !!context,
         contextLength: context ? context.length : 0,
         bodyKeys: Object.keys(req.body)
       });
-      
-      return res.status(400).json({
-        error: 'Message is required',
-        errorCategory,
-        requestId
-      });
     }
-    
+
     console.log(`   🎯 Presentation help request${context ? ' with context' : ''}`);
     if (context) {
       console.log(`   📋 Context: "${context.substring(0, 50)}${context.length > 50 ? '...' : ''}"`);
     }
-    
-    const systemPrompt = `You are an AI assistant specialized in helping with presentation creation and design. 
+
+    const systemPrompt = `You are an AI assistant specialized in helping with presentation creation and design.
     You have expertise in PowerPoint, presentation structure, visual design, and content organization.
     Provide helpful, actionable advice for creating effective presentations.
     ${context ? `Context: ${context}` : ''}`;
-    
+
     const response = await getQuickResponse(message, systemPrompt);
-    
-    const responseData = {
-      success: true,
+
+    const responseData = errorHandler.createSuccessResponse({
       response: response.content,
-      type: 'presentation-help',
-      timestamp: new Date().toISOString(),
-      requestId
-    };
-    
+      type: 'presentation-help'
+    }, requestId);
+
     const duration = Date.now() - startTime;
-    logResponse(requestId, 'POST /api/chat/presentation-help', true, responseData, duration);
-    
+    logger.logResponse(requestId, 'POST /api/chat/presentation-help', true, responseData, duration);
+
     res.json(responseData);
-    
+
   } catch (error) {
     const duration = Date.now() - startTime;
-    const errorCategory = logError(requestId, 'POST /api/chat/presentation-help', error, {
+    logger.logError(requestId, 'POST /api/chat/presentation-help', error, {
       duration,
       hasMessage: !!req.body.message,
       hasContext: !!req.body.context,
       messageLength: req.body.message ? req.body.message.length : 0
     });
-    
-    // Enhanced error handling with better categorization
-    let statusCode = 500;
-    let userMessage = 'Failed to get presentation help';
-    
-    const errorMsg = error.message || error.toString();
-    
-    if (errorMsg.includes('API key') || errorMsg.includes('401') || errorMsg.includes('unauthorized')) {
-      statusCode = 401;
-      userMessage = 'There seems to be an authentication issue. Please check the API configuration.';
-    } else if (errorMsg.includes('rate limit') || errorMsg.includes('429') || errorMsg.includes('quota')) {
-      statusCode = 429;
-      userMessage = 'I\'m getting too many requests right now. The system is automatically trying alternative models. Please wait a moment. ⏰';
-    } else if (errorMsg.includes('timeout') || errorMsg.includes('ECONNRESET') || errorMsg.includes('ETIMEDOUT') || errorMsg.includes('Request timeout')) {
-      statusCode = 408;
-      userMessage = 'The request timed out. The system is automatically retrying with backup models. Please try again. ⏱️';
-    } else if (errorMsg.includes('All models failed') || errorMsg.includes('No more models to try')) {
-      statusCode = 503;
-      userMessage = 'All AI models are currently unavailable after trying multiple fallbacks. Please try again later. 🔧';
-    } else if (errorMsg.includes('500') || errorMsg.includes('502') || errorMsg.includes('503') || errorMsg.includes('504')) {
-      statusCode = 502;
-      userMessage = 'The AI service is experiencing issues. The system is trying alternative models automatically. 🛠️';
-    } else if (errorMsg.includes('Invalid response') || errorMsg.includes('Empty response')) {
-      statusCode = 502;
-      userMessage = 'Received an invalid response from the AI. The system is automatically retrying with backup models. 🔄';
-    } else {
-      userMessage = 'Hmm, I\'m having trouble connecting right now. 🌐 Could you try again in a moment?';
-    }
-    
-    res.status(statusCode).json({
-      error: userMessage,
-      details: error.message,
-      errorCategory,
-      requestId,
-      timestamp: new Date().toISOString()
+
+    return errorHandler.handleAIServiceError(res, requestId, 'POST /api/chat/presentation-help', error, duration, {
+      hasMessage: !!req.body.message,
+      hasContext: !!req.body.context,
+      messageLength: req.body.message ? req.body.message.length : 0
     });
   }
 });
@@ -266,42 +226,32 @@ router.post('/presentation-help', async (req, res) => {
 // GET /api/chat/status - Check AI service status
 router.get('/status', (req, res) => {
   const startTime = Date.now();
-  const requestId = logRequest(req, 'GET /api/chat/status');
-  
+  const requestId = logger.logRequest(req, 'GET /api/chat/status');
+
   try {
     const { PRIMARY_MODEL, FALLBACK_MODELS } = require('../config/openai-config');
-    
+
     console.log(`   📊 Status check - Primary: ${PRIMARY_MODEL}, Fallbacks: ${FALLBACK_MODELS.length}`);
-    
-    const responseData = {
-      success: true,
+
+    const responseData = errorHandler.createSuccessResponse({
       service: 'Multi-Model AI Chat via OpenRouter',
       primaryModel: PRIMARY_MODEL,
       fallbackModels: FALLBACK_MODELS,
       totalModels: 1 + FALLBACK_MODELS.length,
       status: 'ready',
-      timestamp: new Date().toISOString(),
-      requestId
-    };
-    
+      presentationStats: presentationManager.getStats()
+    }, requestId);
+
     const duration = Date.now() - startTime;
-    logResponse(requestId, 'GET /api/chat/status', true, responseData, duration);
-    
+    logger.logResponse(requestId, 'GET /api/chat/status', true, responseData, duration);
+
     res.json(responseData);
-    
+
   } catch (error) {
     const duration = Date.now() - startTime;
-    const errorCategory = logError(requestId, 'GET /api/chat/status', error, { duration });
+    logger.logError(requestId, 'GET /api/chat/status', error, { duration });
 
-    // Temporary: include stack in response to aid remote debugging. Remove before production.
-    res.status(500).json({
-      error: 'Failed to get status',
-      details: error.message,
-      errorCategory,
-      requestId,
-      timestamp: new Date().toISOString(),
-      stack: error.stack ? error.stack.split('\n').slice(0,10) : undefined
-    });
+    return errorHandler.handleSystemError(res, requestId, 'GET /api/chat/status', error, { duration });
   }
 });
 
