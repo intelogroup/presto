@@ -461,37 +461,62 @@ export default function App() {
   const checkBackendAvailability = async () => {
     console.log('🔍 Checking backend availability...')
 
-    // First try absolute URL if API_BASE is configured
-    try {
-      const base = (API_BASE || '').replace(/\/$/, '')
-      console.log('📡 API_BASE configured as:', base)
+    // In production (Fly.dev), prefer absolute URL, in development prefer proxy
+    const isProduction = window.location.hostname.includes('fly.dev')
+    const base = (API_BASE || '').replace(/\/$/, '')
 
-      if (base) {
-        const healthUrl = base + '/api/health'
-        console.log('🏥 Trying absolute URL:', healthUrl)
-        const resAbs = await timedFetch(healthUrl, { method: 'GET' }, 4000)
-        if (resAbs.ok) {
-          console.log('✅ Backend available at absolute URL')
+    console.log('📍 Environment:', isProduction ? 'Production (Fly.dev)' : 'Development')
+    console.log('📡 API_BASE configured as:', base)
+
+    // Define our connection strategies in order of preference
+    const strategies = isProduction ? [
+      // Production: try absolute URL first
+      { name: 'absolute', url: base ? base + '/api/health' : null, timeout: 6000 },
+      { name: 'relative', url: '/api/health', timeout: 3000 }
+    ] : [
+      // Development: try proxy first
+      { name: 'relative', url: '/api/health', timeout: 3000 },
+      { name: 'absolute', url: base ? base + '/api/health' : null, timeout: 4000 }
+    ]
+
+    for (const strategy of strategies) {
+      if (!strategy.url) continue
+
+      try {
+        console.log(`🔄 Trying ${strategy.name} strategy: ${strategy.url}`)
+
+        // Use fetch directly in production to avoid double-wrapped errors
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), strategy.timeout)
+
+        const response = await fetch(strategy.url, {
+          method: 'GET',
+          mode: 'cors',
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          signal: controller.signal
+        })
+
+        clearTimeout(timeoutId)
+
+        if (response.ok) {
+          console.log(`✅ Backend available via ${strategy.name} strategy`)
           return true
+        } else {
+          console.warn(`⚠️ ${strategy.name} strategy returned ${response.status}: ${response.statusText}`)
         }
+      } catch (error) {
+        const errorType = error.name === 'AbortError' ? 'timeout' :
+                         error.message.includes('CORS') ? 'CORS' :
+                         error.message.includes('Failed to fetch') ? 'network' : 'unknown'
+        console.warn(`⚠️ ${strategy.name} strategy failed (${errorType}):`, error.message)
       }
-    } catch (error) {
-      console.warn('⚠️ Absolute URL failed:', error.message)
     }
 
-    // Then try relative URL (local proxy)
-    try {
-      console.log('🔄 Trying relative URL: /api/health')
-      const resRel = await timedFetch('/api/health', { method: 'GET' }, 3000)
-      if (resRel.ok) {
-        console.log('✅ Backend available via proxy')
-        return true
-      }
-    } catch (error) {
-      console.warn('⚠️ Relative URL failed:', error.message)
-    }
-
-    console.log('❌ Backend not available')
+    console.log('❌ All backend connection strategies failed')
     return false
   }
 
