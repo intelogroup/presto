@@ -450,18 +450,39 @@ export default function App() {
   }
 
   const checkBackendAvailability = async () => {
+    console.log('🔍 Checking backend availability...')
+
+    // First try absolute URL if API_BASE is configured
     try {
       const base = (API_BASE || '').replace(/\/$/, '')
-      const abs = base ? base + '/api/health' : null
-      if (abs) {
-        const resAbs = await timedFetch(abs, { method: 'GET' }, 4000)
-        if (resAbs.ok) return true
+      console.log('📡 API_BASE configured as:', base)
+
+      if (base) {
+        const healthUrl = base + '/api/health'
+        console.log('🏥 Trying absolute URL:', healthUrl)
+        const resAbs = await timedFetch(healthUrl, { method: 'GET' }, 4000)
+        if (resAbs.ok) {
+          console.log('✅ Backend available at absolute URL')
+          return true
+        }
       }
-    } catch {}
+    } catch (error) {
+      console.warn('⚠️ Absolute URL failed:', error.message)
+    }
+
+    // Then try relative URL (local proxy)
     try {
+      console.log('🔄 Trying relative URL: /api/health')
       const resRel = await timedFetch('/api/health', { method: 'GET' }, 3000)
-      if (resRel.ok) return true
-    } catch {}
+      if (resRel.ok) {
+        console.log('✅ Backend available via proxy')
+        return true
+      }
+    } catch (error) {
+      console.warn('⚠️ Relative URL failed:', error.message)
+    }
+
+    console.log('❌ Backend not available')
     return false
   }
 
