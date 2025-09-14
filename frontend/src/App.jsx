@@ -8,20 +8,19 @@ function Message({ role, content, isFormatted }) {
       return content
     }
 
-    // Handle multi-modal content
     if (Array.isArray(content)) {
       return (
         <div>
           {content.map((item, index) => {
             if (item.type === 'text') {
-              return <div key={index} style={{ whiteSpace: 'pre-wrap', marginBottom: '8px' }}>{item.text}</div>
+              return <div key={index} className="msg-block msg-text">{item.text}</div>
             } else if (item.type === 'image_url') {
               return (
-                <div key={index} style={{ marginBottom: '8px' }}>
+                <div key={index} className="msg-block">
                   <img
                     src={item.image_url.url}
                     alt="User uploaded image"
-                    style={{ maxWidth: '300px', maxHeight: '200px', borderRadius: '8px', border: '1px solid #e5e7eb' }}
+                    className="msg-image"
                   />
                 </div>
               )
@@ -32,8 +31,7 @@ function Message({ role, content, isFormatted }) {
       )
     }
 
-    // Regular text content
-    return <div style={{ whiteSpace: 'pre-wrap' }}>{content}</div>
+    return <div className="msg-text">{content}</div>
   }
 
   return (
@@ -76,47 +74,30 @@ function IntelligentAnalysis({ analysis }) {
   if (!analysis || !analysis.success) return null
 
   return (
-    <div style={{
-      background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-      border: '1px solid #0ea5e9',
-      borderRadius: '12px',
-      padding: '12px',
-      margin: '8px 0',
-      fontSize: '13px'
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-        <Zap size={16} style={{ color: '#0ea5e9' }} />
-        <strong style={{ color: '#0ea5e9' }}>AI Template Analysis</strong>
+    <div className="analysis-card">
+      <div className="analysis-header">
+        <Zap size={16} className="analysis-icon" />
+        <strong className="analysis-title">AI Template Analysis</strong>
       </div>
 
       {analysis.analysis?.recommendedTemplate ? (
         <div>
-          <div style={{ marginBottom: '4px' }}>
-            <span style={{ color: '#047857', fontWeight: '600' }}>✨ Recommended: </span>
+          <div className="analysis-recommend">
+            <span className="analysis-recommend-label">✨ Recommended: </span>
             {analysis.analysis.recommendedTemplate}
           </div>
-          <div style={{ color: '#6b7280', fontSize: '12px' }}>
-            {analysis.analysis.reasoning}
-          </div>
+          <div className="analysis-reason">{analysis.analysis.reasoning}</div>
           {analysis.analysis.detectedTopics?.length > 0 && (
-            <div style={{ marginTop: '6px' }}>
-              <span style={{ fontSize: '11px', color: '#6b7280' }}>Topics: </span>
+            <div className="analysis-topics">
+              <span className="analysis-topics-label">Topics: </span>
               {analysis.analysis.detectedTopics.map((topic, i) => (
-                <span key={i} style={{
-                  background: '#e0f2fe',
-                  padding: '2px 6px',
-                  borderRadius: '4px',
-                  fontSize: '11px',
-                  marginRight: '4px'
-                }}>
-                  {topic}
-                </span>
+                <span key={i} className="topic-chip">{topic}</span>
               ))}
             </div>
           )}
         </div>
       ) : (
-        <div style={{ color: '#6b7280' }}>
+        <div className="analysis-fallback">
           Using default generator for optimal reliability and general-purpose presentations.
         </div>
       )}
@@ -128,45 +109,43 @@ function PresentationOutline({ pptxData }) {
   const slideIcons = [FileText, Target, BookOpen, Users, Star, Lightbulb, Zap, Sparkles, Rocket, CheckCircle]
 
   return (
-    <div style={{ lineHeight: '1.6' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-        <Target size={20} style={{ color: 'var(--primary)' }} />
-        <strong style={{ fontSize: '18px', color: 'var(--primary)' }}>{pptxData.title}</strong>
+    <div className="outline">
+      <div className="outline-header">
+        <Target size={20} className="outline-icon" />
+        <strong className="outline-title-text">{pptxData.title}</strong>
       </div>
 
       {pptxData.subtitle && (
-        <div style={{ fontStyle: 'italic', marginBottom: '16px', color: 'var(--muted)' }}>
-          {pptxData.subtitle}
-        </div>
+        <div className="outline-subtitle">{pptxData.subtitle}</div>
       )}
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-        <Presentation size={18} style={{ color: 'var(--primary)' }} />
+      <div className="outline-section">
+        <Presentation size={18} className="outline-icon" />
         <strong>Presentation Outline</strong>
-        <span style={{ color: 'var(--muted)' }}>({pptxData.slides?.length || 0} slides)</span>
+        <span className="outline-count">({pptxData.slides?.length || 0} slides)</span>
       </div>
 
-      <div style={{ marginLeft: '16px' }}>
+      <div className="outline-list">
         {pptxData.slides?.map((slide, index) => {
           const IconComponent = slideIcons[index] || FileText
           return (
-            <div key={index} style={{ marginBottom: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                <IconComponent size={16} style={{ color: 'var(--primary)' }} />
+            <div key={index} className="outline-item">
+              <div className="outline-item-head">
+                <IconComponent size={16} className="outline-icon" />
                 <strong>Slide {index + 1}: {slide.title}</strong>
               </div>
 
               {slide.type === 'bullets' && slide.bullets ? (
-                <div style={{ marginLeft: '24px' }}>
+                <div className="outline-bullets">
                   {slide.bullets.map((bullet, i) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', marginBottom: '2px' }}>
-                      <ChevronRight size={12} style={{ marginTop: '4px', color: 'var(--muted)' }} />
+                    <div key={i} className="outline-bullet-row">
+                      <ChevronRight size={12} className="outline-bullet-icon" />
                       <span>{bullet}</span>
                     </div>
                   ))}
                 </div>
               ) : slide.content ? (
-                <div style={{ marginLeft: '24px', color: 'var(--muted)' }}>
+                <div className="outline-content">
                   {slide.content.length > 80 ?
                     slide.content.substring(0, 80) + '...' :
                     slide.content}
@@ -177,24 +156,22 @@ function PresentationOutline({ pptxData }) {
         })}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px', marginBottom: '8px' }}>
-        <Palette size={16} style={{ color: 'var(--primary)' }} />
+      <div className="outline-theme-row">
+        <Palette size={16} className="outline-icon" />
         <span>Theme: <strong>{pptxData.colorScheme || 'professional'}</strong></span>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', fontWeight: '500' }}>
+      <div className="outline-ready">
         <CheckCircle size={16} />
         <span>Please review this outline and confirm the details. I will generate the PowerPoint only after you confirm. ✅</span>
       </div>
       
-      <div style={{ marginTop: '16px', textAlign: 'center' }}>
+      <div className="outline-cta">
         <button 
           className="primary"
           onClick={() => {
-            // This will be handled by the parent component
             window.dispatchEvent(new CustomEvent('generatePresentation', { detail: pptxData }))
           }}
-          style={{ padding: '12px 24px', fontSize: '16px' }}
         >
           🚀 Generate Presentation
         </button>
@@ -204,9 +181,8 @@ function PresentationOutline({ pptxData }) {
 }
 
 export default function App() {
-  // Chat history management
   const CHAT_HISTORY_KEY = 'presto_chat_history'
-  const MAX_MESSAGES = 50 // Limit to prevent localStorage from growing too large
+  const MAX_MESSAGES = 50
   
   const loadChatHistory = () => {
     try {
@@ -214,19 +190,17 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved)
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.slice(-MAX_MESSAGES) // Keep only recent messages
+          return parsed.slice(-MAX_MESSAGES)
         }
       }
     } catch (e) {
       console.warn('Failed to load chat history:', e)
     }
-    // Return default welcome message if no history
     return [{ role: 'assistant', content: 'Hey there! 👋 I\'m your AI assistant. I\'m here to help with any questions or tasks you might have!' }]
   }
   
   const saveChatHistory = (messages) => {
     try {
-      // Only save the last MAX_MESSAGES to prevent localStorage bloat
       const messagesToSave = messages.slice(-MAX_MESSAGES)
       localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(messagesToSave))
     } catch (e) {
@@ -263,34 +237,131 @@ export default function App() {
   const [slideDetailsData, setSlideDetailsData] = useState(null)
   const [aiResponseComplete, setAiResponseComplete] = useState(true)
   const [pendingPptxData, setPendingPptxData] = useState(null)
+  const [backendStatus, setBackendStatus] = useState('unknown') // 'online' | 'offline'
   const listRef = useRef(null)
   const fileInputRef = useRef(null)
 
   const canSend = (input.trim().length > 0 || selectedImages.length > 0) && !loading
 
-  // Handle generate presentation event
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+  const timedFetch = async (url, opts = {}, timeoutMs = 5000) => {
+    const ctrl = new AbortController()
+    const id = setTimeout(() => ctrl.abort(), timeoutMs)
+    try {
+      return await fetch(url, { ...opts, signal: ctrl.signal })
+    } catch (error) {
+      // Improve error messaging for common issues
+      if (error.name === 'AbortError') {
+        throw new Error(`Request timeout after ${timeoutMs}ms`)
+      }
+      if (error.message.includes('Failed to fetch')) {
+        throw new Error(`Network error: Unable to reach ${url}`)
+      }
+      throw error
+    } finally {
+      clearTimeout(id)
+    }
+  }
+  const apiFetch = async (path, opts = {}) => {
+    const base = (API_BASE || '').replace(/\/$/, '')
+    const absUrl = base ? base + path : null
+
+    const logErrorDetail = (label, err) => {
+      try {
+        console.error(`[apiFetch] ${label}:`, err && (err.message || err))
+      } catch (e) {}
+    }
+
+    // Try relative first
+    try {
+      const res = await fetch(path, opts)
+      return res
+    } catch (err) {
+      logErrorDetail(`relative fetch failed (${path})`, err)
+    }
+
+    // Then absolute
+    if (absUrl) {
+      try {
+        const res = await fetch(absUrl, { ...opts })
+        return res
+      } catch (err) {
+        logErrorDetail(`absolute fetch failed (${absUrl})`, err)
+      }
+    }
+
+    throw new Error(`Network request failed for ${absUrl || path}`)
+  }
+  const normalizePptxRequest = (data) => {
+    const allowedTypes = new Set(['title', 'content', 'image', 'chart', 'table', 'conclusion'])
+    const allowedLayouts = new Set(['standard', 'two-column', 'image-focus', 'chart-focus'])
+
+    const theme = (data.colorScheme && ['professional', 'modern', 'minimal'].includes(data.colorScheme))
+      ? data.colorScheme
+      : (['professional', 'modern', 'minimal'].includes(data.theme) ? data.theme : 'professional')
+
+    const slides = (data.slides || []).slice(0, 50).map((s) => {
+      const hasBullets = Array.isArray(s.bullets) && s.bullets.length > 0
+      const content = hasBullets ? s.bullets : (s.content ?? '')
+      let type = s.type
+      if (type === 'bullets') type = 'content'
+      if (!allowedTypes.has(type)) type = 'content'
+
+      let layout = s.layout
+      if (!allowedLayouts.has(layout)) {
+        if (type === 'image') layout = 'image-focus'
+        else if (type === 'chart' || type === 'table') layout = 'chart-focus'
+        else layout = 'standard'
+      }
+
+      return {
+        title: s.title || 'Slide',
+        content,
+        type,
+        layout
+      }
+    })
+
+    return {
+      title: data.title || 'AI Generated Presentation',
+      slides,
+      theme,
+      template: data.template || undefined,
+      userInput: data.userInput || undefined,
+      options: data.options || undefined
+    }
+  }
+
   useEffect(() => {
     const handleGeneratePresentation = (event) => {
+      if (backendStatus === 'offline') {
+        setMessages(m => [...m, { role: 'assistant', content: 'Backend is unavailable right now. Please try again later.' }])
+        return
+      }
       const pptxData = event.detail
       setPptxLoading(true)
-      
-      // Generate the actual presentation
-      fetch('/api/generate-pptx', {
+
+      const normalized = normalizePptxRequest(pptxData)
+
+      apiFetch('/api/generate-pptx', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(pptxData)
+        body: JSON.stringify(normalized)
       })
-      .then(res => res.blob())
+      .then(res => {
+        if (!res.ok) throw new Error(`Server responded ${res.status}`)
+        return res.blob()
+      })
       .then(blob => {
         const url = window.URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = `${pptxData.title || 'presentation'}.pptx`
+        a.download = `${normalized.title || 'presentation'}.pptx`
         document.body.appendChild(a)
         a.click()
         document.body.removeChild(a)
         window.URL.revokeObjectURL(url)
-        
+
         setMessages(m => [...m, { role: 'assistant', content: '🎉 Your presentation has been generated and downloaded! Feel free to ask if you need any modifications.' }])
         setShowPresentationOutline(false)
         setPresentationData(null)
@@ -324,7 +395,6 @@ export default function App() {
         reader.readAsDataURL(file)
       }
     })
-    // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -350,7 +420,7 @@ export default function App() {
 
   const analyzeRequest = async (userInput) => {
     try {
-      const res = await fetch('/api/analyze-request', {
+      const res = await apiFetch('/api/analyze-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userInput })
@@ -374,22 +444,118 @@ export default function App() {
 
   useEffect(() => {
     scrollToBottom()
-    // Save chat history whenever messages change
     saveChatHistory(messages)
   }, [messages])
 
-  useEffect(() => {
-    // load templates
-    fetch('/api/templates')
-      .then(r => r.json())
-      .then(j => setTemplates(j.templates || []))
-      .catch(() => setTemplates([]))
+  const getPlaceholderTemplates = () => {
+    const svg = (t1, t2) => encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='160' height='100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='${t1}'/><stop offset='100%' stop-color='${t2}'/></linearGradient></defs><rect rx='8' width='160' height='100' fill='url(#g)'/><g fill='white' opacity='0.9'><rect x='18' y='22' width='84' height='10' rx='5'/><rect x='18' y='40' width='124' height='8' rx='4'/><rect x='18' y='56' width='98' height='8' rx='4'/></g></svg>`)
+    return [
+      { id: 'sleek-blue', name: 'Sleek Blue', thumbnail: `data:image/svg+xml;utf8,${svg('#0ea5e9','#0284c7')}` },
+      { id: 'minimal-gray', name: 'Minimal Gray', thumbnail: `data:image/svg+xml;utf8,${svg('#64748b','#334155')}` },
+      { id: 'vibrant-gradient', name: 'Vibrant', thumbnail: `data:image/svg+xml;utf8,${svg('#f43f5e','#f59e0b')}` },
+      { id: 'emerald', name: 'Emerald', thumbnail: `data:image/svg+xml;utf8,${svg('#10b981','#059669')}` },
+      { id: 'purple-haze', name: 'Purple Haze', thumbnail: `data:image/svg+xml;utf8,${svg('#8b5cf6','#6d28d9')}` }
+    ]
+  }
 
-    // restore selected template from localStorage
-    try {
-      const saved = localStorage.getItem('presto_selected_template')
-      if (saved) setSelectedTemplate(saved)
-    } catch (e) {}
+  const checkBackendAvailability = async () => {
+    console.log('🔍 Checking backend availability...')
+
+    // In production (Fly.dev), prefer absolute URL, in development prefer proxy
+    const isProduction = window.location.hostname.includes('fly.dev')
+    const base = (API_BASE || '').replace(/\/$/, '')
+
+    console.log('📍 Environment:', isProduction ? 'Production (Fly.dev)' : 'Development')
+    console.log('📡 API_BASE configured as:', base)
+
+    // Define our connection strategies in order of preference
+    const strategies = isProduction ? [
+      // Production: try absolute URL first
+      { name: 'absolute', url: base ? base + '/api/health' : null, timeout: 6000 },
+      { name: 'relative', url: '/api/health', timeout: 3000 }
+    ] : [
+      // Development: try proxy first
+      { name: 'relative', url: '/api/health', timeout: 3000 },
+      { name: 'absolute', url: base ? base + '/api/health' : null, timeout: 4000 }
+    ]
+
+    for (const strategy of strategies) {
+      if (!strategy.url) continue
+
+      try {
+        console.log(`🔄 Trying ${strategy.name} strategy: ${strategy.url}`)
+
+        // Use fetch directly in production to avoid double-wrapped errors
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), strategy.timeout)
+
+        const response = await fetch(strategy.url, {
+          method: 'GET',
+          mode: 'cors',
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          signal: controller.signal
+        })
+
+        clearTimeout(timeoutId)
+
+        if (response.ok) {
+          console.log(`✅ Backend available via ${strategy.name} strategy`)
+          return true
+        } else {
+          console.warn(`⚠️ ${strategy.name} strategy returned ${response.status}: ${response.statusText}`)
+        }
+      } catch (error) {
+        const errorType = error.name === 'AbortError' ? 'timeout' :
+                         error.message.includes('CORS') ? 'CORS' :
+                         error.message.includes('Failed to fetch') ? 'network' : 'unknown'
+        console.warn(`⚠️ ${strategy.name} strategy failed (${errorType}):`, error.message)
+      }
+    }
+
+    console.log('❌ All backend connection strategies failed')
+    return false
+  }
+
+  useEffect(() => {
+    (async () => {
+      try {
+        console.log('🚀 Initializing app and checking backend...')
+        const online = await checkBackendAvailability()
+        setBackendStatus(online ? 'online' : 'offline')
+
+        if (online) {
+          try {
+            console.log('📋 Fetching templates from backend...')
+            const r = await apiFetch('/api/templates')
+            const j = await r.json().catch(() => ({}))
+            const items = j.templates || j.available?.themes?.map((t, i) => ({ id: `${t}-${i}`, name: t, thumbnail: getPlaceholderTemplates()[i%5].thumbnail })) || []
+            setTemplates(items)
+            console.log(`✅ Loaded ${items.length} templates from backend`)
+          } catch (error) {
+            console.warn('⚠️ Failed to fetch templates from backend, using placeholders:', error.message)
+            setTemplates(getPlaceholderTemplates())
+          }
+        } else {
+          console.log('📋 Using placeholder templates (backend offline)')
+          setTemplates(getPlaceholderTemplates())
+        }
+
+        try {
+          const saved = localStorage.getItem('presto_selected_template')
+          if (saved) setSelectedTemplate(saved)
+        } catch (error) {
+          console.warn('⚠️ Failed to load saved template:', error.message)
+        }
+      } catch (error) {
+        console.error('❌ App initialization failed:', error)
+        setBackendStatus('offline')
+        setTemplates(getPlaceholderTemplates())
+      }
+    })()
   }, [])
 
   useEffect(() => {
@@ -400,23 +566,26 @@ export default function App() {
   }, [selectedTemplate])
 
   const generatePPTX = async (presentationData, userContext = null) => {
+    if (backendStatus === 'offline') {
+      setMessages(m => [...m, { role: 'assistant', content: 'Backend is unavailable right now. Please try again later or use placeholders.' }])
+      return
+    }
     setPptxLoading(true)
 
     try {
-      // Prepare enhanced request with user context for intelligent routing
-      const requestBody = {
+      const basePayload = {
         ...presentationData,
         userInput: userContext || `Generate a presentation about ${presentationData.title}`,
         template: selectedTemplate
       }
+      const requestBody = normalizePptxRequest(basePayload)
 
       console.log('🎯 Generating PPTX with intelligent routing:', requestBody)
 
       let res, isBackupUsed = false
 
       try {
-        // Try main server first
-        res = await fetch('/api/generate-pptx', {
+        res = await apiFetch('/api/generate-pptx', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestBody)
@@ -428,17 +597,16 @@ export default function App() {
       } catch (mainServerError) {
         console.warn('🛡️ Main server failed, trying backup server:', mainServerError.message)
 
-        // Fallback to backup server
         try {
+          const backupBody = normalizePptxRequest(presentationData)
           res = await fetch('http://localhost:3005/generate-pptx', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(presentationData) // Backup server uses simpler format
+            body: JSON.stringify(backupBody)
           })
 
           if (!res.ok) {
             const err = await res.json().catch(() => ({}))
-            // Handle specific error types with conversational responses
             if (res.status === 429 || err.type === 'rate_limit') {
               let waitTimeMsg = 'You have reached the model rate limit. Please wait about 1 minute before trying again.'
               if (err.details && err.details.includes('15 minutes')) {
@@ -462,16 +630,14 @@ export default function App() {
         }
       }
 
-      // Get analysis info from headers (main server only)
       const templateUsed = res.headers.get('X-Presto-Template') || res.headers.get('X-Generator')
       const isValidated = res.headers.get('X-Presto-Validated')
 
-      // Create blob and download
       const blob = await res.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `${presentationData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pptx`
+      a.download = `${requestBody.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pptx`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
@@ -479,7 +645,7 @@ export default function App() {
 
       setLastPptxData(presentationData)
 
-      let successMessage = `✅ PowerPoint generated successfully! "${presentationData.title}" has been downloaded.`
+      let successMessage = `✅ PowerPoint generated successfully! "${requestBody.title}" has been downloaded.`
 
       if (isBackupUsed) {
         successMessage += ' (Generated using backup server for reliability)'
@@ -509,31 +675,16 @@ export default function App() {
   const send = async () => {
     if (!canSend) return
 
-    // Build multi-modal message content
     let messageContent
     if (selectedImages.length > 0) {
-      // Multi-modal message with text and images
       messageContent = []
-
-      // Add text if present
       if (input.trim()) {
-        messageContent.push({
-          type: 'text',
-          text: input.trim()
-        })
+        messageContent.push({ type: 'text', text: input.trim() })
       }
-
-      // Add images
       selectedImages.forEach(image => {
-        messageContent.push({
-          type: 'image_url',
-          image_url: {
-            url: image.url
-          }
-        })
+        messageContent.push({ type: 'image_url', image_url: { url: image.url } })
       })
     } else {
-      // Text-only message
       messageContent = input
     }
 
@@ -542,10 +693,15 @@ export default function App() {
     setMessages(next)
     setInput('')
     setSelectedImages([])
+    if (backendStatus === 'offline') {
+      setLoading(false)
+      setAiResponseComplete(true)
+      setMessages(m => [...m, { role: 'assistant', content: "I can't reach the server right now. Please try again shortly." }])
+      return
+    }
     setLoading(true)
-    setAiResponseComplete(false) // Mark AI response as incomplete when starting new request
-    
-    // Hide presentation outline and slide details when user sends a new message
+    setAiResponseComplete(false)
+
     if (showPresentationOutline) {
       setShowPresentationOutline(false)
       setPresentationData(null)
@@ -555,7 +711,6 @@ export default function App() {
       setSlideDetailsData(null)
     }
 
-    // Check for simple greetings and respond casually
     const inputText = typeof messageContent === 'string' ? messageContent.toLowerCase().trim() : 
       (Array.isArray(messageContent) ? messageContent.find(item => item.type === 'text')?.text?.toLowerCase().trim() || '' : '')
     
@@ -578,10 +733,9 @@ export default function App() {
     }
 
     try {
-      // Enhanced prompt for PowerPoint generation
-      const enhancedMessages = next; // Remove JSON-format injection to avoid premature structure generation
+      const enhancedMessages = next
 
-      const res = await fetch('/api/chat', {
+      const res = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: enhancedMessages })
@@ -589,7 +743,6 @@ export default function App() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
-        // Handle specific error types with conversational responses
         if (res.status === 429 || err.type === 'rate_limit') {
           let waitTimeMsg = 'You have reached the model rate limit. Please wait about 1 minute before trying again.'
           if (err.details && err.details.includes('15 minutes')) {
@@ -611,9 +764,7 @@ export default function App() {
       const presentationState = data?.presentationState || null
       const canGeneratePPTX = data?.canGeneratePPTX || false
 
-      // Handle presentation state and generate button visibility
       if (presentationState && canGeneratePPTX) {
-        // User has completed all steps and agreed to generate - prepare data for PPTX generation
         const pptxData = {
           title: presentationState.title || 'AI Generated Presentation',
           subtitle: presentationState.subtitle || '',
@@ -626,31 +777,25 @@ export default function App() {
           colorScheme: presentationState.colorScheme || 'professional'
         };
         
-        // Store pending data but don't show generate button until AI response is complete
-          setPendingPptxData(pptxData)
-          setMessages(m => [...m, { role: 'assistant', content: assistant }])
-          
-          // Mark AI response as complete and show generate button
-          setTimeout(() => {
-            setAiResponseComplete(true)
-            setLastPptxData(pptxData)
-            setPendingPptxData(null)
-          }, 500) // Small delay to ensure message is fully rendered
+        setPendingPptxData(pptxData)
+        setMessages(m => [...m, { role: 'assistant', content: assistant }])
+        
+        setTimeout(() => {
+          setAiResponseComplete(true)
+          setLastPptxData(pptxData)
+          setPendingPptxData(null)
+        }, 500)
         
         return
       }
 
-      // Handle canGeneratePPTX flag when no presentationState (direct JSON response)
       if (canGeneratePPTX && !presentationState) {
-        // Try to parse the assistant response as JSON for presentation data
         try {
           const pptxData = JSON.parse(assistant)
           if (pptxData.title && pptxData.slides && pptxData.slides.length >= 1) {
-            // Add a user-friendly message
             const friendlyMessage = "I've created your presentation! Click the button below to generate your PowerPoint file."
             setMessages(m => [...m, { role: 'assistant', content: friendlyMessage }])
             
-            // Set up PPTX data for generation
             const formattedPptxData = {
               title: pptxData.title,
               subtitle: pptxData.subtitle || '',
@@ -659,7 +804,6 @@ export default function App() {
               colorScheme: pptxData.colorScheme || 'professional'
             }
             
-            // Mark AI response as complete and show generate button
             setTimeout(() => {
               setAiResponseComplete(true)
               setLastPptxData(formattedPptxData)
@@ -669,11 +813,9 @@ export default function App() {
           }
         } catch (e) {
           console.warn('Failed to parse assistant response as JSON for PPTX:', e)
-          // Fall through to normal message handling
         }
       }
 
-      // Check for presentation outline marker (legacy support)
       if (assistant.includes('```SHOW_PRESENTATION_OUTLINE```')) {
         const parts = assistant.split('```SHOW_PRESENTATION_OUTLINE```')
         const messageContent = parts[0].trim()
@@ -683,19 +825,11 @@ export default function App() {
           try {
             const pptxData = JSON.parse(jsonPart)
             if (pptxData.title && pptxData.slides) {
-              // Show the message content first
-            setMessages(m => [...m, { role: 'assistant', content: messageContent }])
-            
-            // Then show the presentation outline
-            setPresentationData(pptxData)
-            setShowPresentationOutline(true)
-            
-            // Mark AI response as complete
-            setTimeout(() => {
-              setAiResponseComplete(true)
-            }, 300)
-            
-            return
+              setMessages(m => [...m, { role: 'assistant', content: messageContent }])
+              setPresentationData(pptxData)
+              setShowPresentationOutline(true)
+              setTimeout(() => { setAiResponseComplete(true) }, 300)
+              return
             }
           } catch (e) {
             console.warn('Failed to parse presentation outline JSON:', e)
@@ -703,7 +837,6 @@ export default function App() {
         }
       }
 
-      // Check for PowerPoint ready marker (NEW - primary detection)
       if (assistant.includes('```GENERATE_POWERPOINT_READY```')) {
         const parts = assistant.split('```GENERATE_POWERPOINT_READY```')
         const messageContent = parts[0].trim()
@@ -713,10 +846,7 @@ export default function App() {
           try {
             const pptxData = JSON.parse(jsonPart)
             if (pptxData.title && pptxData.slides && pptxData.slides.length >= 1) {
-              // Add the message content first
               setMessages(m => [...m, { role: 'assistant', content: messageContent }])
-              
-              // Set up PPTX data for generation
               const formattedPptxData = {
                 title: pptxData.title,
                 subtitle: pptxData.subtitle || '',
@@ -724,13 +854,10 @@ export default function App() {
                 theme: pptxData.theme || 'professional',
                 colorScheme: pptxData.colorScheme || 'professional'
               }
-              
-              // Mark AI response as complete and show generate button
               setTimeout(() => {
                 setAiResponseComplete(true)
                 setLastPptxData(formattedPptxData)
               }, 500)
-              
               return
             }
           } catch (e) {
@@ -739,7 +866,6 @@ export default function App() {
         }
       }
 
-      // Check for slide details marker (legacy support)
       if (assistant.includes('```SHOW_SLIDE_DETAILS```')) {
         const parts = assistant.split('```SHOW_SLIDE_DETAILS```')
         const messageContent = parts[0].trim()
@@ -750,15 +876,8 @@ export default function App() {
             const slideDetailsJson = JSON.parse(jsonPart)
             setSlideDetailsData(slideDetailsJson)
             setShowSlideDetails(true)
-            
-            // Add only the message content (without the JSON)
             setMessages(m => [...m, { role: 'assistant', content: messageContent }])
-            
-            // Mark AI response as complete
-            setTimeout(() => {
-              setAiResponseComplete(true)
-            }, 300)
-            
+            setTimeout(() => { setAiResponseComplete(true) }, 300)
             return
           } catch (e) {
             console.warn('Failed to parse slide details JSON:', e)
@@ -767,16 +886,10 @@ export default function App() {
       }
 
       setMessages(m => [...m, { role: 'assistant', content: assistant }])
-      
-      // Mark AI response as complete
-      setTimeout(() => {
-        setAiResponseComplete(true)
-      }, 300)
+      setTimeout(() => { setAiResponseComplete(true) }, 300)
       
     } catch (e) {
-      // Provide conversational error responses
       let errorMessage = e.message
-      // If it's a generic error message, make it more conversational
       if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
         errorMessage = 'Hmm, I\'m having trouble connecting right now. 🌐 Could you try again in a moment?'
       } else if (errorMessage.includes('timeout')) {
@@ -788,11 +901,7 @@ export default function App() {
         ...m,
         { role: 'assistant', content: errorMessage }
       ])
-      
-      // Mark AI response as complete even for errors
-      setTimeout(() => {
-        setAiResponseComplete(true)
-      }, 300)
+      setTimeout(() => { setAiResponseComplete(true) }, 300)
     } finally {
       setLoading(false)
     }
@@ -805,46 +914,34 @@ export default function App() {
     }
   }
 
+  const generateStatus = pptxLoading ? 'loading' : (lastPptxData && aiResponseComplete) ? 'ready' : 'disabled'
+
   return (
     <>
       <TopBar />
       <div className="app-wrap">
         <div className="container">
           <div className="card" role="group" aria-label="Chat">
-          {/* Generate button will be shown only when lastPptxData exists */}
           <div className="header">
-            <div style={{ width: 10, height: 10, background: 'var(--primary)', borderRadius: 999 }} />
+            <div className={`status-dot ${backendStatus === 'online' ? 'online' : backendStatus === 'offline' ? 'offline' : 'unknown'}`} />
             <div>
               <h1>AI Chat Assistant</h1>
-              <div className="sub">Ask me anything - I'm here to help!</div>
+              <div className="sub">
+                {backendStatus === 'online' ? 'Connected - Ask me anything!' :
+                 backendStatus === 'offline' ? 'Backend offline - Limited functionality' :
+                 'Connecting...'}
+              </div>
             </div>
-            <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, alignItems: 'center' }}>
+            <div className="header-actions">
               <button 
                 onClick={clearChatHistory}
-                style={{
-                  padding: '4px 8px',
-                  fontSize: '11px',
-                  background: 'transparent',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '4px',
-                  color: '#6b7280',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.background = '#f3f4f6'
-                  e.target.style.color = '#374151'
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.background = 'transparent'
-                  e.target.style.color = '#6b7280'
-                }}
+                className="clear-btn"
                 title="Clear chat history"
               >
                 Clear History
               </button>
-              <div style={{ fontSize: 12, color: 'var(--muted)' }}>Template</div>
-              <div style={{ display: 'flex', gap: 8 }}>
+              <div className="template-label">Template</div>
+              <div className="template-list">
                 {templates.slice(0,5).map(t => (
                   <button key={t.id} onClick={() => setSelectedTemplate(t.id)} className={"template-btn " + (selectedTemplate===t.id? 'active':'')} title={t.name}>
                     <img src={`${t.thumbnail}?v=${Date.now()}`} alt={t.name} loading="lazy" decoding="async" />
@@ -862,68 +959,43 @@ export default function App() {
           </div>
 
           {intelligentAnalysis && (
-            <div style={{ padding: '0 16px' }}>
+            <div className="pad-x">
               <IntelligentAnalysis analysis={intelligentAnalysis} />
             </div>
           )}
 
           {showPresentationOutline && presentationData && (
-            <div style={{ padding: '16px', background: '#f8fafc', margin: '8px 16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <div className="outline-wrap">
               <PresentationOutline pptxData={presentationData} />
             </div>
           )}
 
           {showSlideDetails && slideDetailsData && (
-            <div style={{ margin: '20px 0' }}>
-              <SlideDetails 
+            <div className="slide-details-wrap">
+              <SlideDetails
                 slideData={slideDetailsData}
-                onGenerate={handleGeneratePresentation}
+                onGenerate={() => {
+                  if (lastPptxData && aiResponseComplete) {
+                    const userMessages = messages.filter(m => m.role === 'user').slice(-3)
+                    const userContext = userMessages.map(m => m.content).join(' ')
+                    generatePPTX({ ...lastPptxData, template: selectedTemplate }, userContext)
+                  }
+                }}
               />
             </div>
           )}
 
-          <div style={{ padding: '8px 16px', display: 'flex', gap: 8, alignItems: 'center' }}>
-            <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--muted)' }}>
-              Selected template: {selectedTemplate || 'Auto-detect'}
-            </div>
+          <div className="template-selected-row">
+            <div className="template-selected">Selected template: {selectedTemplate || 'Auto-detect'}</div>
           </div>
 
-          {/* Selected Images Display */}
           {selectedImages.length > 0 && (
-            <div style={{ padding: '8px 16px' }}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            <div className="selected-images">
+              <div className="selected-images-grid">
                 {selectedImages.map(image => (
-                  <div key={image.id} style={{ position: 'relative', display: 'inline-block' }}>
-                    <img
-                      src={image.url}
-                      alt={image.name}
-                      style={{
-                        width: '80px',
-                        height: '60px',
-                        objectFit: 'cover',
-                        borderRadius: '6px',
-                        border: '2px solid var(--primary)'
-                      }}
-                    />
-                    <button
-                      onClick={() => removeImage(image.id)}
-                      style={{
-                        position: 'absolute',
-                        top: '-6px',
-                        right: '-6px',
-                        background: 'var(--primary)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '50%',
-                        width: '20px',
-                        height: '20px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        fontSize: '12px'
-                      }}
-                    >
+                  <div key={image.id} className="image-chip">
+                    <img src={image.url} alt={image.name} className="image-thumb" />
+                    <button onClick={() => removeImage(image.id)} className="remove-image-btn" aria-label="Remove image">
                       <X size={12} />
                     </button>
                   </div>
@@ -932,48 +1004,21 @@ export default function App() {
             </div>
           )}
 
-          {/* Image URL Input */}
           {showImageInput && (
-            <div style={{ padding: '8px 16px', background: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <div className="image-url-bar">
+              <div className="image-url-inner">
                 <input
                   type="text"
                   placeholder="Paste image URL..."
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && addImageUrl()}
-                  style={{
-                    flex: 1,
-                    padding: '8px 12px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '6px',
-                    fontSize: '14px'
-                  }}
+                  className="image-url-input"
                 />
-                <button
-                  onClick={addImageUrl}
-                  disabled={!imageUrl.trim()}
-                  style={{
-                    padding: '8px 16px',
-                    background: imageUrl.trim() ? 'var(--primary)' : '#9ca3af',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: imageUrl.trim() ? 'pointer' : 'not-allowed',
-                    fontSize: '14px'
-                  }}
-                >
+                <button onClick={addImageUrl} disabled={!imageUrl.trim()} className={`image-url-add-btn ${imageUrl.trim() ? 'enabled' : ''}`}>
                   Add
                 </button>
-                <button
-                  onClick={() => setShowImageInput(false)}
-                  style={{
-                    padding: '8px',
-                    background: 'transparent',
-                    border: 'none',
-                    cursor: 'pointer'
-                  }}
-                >
+                <button onClick={() => setShowImageInput(false)} className="icon-btn" aria-label="Close image URL bar">
                   <X size={16} />
                 </button>
               </div>
@@ -981,7 +1026,7 @@ export default function App() {
           )}
 
           <div className="input-row">
-            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+            <div className="input-col">
               <textarea
                 className="input"
                 rows={1}
@@ -991,42 +1036,12 @@ export default function App() {
                 onKeyDown={onKey}
                 aria-label="Message"
               />
-              <div style={{ display: 'flex', gap: '8px', padding: '4px 0' }}>
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    padding: '4px 8px',
-                    background: 'transparent',
-                    border: '1px solid var(--primary)',
-                    borderRadius: '4px',
-                    color: 'var(--primary)',
-                    cursor: 'pointer',
-                    fontSize: '12px'
-                  }}
-                  title="Upload image"
-                >
+              <div className="input-actions">
+                <button onClick={() => fileInputRef.current?.click()} className="secondary-action-btn" title="Upload image">
                   <Upload size={14} />
                   Upload
                 </button>
-                <button
-                  onClick={() => setShowImageInput(!showImageInput)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    padding: '4px 8px',
-                    background: showImageInput ? 'var(--primary)' : 'transparent',
-                    border: '1px solid var(--primary)',
-                    borderRadius: '4px',
-                    color: showImageInput ? 'white' : 'var(--primary)',
-                    cursor: 'pointer',
-                    fontSize: '12px'
-                  }}
-                  title="Add image URL"
-                >
+                <button onClick={() => setShowImageInput(!showImageInput)} className={`secondary-action-btn ${showImageInput ? 'is-active' : ''}`} title="Add image URL">
                   <Image size={14} />
                   URL
                 </button>
@@ -1037,7 +1052,6 @@ export default function App() {
             </button>
           </div>
 
-          {/* Hidden file input */}
           <input
             ref={fileInputRef}
             type="file"
@@ -1046,7 +1060,7 @@ export default function App() {
             onChange={handleFileUpload}
             style={{ display: 'none' }}
           />
-          <div className="small" style={{ padding: '0 12px 12px' }}>
+          <div className="small pad-b">
             Tip: Press Enter to send, Shift+Enter for new line.
           </div>
         </div>
@@ -1069,50 +1083,22 @@ export default function App() {
                 </>
               )}
               
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginTop: 12 }}>
-                {/* Always visible Generate PowerPoint button with clear visual states */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+              <div className="generate-cta-wrap">
+                <div className="generate-cta-inner">
                   <button 
-                    className="button generate-btn" 
+                    className={`generate-cta ${generateStatus}`}
                     onClick={() => {
                       if (lastPptxData && aiResponseComplete) {
-                        // Get user context from recent messages
                         const userMessages = messages.filter(m => m.role === 'user').slice(-3)
                         const userContext = userMessages.map(m => m.content).join(' ')
                         generatePPTX({ ...lastPptxData, template: selectedTemplate }, userContext)
                       }
                     }} 
                     disabled={pptxLoading || !(lastPptxData && aiResponseComplete)}
-                    style={{
-                      background: pptxLoading ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 
-                                 (lastPptxData && aiResponseComplete) ? 'linear-gradient(135deg, #22c55e, #16a34a)' : 
-                                 'linear-gradient(135deg, #6b7280, #4b5563)',
-                      cursor: (lastPptxData && aiResponseComplete && !pptxLoading) ? 'pointer' : 'not-allowed',
-                      opacity: 1,
-                      border: 'none',
-                      borderRadius: '8px',
-                      padding: '12px 24px',
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      color: 'white',
-                      boxShadow: (lastPptxData && aiResponseComplete && !pptxLoading) ? 
-                                '0 4px 12px rgba(34, 197, 94, 0.3)' : 
-                                pptxLoading ? '0 4px 12px rgba(245, 158, 11, 0.3)' :
-                                '0 2px 8px rgba(107, 114, 128, 0.2)',
-                      transform: (lastPptxData && aiResponseComplete && !pptxLoading) ? 'translateY(0)' : 'none',
-                      transition: 'all 0.2s ease'
-                    }}
                   >
                     {pptxLoading ? (
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ 
-                          width: '16px', 
-                          height: '16px', 
-                          border: '2px solid transparent',
-                          borderTop: '2px solid white',
-                          borderRadius: '50%',
-                          animation: 'spin 1s linear infinite'
-                        }}></span>
+                      <span className="generate-loading">
+                        <span className="spinner"></span>
                         Generating...
                       </span>
                     ) : (lastPptxData && aiResponseComplete) ? (
@@ -1121,44 +1107,21 @@ export default function App() {
                       '📋 Generate PowerPoint'
                     )}
                   </button>
-                  
-                  {/* User expectation messaging */}
                   {!(lastPptxData && aiResponseComplete) && !pptxLoading && (
-                    <div style={{ 
-                      fontSize: '13px', 
-                      color: '#6b7280', 
-                      textAlign: 'center',
-                      maxWidth: '280px',
-                      lineHeight: '1.4'
-                    }}>
+                    <div className="generate-hint">
                       💡 Ask me to create a presentation and I'll prepare the content for you to generate!
                     </div>
                   )}
-                  
-                  {/* Slide count and status when data is available */}
                   {lastPptxData && aiResponseComplete && (
-                    <div style={{ 
-                      fontSize: '13px', 
-                      color: '#059669', 
-                      textAlign: 'center',
-                      fontWeight: '500'
-                    }}>
+                    <div className="generate-ready-note">
                       ✅ Ready to generate {lastPptxData.slides?.length || 0} slides
                     </div>
                   )}
                 </div>
-                
-                {/* Conditional Show Details button - only when data is available */}
                 {lastPptxData && aiResponseComplete && (
                   <button 
-                    className="button" 
-                    onClick={() => setShowSlideDetails(s => !s)} 
-                    style={{ 
-                      background: '#eef2ff', 
-                      color: 'var(--primary)',
-                      border: '1px solid #e0e7ff',
-                      fontSize: '14px'
-                    }}
+                    className="details-btn" 
+                    onClick={() => setShowSlideDetails(s => !s)}
                   >
                     {showSlideDetails ? 'Hide details' : `Show ${lastPptxData.slides?.length || 0} slide details`}
                   </button>
@@ -1166,12 +1129,12 @@ export default function App() {
               </div>
 
               {showSlideDetails && lastPptxData && aiResponseComplete && (
-                <div style={{ textAlign: 'left', marginTop: 16 }}>
+                <div className="slides-preview-list">
                   <h4>Slides preview</h4>
                   {lastPptxData.slides.map((s, idx) => (
-                    <div key={idx} style={{ padding: 8, borderBottom: '1px solid #eee' }}>
+                    <div key={idx} className="slide-preview-item">
                       <strong>{idx+1}. {s.title}</strong>
-                      <div style={{ color: 'var(--muted)', marginTop: 6 }}>{s.type === 'bullets' ? s.bullets?.join('\n') : s.content}</div>
+                      <div className="slide-preview-text">{s.type === 'bullets' ? s.bullets?.join('\n') : s.content}</div>
                     </div>
                   ))}
                 </div>
@@ -1183,7 +1146,6 @@ export default function App() {
         </div>
       </div>
       
-      {/* Testimonials Section */}
       <div className="testimonials-section">
         <div className="testimonials-container">
           <h2 className="testimonials-title">Trusted by thousands of professionals</h2>
@@ -1218,7 +1180,7 @@ export default function App() {
             
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <div className="stars">★★★★★</div>
+                <div className="stars">★��★★★</div>
                 <p>"Game-changer for our team. Beautiful slides with zero design experience needed."</p>
               </div>
               <div className="testimonial-author">

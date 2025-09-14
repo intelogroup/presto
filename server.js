@@ -47,16 +47,65 @@ app.use(helmet({
             styleSrc: ["'self'", "'unsafe-inline'"],
             scriptSrc: ["'self'"],
             imgSrc: ["'self'", "data:", "https:"],
+            connectSrc: ["'self'", "https:", "wss:"], // Allow fetch requests to external APIs
+            fontSrc: ["'self'", "https:", "data:"],
         },
     },
 }));
 
 app.use(compression());
+
+// Enhanced CORS configuration for production
+const defaultAllowed = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://presto-frontend-production.up.railway.app',
+    'https://fd7f8df1864a4eca8b8ac8b6c29a17e0-a8e5ca7e-dc0f-4d2d-bd20-6ffef8.fly.dev'
+];
+
+// Support wildcard patterns for Fly.dev auto-generated domains
+const allowedOrigins = process.env.ALLOWED_ORIGINS ?
+    process.env.ALLOWED_ORIGINS.split(',').map(s => s.trim()).filter(Boolean) :
+    defaultAllowed;
+
+// Enhanced origin checker with pattern matching
+const isOriginAllowed = (origin) => {
+    if (!origin) return true; // Allow non-browser requests
+
+    // Direct match
+    if (allowedOrigins.includes(origin)) return true;
+
+    // Pattern matching for Fly.dev domains
+    if (origin.includes('.fly.dev')) {
+        console.log('🌐 Fly.dev domain detected:', origin);
+        return true;
+    }
+
+    // Pattern matching for Railway domains
+    if (origin.includes('railway.app')) {
+        console.log('🚂 Railway domain detected:', origin);
+        return true;
+    }
+
+    return false;
+};
+
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:3000', 'https://presto-frontend-production.up.railway.app'],
+    origin: (origin, callback) => {
+        console.log('🔍 CORS request from origin:', origin || 'undefined');
+
+        if (isOriginAllowed(origin)) {
+            console.log('✅ CORS allowed for origin:', origin || 'undefined');
+            return callback(null, true);
+        }
+
+        console.warn('❌ CORS blocked for origin:', origin);
+        return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    exposedHeaders: ['X-Presto-Template', 'X-Presto-Validated', 'X-Presto-Generation-Time', 'X-Presto-Generator']
 }));
 
 app.use(express.json({ limit: '10mb' }));

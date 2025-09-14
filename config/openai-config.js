@@ -379,7 +379,7 @@ async function getQuickResponse(userMessage, systemPrompt = null) {
 async function testConnection() {
   try {
     const response = await openai.chat.completions.create({
-      model: MODEL_CONFIG.PRIMARY_MODEL,
+      model: PRIMARY_MODEL,
       messages: [{ role: 'user', content: 'ping' }],
       max_tokens: 1,
       timeout: 5000
