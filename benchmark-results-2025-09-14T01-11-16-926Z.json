@@ -1,0 +1,273 @@
+{
+  "timestamp": "2025-09-14T01:08:59.748Z",
+  "config": {
+    "baseURL": "http://localhost:3004",
+    "testPrompts": [
+      {
+        "name": "simple_greeting",
+        "message": "Hello, how are you?",
+        "expectedTokens": 50
+      },
+      {
+        "name": "technical_explanation",
+        "message": "Explain how machine learning works in simple terms.",
+        "expectedTokens": 200
+      },
+      {
+        "name": "code_generation",
+        "message": "Write a Python function to calculate fibonacci numbers.",
+        "expectedTokens": 150
+      },
+      {
+        "name": "presentation_task",
+        "message": "Create an outline for a presentation about renewable energy.",
+        "expectedTokens": 300
+      },
+      {
+        "name": "complex_reasoning",
+        "message": "Compare the advantages and disadvantages of microservices vs monolithic architecture.",
+        "expectedTokens": 400
+      }
+    ],
+    "iterations": 3,
+    "timeout": 60000
+  },
+  "results": [
+    {
+      "prompt": {
+        "name": "simple_greeting",
+        "message": "Hello, how are you?",
+        "expectedTokens": 50
+      },
+      "results": [
+        {
+          "success": true,
+          "latency": 4712,
+          "responseLength": 271,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:09:04.480Z",
+          "iteration": 1
+        },
+        {
+          "success": true,
+          "latency": 3950,
+          "responseLength": 499,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:09:09.449Z",
+          "iteration": 2
+        },
+        {
+          "success": true,
+          "latency": 3474,
+          "responseLength": 490,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:09:13.937Z",
+          "iteration": 3
+        }
+      ],
+      "stats": {
+        "successRate": 100,
+        "avgLatency": 4045,
+        "minLatency": 3474,
+        "maxLatency": 4712,
+        "failures": 0,
+        "models": {
+          "unknown": 3
+        },
+        "totalRequests": 3
+      }
+    },
+    {
+      "prompt": {
+        "name": "technical_explanation",
+        "message": "Explain how machine learning works in simple terms.",
+        "expectedTokens": 200
+      },
+      "results": [
+        {
+          "success": true,
+          "latency": 6649,
+          "responseLength": 988,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:09:20.595Z",
+          "iteration": 1
+        },
+        {
+          "success": true,
+          "latency": 7474,
+          "responseLength": 1258,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:09:29.081Z",
+          "iteration": 2
+        },
+        {
+          "success": true,
+          "latency": 6288,
+          "responseLength": 819,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:09:36.385Z",
+          "iteration": 3
+        }
+      ],
+      "stats": {
+        "successRate": 100,
+        "avgLatency": 6804,
+        "minLatency": 6288,
+        "maxLatency": 7474,
+        "failures": 0,
+        "models": {
+          "unknown": 3
+        },
+        "totalRequests": 3
+      }
+    },
+    {
+      "prompt": {
+        "name": "code_generation",
+        "message": "Write a Python function to calculate fibonacci numbers.",
+        "expectedTokens": 150
+      },
+      "results": [
+        {
+          "success": true,
+          "latency": 14333,
+          "responseLength": 1137,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:09:50.728Z",
+          "iteration": 1
+        },
+        {
+          "success": true,
+          "latency": 15249,
+          "responseLength": 1215,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:10:06.992Z",
+          "iteration": 2
+        },
+        {
+          "success": true,
+          "latency": 14885,
+          "responseLength": 1252,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:10:22.887Z",
+          "iteration": 3
+        }
+      ],
+      "stats": {
+        "successRate": 100,
+        "avgLatency": 14822,
+        "minLatency": 14333,
+        "maxLatency": 15249,
+        "failures": 0,
+        "models": {
+          "unknown": 3
+        },
+        "totalRequests": 3
+      }
+    },
+    {
+      "prompt": {
+        "name": "presentation_task",
+        "message": "Create an outline for a presentation about renewable energy.",
+        "expectedTokens": 300
+      },
+      "results": [
+        {
+          "success": true,
+          "latency": 5773,
+          "responseLength": 491,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:10:28.670Z",
+          "iteration": 1
+        },
+        {
+          "success": true,
+          "latency": 6314,
+          "responseLength": 308,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:10:36.001Z",
+          "iteration": 2
+        },
+        {
+          "success": true,
+          "latency": 5534,
+          "responseLength": 492,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:10:42.546Z",
+          "iteration": 3
+        }
+      ],
+      "stats": {
+        "successRate": 100,
+        "avgLatency": 5874,
+        "minLatency": 5534,
+        "maxLatency": 6314,
+        "failures": 0,
+        "models": {
+          "unknown": 3
+        },
+        "totalRequests": 3
+      }
+    },
+    {
+      "prompt": {
+        "name": "complex_reasoning",
+        "message": "Compare the advantages and disadvantages of microservices vs monolithic architecture.",
+        "expectedTokens": 400
+      },
+      "results": [
+        {
+          "success": true,
+          "latency": 11880,
+          "responseLength": 2308,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:10:54.430Z",
+          "iteration": 1
+        },
+        {
+          "success": true,
+          "latency": 13807,
+          "responseLength": 2729,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:11:09.251Z",
+          "iteration": 2
+        },
+        {
+          "success": true,
+          "latency": 6603,
+          "responseLength": 522,
+          "model": "unknown",
+          "timestamp": "2025-09-14T01:11:16.856Z",
+          "iteration": 3
+        }
+      ],
+      "stats": {
+        "successRate": 100,
+        "avgLatency": 10763,
+        "minLatency": 6603,
+        "maxLatency": 13807,
+        "failures": 0,
+        "models": {
+          "unknown": 3
+        },
+        "totalRequests": 3
+      }
+    }
+  ],
+  "summary": {
+    "totalRequests": 15,
+    "totalSuccessful": 15,
+    "successRate": 100,
+    "modelStats": {
+      "unknown": {
+        "requests": 15,
+        "totalLatency": 126925,
+        "minLatency": 3474,
+        "maxLatency": 15249,
+        "avgLatency": 8462
+      }
+    },
+    "vllmModels": [],
+    "openrouterModels": []
+  }
+}

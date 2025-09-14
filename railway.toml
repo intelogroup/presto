@@ -18,9 +18,9 @@ healthcheckTimeout = 120
 # Resource configuration
 # vLLM needs significant memory for model loading
 [deploy.resources]
-# Higher memory allocation for Llama 3.1 8B
-memory = "8Gi"
-cpu = "4000m"
+# Optimized memory allocation for Llama 3.1 8B
+memory = "12Gi"
+cpu = "6000m"
 
 # Environment variables
 [env]
@@ -35,6 +35,9 @@ PORT = "8000"
 # vLLM optimization settings
 VLLM_WORKER_USE_RAY = "false"
 VLLM_ATTENTION_BACKEND = "FLASHINFER"
+VLLM_GPU_MEMORY_UTILIZATION = "0.90"
+VLLM_MAX_NUM_BATCHED_TOKENS = "8192"
+VLLM_MAX_NUM_SEQS = "256"
 
 # Networking
 [networking]

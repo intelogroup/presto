@@ -1,0 +1,114 @@
+{
+  "timestamp": "2025-09-14T00:55:04.786Z",
+  "results": {
+    "openrouter": {
+      "results": [
+        {
+          "success": true,
+          "latency": 6677,
+          "status": 200,
+          "responseLength": 793,
+          "iteration": 1,
+          "message": "Create a simple 3-slide presentation about AI..."
+        },
+        {
+          "success": true,
+          "latency": 6440,
+          "status": 200,
+          "responseLength": 796,
+          "iteration": 2,
+          "message": "Generate a business presentation about renewable e..."
+        },
+        {
+          "success": true,
+          "latency": 5560,
+          "status": 200,
+          "responseLength": 629,
+          "iteration": 3,
+          "message": "Make a presentation about machine learning basics..."
+        },
+        {
+          "success": true,
+          "latency": 9216,
+          "status": 200,
+          "responseLength": 738,
+          "iteration": 4,
+          "message": "Create slides about digital transformation..."
+        },
+        {
+          "success": true,
+          "latency": 7132,
+          "status": 200,
+          "responseLength": 794,
+          "iteration": 5,
+          "message": "Generate a presentation about data science..."
+        }
+      ],
+      "stats": {
+        "count": 5,
+        "successRate": 100,
+        "avgLatency": 7005,
+        "minLatency": 5560,
+        "maxLatency": 9216,
+        "medianLatency": 6677,
+        "failureCount": 0,
+        "successfulRequests": 5
+      }
+    },
+    "vllm": {
+      "results": [
+        {
+          "success": true,
+          "latency": 5487,
+          "status": 200,
+          "responseLength": 752,
+          "iteration": 1,
+          "message": "Create a simple 3-slide presentation about AI..."
+        },
+        {
+          "success": true,
+          "latency": 5315,
+          "status": 200,
+          "responseLength": 867,
+          "iteration": 2,
+          "message": "Generate a business presentation about renewable e..."
+        },
+        {
+          "success": true,
+          "latency": 7686,
+          "status": 200,
+          "responseLength": 836,
+          "iteration": 3,
+          "message": "Make a presentation about machine learning basics..."
+        },
+        {
+          "success": true,
+          "latency": 9080,
+          "status": 200,
+          "responseLength": 720,
+          "iteration": 4,
+          "message": "Create slides about digital transformation..."
+        },
+        {
+          "success": true,
+          "latency": 5006,
+          "status": 200,
+          "responseLength": 802,
+          "iteration": 5,
+          "message": "Generate a presentation about data science..."
+        }
+      ],
+      "stats": {
+        "count": 5,
+        "successRate": 100,
+        "avgLatency": 6515,
+        "minLatency": 5006,
+        "maxLatency": 9080,
+        "medianLatency": 5487,
+        "failureCount": 0,
+        "successfulRequests": 5
+      }
+    }
+  },
+  "recommendation": "vllm"
+}
