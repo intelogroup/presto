@@ -434,16 +434,56 @@ export default function App() {
     saveChatHistory(messages)
   }, [messages])
 
-  useEffect(() => {
-    apiFetch('/api/templates')
-      .then(r => r.json())
-      .then(j => setTemplates(j.templates || []))
-      .catch(() => setTemplates([]))
+  const getPlaceholderTemplates = () => {
+    const svg = (t1, t2) => encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='160' height='100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='${t1}'/><stop offset='100%' stop-color='${t2}'/></linearGradient></defs><rect rx='8' width='160' height='100' fill='url(#g)'/><g fill='white' opacity='0.9'><rect x='18' y='22' width='84' height='10' rx='5'/><rect x='18' y='40' width='124' height='8' rx='4'/><rect x='18' y='56' width='98' height='8' rx='4'/></g></svg>`)
+    return [
+      { id: 'sleek-blue', name: 'Sleek Blue', thumbnail: `data:image/svg+xml;utf8,${svg('#0ea5e9','#0284c7')}` },
+      { id: 'minimal-gray', name: 'Minimal Gray', thumbnail: `data:image/svg+xml;utf8,${svg('#64748b','#334155')}` },
+      { id: 'vibrant-gradient', name: 'Vibrant', thumbnail: `data:image/svg+xml;utf8,${svg('#f43f5e','#f59e0b')}` },
+      { id: 'emerald', name: 'Emerald', thumbnail: `data:image/svg+xml;utf8,${svg('#10b981','#059669')}` },
+      { id: 'purple-haze', name: 'Purple Haze', thumbnail: `data:image/svg+xml;utf8,${svg('#8b5cf6','#6d28d9')}` }
+    ]
+  }
 
+  const checkBackendAvailability = async () => {
     try {
-      const saved = localStorage.getItem('presto_selected_template')
-      if (saved) setSelectedTemplate(saved)
-    } catch (e) {}
+      const base = (API_BASE || '').replace(/\/$/, '')
+      const abs = base ? base + '/api/health' : null
+      if (abs) {
+        const resAbs = await timedFetch(abs, { method: 'GET' }, 4000)
+        if (resAbs.ok) return true
+      }
+    } catch {}
+    try {
+      const resRel = await timedFetch('/api/health', { method: 'GET' }, 3000)
+      if (resRel.ok) return true
+    } catch {}
+    return false
+  }
+
+  useEffect(() => {
+    (async () => {
+      const online = await checkBackendAvailability()
+      setBackendStatus(online ? 'online' : 'offline')
+
+      if (online) {
+        try {
+          const r = await apiFetch('/api/templates')
+          const j = await r.json().catch(() => ({}))
+          const items = j.templates || j.available?.themes?.map((t, i) => ({ id: `${t}-${i}`, name: t, thumbnail: getPlaceholderTemplates()[i%5].thumbnail })) || []
+          setTemplates(items)
+        } catch {
+          setTemplates(getPlaceholderTemplates())
+        }
+      } else {
+        setTemplates(getPlaceholderTemplates())
+      }
+
+      try {
+        const saved = localStorage.getItem('presto_selected_template')
+        if (saved) setSelectedTemplate(saved)
+      } catch {}
+    })()
   }, [])
 
   useEffect(() => {
