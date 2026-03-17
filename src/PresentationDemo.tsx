@@ -53,6 +53,9 @@ export const PresentationDemo: React.FC<Presentation1Props> = ({ slides, logoSrc
       timelineChildren.push(
         <TransitionSeries.Transition
           key={`t-${index}`}
+          // `as any` required: @remotion/transitions does not export a unified
+          // presentation union type — each factory (fade/wipe/flip/etc.) returns
+          // a distinct opaque object. Cast is safe; Remotion validates at render time.
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           presentation={transition as any}
           timing={linearTiming({ durationInFrames: 20 })}
