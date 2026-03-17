@@ -38,7 +38,7 @@ app.post("/render", (req, res) => {
 
   execFile(
     remotionBin,
-    ["render", compositionId, outputPath],
+    ["render", compositionId, outputPath, "--concurrency=1"],
     { cwd: __dirname, timeout: 30 * 60 * 1000 }, // 30 min timeout
     (err, stdout, stderr) => {
       if (err) {
