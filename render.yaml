@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: remotion-render-server
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    envVars:
+      - key: RENDER_API_SECRET
+        generateValue: true
+      - key: NODE_ENV
+        value: production

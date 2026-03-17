@@ -1,0 +1,7 @@
+node_modules/
+*.mp4
+*.m4a
+*.mov
+out/
+.remotion/
+*.DS_Store
