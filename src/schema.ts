@@ -198,3 +198,74 @@ export const Presentation2PropsSchema = z.object({
 });
 
 export type Presentation2Props = z.infer<typeof Presentation2PropsSchema>;
+
+// ─── Presentation3 Slide Schemas (Dashboard) ─────────────────────────────────
+
+export const KpiTitleSlide3Schema = DurationBase.extend({
+  type: z.literal("kpiTitle"),
+  title: z.string(),
+  tagline: z.string(),
+  badge: z.string().optional(),
+});
+
+export const BigStatSlide3Schema = DurationBase.extend({
+  type: z.literal("bigStat"),
+  label: z.string(),
+  value: z.string(),
+  numericValue: z.number(),
+  unit: z.string().optional(),
+  trend: z.enum(["up", "down", "neutral"]),
+  caption: z.string().optional(),
+});
+
+export const MetricItem3Schema = z.object({
+  label: z.string(),
+  value: z.string(),
+  delta: z.string().optional(),
+});
+
+export const MetricRowSlide3Schema = DurationBase.extend({
+  type: z.literal("metricRow"),
+  title: z.string(),
+  metrics: z.tuple([MetricItem3Schema, MetricItem3Schema, MetricItem3Schema]),
+});
+
+export const Bar3Schema = z.object({
+  label: z.string(),
+  value: z.number(),
+});
+
+export const BarRaceSlide3Schema = DurationBase.extend({
+  type: z.literal("barRace"),
+  title: z.string(),
+  bars: z.array(Bar3Schema),
+  maxValue: z.number(),
+});
+
+export const MilestoneSlide3Schema = DurationBase.extend({
+  type: z.literal("milestone"),
+  icon: z.string(),
+  headline: z.string(),
+  caption: z.string(),
+  year: z.string().optional(),
+});
+
+export const P3SlideSchema = z.discriminatedUnion("type", [
+  KpiTitleSlide3Schema,
+  BigStatSlide3Schema,
+  MetricRowSlide3Schema,
+  BarRaceSlide3Schema,
+  MilestoneSlide3Schema,
+]);
+
+export type P3Slide = z.infer<typeof P3SlideSchema>;
+
+// talkingHeadSrc is intentionally optional (matching P1 pattern) — composition
+// renders slides-only when omitted. The spec draft showed it as required, but
+// optional matches the P1 convention and allows rendering without a video file.
+export const Presentation3PropsSchema = z.object({
+  slides: z.array(P3SlideSchema),
+  talkingHeadSrc: z.string().optional(),
+});
+
+export type Presentation3Props = z.infer<typeof Presentation3PropsSchema>;
