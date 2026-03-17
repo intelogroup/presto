@@ -21,7 +21,7 @@ export const BarRaceSlide3: React.FC<Props> = ({ title, bars, maxValue }) => {
     easing: Easing.out(Easing.cubic),
   });
 
-  const BAR_MAX_PX = 1200;
+  const BAR_MAX_PX = 1400;
 
   return (
     <AbsoluteFill

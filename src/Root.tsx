@@ -76,9 +76,11 @@ export const RemotionRoot: React.FC = () => {
           talkingHeadSrc: "talkinghead_clean.mp4",
           slides: DEFAULT_P3_SLIDES,
         }}
-        calculateMetadata={({ props }) => ({
-          durationInFrames: calcDuration(props.slides),
-        })}
+        calculateMetadata={({ props }) => {
+          const total = props.slides.reduce((sum, s) => sum + s.duration, 0);
+          const overlap = Math.max(0, props.slides.length - 1) * 10;
+          return { durationInFrames: total - overlap };
+        }}
       />
       <Composition
         id="Showcase"
