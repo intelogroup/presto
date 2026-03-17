@@ -2,7 +2,7 @@
 // Default slide data for both compositions — used as Remotion Studio previews
 // and as fallback when no inputProps are passed to the render server.
 
-import { P1Slide, P2Slide } from "./schema";
+import { P1Slide, P2Slide, P3Slide } from "./schema";
 
 // ─── Presentation1 (dark tech) ────────────────────────────────────────────────
 
@@ -183,4 +183,101 @@ export const DEFAULT_P2_SLIDES: P2Slide[] = [
   { type: "bigNumber", duration: 360, value: 95, suffix: "%", label: "Customer retention rate", dark: false },
   // 9 — Closing split title
   { type: "splitTitle", duration: 420, tag: "FEEDEO", title: "What Will You Build?", subtitle: "feedeo.ai" },
+];
+
+// ─── Presentation3 (data dashboard) ─────────────────────────────────────────
+
+export const DEFAULT_P3_SLIDES: P3Slide[] = [
+  // 0 — Opener
+  { type: "kpiTitle", duration: 60, title: "Feedeo Growth Story", tagline: "Zero → $10M ARR in 24 Months", badge: "2024–2026" },
+  // 1
+  { type: "bigStat", duration: 60, label: "Annual Recurring Revenue", value: "$10M", numericValue: 10, unit: "$", trend: "up", caption: "Up from $0 in January 2024" },
+  // 2
+  { type: "bigStat", duration: 60, label: "Active Users", value: "50K", numericValue: 50000, trend: "up", caption: "Across 40+ countries" },
+  // 3
+  {
+    type: "metricRow", duration: 60, title: "Q1 2024 — First Quarter",
+    metrics: [
+      { label: "ARR", value: "$1.2M", delta: "+100%" },
+      { label: "Users", value: "8K", delta: "+8K" },
+      { label: "Churn", value: "4.2%", delta: "-0.8%" },
+    ],
+  },
+  // 4
+  { type: "bigStat", duration: 60, label: "NPS Score", value: "72", numericValue: 72, trend: "up", caption: "Industry average is 41" },
+  // 5
+  {
+    type: "metricRow", duration: 60, title: "Q2 2024 — Acceleration",
+    metrics: [
+      { label: "ARR", value: "$2.8M", delta: "+133%" },
+      { label: "Users", value: "15K", delta: "+7K" },
+      { label: "Churn", value: "3.1%", delta: "-1.1%" },
+    ],
+  },
+  // 6
+  {
+    type: "barRace", duration: 60, title: "ARR Growth by Quarter ($M)",
+    maxValue: 10,
+    bars: [
+      { label: "Q1 2024", value: 1.2 },
+      { label: "Q2 2024", value: 2.8 },
+      { label: "Q3 2024", value: 5.1 },
+      { label: "Q4 2024", value: 7.4 },
+      { label: "Q1 2025", value: 10 },
+    ],
+  },
+  // 7
+  { type: "milestone", duration: 60, icon: "Rocket", headline: "Seed Round Closed", caption: "Raised $1.2M to scale the pipeline", year: "2024" },
+  // 8
+  { type: "bigStat", duration: 60, label: "Team Members", value: "42", numericValue: 42, trend: "up", caption: "Grew 3× in 12 months" },
+  // 9
+  {
+    type: "metricRow", duration: 60, title: "Q3 2024 — Product-Market Fit",
+    metrics: [
+      { label: "ARR", value: "$5.1M", delta: "+82%" },
+      { label: "Users", value: "28K", delta: "+13K" },
+      { label: "Churn", value: "2.4%", delta: "-0.7%" },
+    ],
+  },
+  // 10
+  {
+    type: "barRace", duration: 60, title: "Revenue by Segment ($M)",
+    maxValue: 5,
+    bars: [
+      { label: "Enterprise", value: 4.5 },
+      { label: "Mid-Market", value: 2.8 },
+      { label: "SMB", value: 1.7 },
+      { label: "Agency", value: 1.0 },
+    ],
+  },
+  // 11
+  { type: "bigStat", duration: 60, label: "Retention Rate", value: "95%", numericValue: 95, trend: "up", caption: "Best-in-class for SaaS" },
+  // 12
+  { type: "milestone", duration: 60, icon: "TrendingUp", headline: "Series A — $8M", caption: "Led by Sequoia with 4 co-investors", year: "2025" },
+  // 13
+  {
+    type: "metricRow", duration: 60, title: "Q4 2024 — Milestone Quarter",
+    metrics: [
+      { label: "ARR", value: "$10M", delta: "+35%" },
+      { label: "Users", value: "50K", delta: "+22K" },
+      { label: "Churn", value: "1.9%", delta: "-0.5%" },
+    ],
+  },
+  // 14
+  { type: "bigStat", duration: 60, label: "Burn Multiple", value: "0.8×", numericValue: 0.8, trend: "neutral", caption: "Efficient growth — industry avg 1.5×" },
+  // 15
+  { type: "milestone", duration: 60, icon: "VideoIcon", headline: "1M Videos Rendered", caption: "Crossed the milestone in a single quarter", year: "2026" },
+  // 16
+  {
+    type: "barRace", duration: 60, title: "Revenue by Geography ($M)",
+    maxValue: 6,
+    bars: [
+      { label: "North America", value: 5.2 },
+      { label: "Europe", value: 2.8 },
+      { label: "APAC", value: 1.4 },
+      { label: "Rest of World", value: 0.6 },
+    ],
+  },
+  // 17 — Closer
+  { type: "kpiTitle", duration: 60, title: "What's Next", tagline: "→ $50M ARR by 2028", badge: "Roadmap" },
 ];
