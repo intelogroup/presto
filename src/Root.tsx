@@ -6,7 +6,7 @@ import { PresentationDemo } from "./PresentationDemo";
 import { Presentation2Demo } from "./Presentation2Demo";
 import { ShowcaseDemo } from "./ShowcaseDemo";
 import { PictureInPictureDemo } from "./PictureInPictureDemo";
-import { Presentation1PropsSchema } from "./schema";
+import { Presentation1PropsSchema, Presentation2PropsSchema } from "./schema";
 
 export const RemotionRoot: React.FC = () => {
   return (
