@@ -1,10 +1,10 @@
 // src/slides/IconFeaturesSlide.tsx
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import type { LucideIcon } from "lucide-react";
+import { resolveIcon } from "../iconMap";
 import { theme } from "./theme";
 
-type FeatureItem = { icon: LucideIcon; title: string; body: string; color: string };
+type FeatureItem = { iconName: string; title: string; body: string; color: string };
 type Props = { title: string; features: FeatureItem[] };
 
 export const IconFeaturesSlide: React.FC<Props> = ({ title, features }) => {
@@ -21,7 +21,7 @@ export const IconFeaturesSlide: React.FC<Props> = ({ title, features }) => {
           const startFrame = i * 18;
           const colOpacity = interpolate(frame, [startFrame, startFrame + 20], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
           const colY = interpolate(frame, [startFrame, startFrame + 20], [40, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-          const Icon = feature.icon;
+          const Icon = resolveIcon(feature.iconName);
 
           return (
             <div key={i} style={{ flex: 1, backgroundColor: theme.card, borderRadius: 24, padding: 56, display: "flex", flexDirection: "column", gap: 28, opacity: colOpacity, transform: `translateY(${colY}px)`, borderTop: `6px solid ${feature.color}` }}>

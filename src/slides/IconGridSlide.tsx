@@ -1,11 +1,11 @@
 // src/slides/IconGridSlide.tsx
 import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
-import type { LucideIcon } from "lucide-react";
+import { resolveIcon } from "../iconMap";
 import { theme } from "./theme";
 
 type GridItem = {
-  icon: LucideIcon;
+  iconName: string;
   label: string;
   color?: string;
 };
@@ -47,7 +47,7 @@ export const IconGridSlide: React.FC<Props> = ({ title, items }) => {
             extrapolateRight: "clamp",
           });
 
-          const Icon = item.icon;
+          const Icon = resolveIcon(item.iconName);
           const color = item.color ?? theme.primary;
 
           return (

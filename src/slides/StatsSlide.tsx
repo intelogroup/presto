@@ -1,11 +1,11 @@
 // src/slides/StatsSlide.tsx
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import type { LucideIcon } from "lucide-react";
+import { resolveIcon } from "../iconMap";
 import { theme } from "./theme";
 
 type StatItem = {
-  icon: LucideIcon;
+  iconName: string;
   value: number;
   label: string;
   suffix?: string;
@@ -54,7 +54,7 @@ export const StatsSlide: React.FC<Props> = ({ title, stats }) => {
             extrapolateRight: "clamp",
           });
 
-          const Icon = stat.icon;
+          const Icon = resolveIcon(stat.iconName);
           const color = stat.color ?? theme.primary;
 
           return (
