@@ -12,6 +12,10 @@ export const ICON_MAP: Record<string, LucideIcon> = {
 
 export type IconName = keyof typeof ICON_MAP;
 
+// Always returns a valid LucideIcon — unknown names fall back to Zap (never returns undefined)
 export function resolveIcon(name: string): LucideIcon {
-  return ICON_MAP[name] ?? Zap; // Zap as safe fallback
+  return ICON_MAP[name] ?? Zap;
 }
+
+// Valid icon name strings for use in JSON inputProps
+export const VALID_ICON_NAMES = Object.keys(ICON_MAP) as string[];

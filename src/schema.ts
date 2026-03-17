@@ -1,8 +1,16 @@
 // src/schema.ts
 import { z } from "zod";
+import { VALID_ICON_NAMES } from "./iconMap";
+
+// Validates that iconName strings are known keys — fails fast before render
+const IconNameSchema = z.string().refine(
+  (v: string) => VALID_ICON_NAMES.includes(v),
+  { message: `iconName must be one of: ${VALID_ICON_NAMES.join(", ")}` }
+);
 
 // ─── Presentation1 Slide Schemas ─────────────────────────────────────────────
 
+// duration is in frames at 30fps (min 60 = 2 seconds)
 const DurationBase = z.object({ duration: z.number().int().min(60) });
 
 export const TitleSlideSchema = DurationBase.extend({
@@ -12,7 +20,7 @@ export const TitleSlideSchema = DurationBase.extend({
 });
 
 export const IconGridItemSchema = z.object({
-  iconName: z.string(),
+  iconName: IconNameSchema,
   label: z.string(),
   color: z.string(),
 });
@@ -30,7 +38,7 @@ export const ChecklistSlideSchema = DurationBase.extend({
 });
 
 export const StatItemSchema = z.object({
-  iconName: z.string(),
+  iconName: IconNameSchema,
   value: z.number(),
   label: z.string(),
   suffix: z.string().default(""),
@@ -81,7 +89,7 @@ export const QuoteSlideSchema = DurationBase.extend({
 });
 
 export const FeatureItemSchema = z.object({
-  iconName: z.string(),
+  iconName: IconNameSchema,
   title: z.string(),
   body: z.string(),
   color: z.string(),
@@ -134,7 +142,7 @@ export const TypewriterSlide2Schema = DurationBase.extend({
 export const BigNumberSlide2Schema = DurationBase.extend({
   type: z.literal("bigNumber"),
   value: z.number(),
-  decimals: z.number().int().min(0).optional(),
+  decimals: z.number().int().min(0).max(6).optional(),
   prefix: z.string().optional(),
   suffix: z.string().optional(),
   label: z.string(),
