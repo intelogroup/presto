@@ -1,7 +1,13 @@
+.env.local
+.env
 node_modules/
 *.mp4
 *.m4a
 *.mov
+*.wav
 out/
+output/
 .remotion/
 *.DS_Store
+.superpowers/
+docs/

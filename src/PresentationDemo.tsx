@@ -1,6 +1,6 @@
 // src/PresentationDemo.tsx
 import React from "react";
-import { AbsoluteFill, Img, Sequence, Video } from "remotion";
+import { AbsoluteFill, Img, OffthreadVideo, Sequence, staticFile } from "remotion";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { slide } from "@remotion/transitions/slide";
 import { fade } from "@remotion/transitions/fade";
@@ -102,23 +102,22 @@ export const PresentationDemo: React.FC<Presentation1Props> = ({ slides, logoSrc
       {/* Logo — top right (optional) */}
       {logoSrc && (
         <AbsoluteFill style={{ justifyContent: "flex-start", alignItems: "flex-end", padding: 40, pointerEvents: "none" }}>
-          <Img src={logoSrc} style={{ width: 120, objectFit: "contain" }} />
+          <Img src={staticFile(logoSrc)} style={{ width: 120, objectFit: "contain" }} />
         </AbsoluteFill>
       )}
 
       {/* Talking head circle — bottom right, looping (optional) */}
       {talkingHeadSrc && (
-        <Sequence from={-30}>
-          <AbsoluteFill style={{ justifyContent: "flex-end", alignItems: "flex-end", padding: 60, pointerEvents: "none" }}>
-            <div style={{ width: 300, height: 300, borderRadius: "50%", overflow: "hidden", border: `6px solid ${theme.primary}`, boxShadow: "0 10px 30px rgba(0,0,0,0.5)", backgroundColor: "black", transform: "translateZ(0)", willChange: "transform" }}>
-              <Video
-                loop
-                src={talkingHeadSrc}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            </div>
-          </AbsoluteFill>
-        </Sequence>
+        <AbsoluteFill style={{ justifyContent: "flex-end", alignItems: "flex-end", padding: 60, pointerEvents: "none" }}>
+          <div style={{ width: 300, height: 300, borderRadius: "50%", overflow: "hidden", border: `6px solid ${theme.primary}`, boxShadow: "0 10px 30px rgba(0,0,0,0.5)", backgroundColor: "black" }}>
+            <OffthreadVideo
+              loop
+              src={staticFile(talkingHeadSrc)}
+              startFrom={30}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </div>
+        </AbsoluteFill>
       )}
     </AbsoluteFill>
   );
