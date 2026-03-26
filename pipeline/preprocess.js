@@ -121,6 +121,7 @@ async function detectSilences(filePath, options = {}) {
       "ffmpeg",
       [
         "-i", filePath,
+        "-vn", // skip video stream — avoids encoder issues on limited ffmpeg builds
         "-af", `silencedetect=noise=${silenceThresholdDb}dB:d=${minSilenceDuration}`,
         "-f", "null", "-",
       ],
@@ -205,86 +206,109 @@ function buildKeepSegments(totalDuration, silences, keepDuration = 2.0) {
 }
 
 /**
- * Generate an ffmpeg complex filter string from keep segments.
- * Handles both audio+video and audio-only files.
+ * Trim a media file by extracting segments with -ss/-t and joining via concat demuxer.
+ * This approach works with Remotion's limited ffmpeg build (which lacks trim/setpts
+ * video filters) by using seek-based segment extraction instead of filter_complex.
  *
+ * For audio-only files, uses atrim+asetpts+concat filter (audio filters ARE available).
+ *
+ * @param {string} inputPath
+ * @param {string} outputPath
  * @param {Array<{ start: number, end: number }>} segments
- * @param {boolean} hasVideo - whether the input file has a video stream
- * @returns {string} ffmpeg -filter_complex value
+ * @param {boolean} hasVideo
+ * @returns {Promise<void>}
  */
-function buildComplexFilter(segments, hasVideo = true) {
-  const filters = [];
-  const concatInputs = [];
-
-  if (hasVideo) {
-    segments.forEach((seg, i) => {
-      const start = seg.start.toFixed(4);
-      const duration = (seg.end - seg.start).toFixed(4);
-      filters.push(`[0:v]trim=start=${start}:duration=${duration},setpts=PTS-STARTPTS[v${i}]`);
-      filters.push(`[0:a]atrim=start=${start}:duration=${duration},asetpts=PTS-STARTPTS[a${i}]`);
-      concatInputs.push(`[v${i}][a${i}]`);
-    });
-
-    const concatFilter = `${concatInputs.join("")}concat=n=${segments.length}:v=1:a=1[outv][outa]`;
-    filters.push(concatFilter);
-  } else {
-    // Audio-only: no video streams in filter
+async function trimSegments(inputPath, outputPath, segments, hasVideo) {
+  if (!hasVideo) {
+    // Audio-only: use atrim+asetpts+concat filter (available in Remotion ffmpeg)
+    const filters = [];
+    const concatInputs = [];
     segments.forEach((seg, i) => {
       const start = seg.start.toFixed(4);
       const duration = (seg.end - seg.start).toFixed(4);
       filters.push(`[0:a]atrim=start=${start}:duration=${duration},asetpts=PTS-STARTPTS[a${i}]`);
       concatInputs.push(`[a${i}]`);
     });
+    filters.push(`${concatInputs.join("")}concat=n=${segments.length}:v=0:a=1[outa]`);
 
-    const concatFilter = `${concatInputs.join("")}concat=n=${segments.length}:v=0:a=1[outa]`;
-    filters.push(concatFilter);
+    await new Promise((resolve, reject) => {
+      execFile(
+        "ffmpeg",
+        ["-y", "-i", inputPath, "-filter_complex", filters.join(";"), "-map", "[outa]", "-c:a", "aac", "-b:a", "128k", outputPath],
+        { timeout: 15 * 60 * 1000 },
+        (err, _stdout, stderr) => {
+          if (err) return reject(new Error(`ffmpeg audio trim failed: ${(stderr || "").slice(-500)}`));
+          resolve();
+        }
+      );
+    });
+    return;
   }
 
-  return filters.join(";");
-}
+  // Video+audio: extract each segment with -ss/-t, then concat demuxer
+  const segmentFiles = [];
+  const concatListPath = outputPath + ".concat.txt";
 
-/**
- * Run ffmpeg to trim the file using a complex filter.
- *
- * @param {string} inputPath
- * @param {string} outputPath
- * @param {string} complexFilter
- * @param {boolean} hasVideo
- * @returns {Promise<void>}
- */
-function runTrimFilter(inputPath, outputPath, complexFilter, hasVideo) {
-  return new Promise((resolve, reject) => {
-    const args = [
-      "-y",
-      "-i", inputPath,
-      "-filter_complex", complexFilter,
-    ];
+  try {
+    // Extract each segment as a separate file
+    for (let i = 0; i < segments.length; i++) {
+      const seg = segments[i];
+      const segFile = outputPath + `.seg${i}.mp4`;
+      segmentFiles.push(segFile);
 
-    if (hasVideo) {
-      args.push("-map", "[outv]", "-map", "[outa]");
-      args.push("-c:v", "libx264", "-preset", "fast", "-crf", "23");
-    } else {
-      args.push("-map", "[outa]");
+      await new Promise((resolve, reject) => {
+        execFile(
+          "ffmpeg",
+          [
+            "-y",
+            "-ss", seg.start.toFixed(4),
+            "-i", inputPath,
+            "-t", (seg.end - seg.start).toFixed(4),
+            "-c:v", "libx264", "-preset", "fast", "-crf", "23",
+            "-c:a", "aac", "-b:a", "128k",
+            "-movflags", "+faststart",
+            segFile,
+          ],
+          { timeout: 5 * 60 * 1000 },
+          (err, _stdout, stderr) => {
+            if (err) return reject(new Error(`ffmpeg segment ${i} extract failed: ${(stderr || "").slice(-500)}`));
+            resolve();
+          }
+        );
+      });
     }
 
-    args.push("-c:a", "aac", "-b:a", "128k");
+    // Write concat list file
+    const concatContent = segmentFiles.map((f) => `file '${f}'`).join("\n");
+    fs.writeFileSync(concatListPath, concatContent);
 
-    if (hasVideo) {
-      args.push("-movflags", "+faststart");
+    // Concatenate segments using concat demuxer (stream copy — no re-encode)
+    await new Promise((resolve, reject) => {
+      execFile(
+        "ffmpeg",
+        [
+          "-y",
+          "-f", "concat",
+          "-safe", "0",
+          "-i", concatListPath,
+          "-c", "copy",
+          "-movflags", "+faststart",
+          outputPath,
+        ],
+        { timeout: 5 * 60 * 1000 },
+        (err, _stdout, stderr) => {
+          if (err) return reject(new Error(`ffmpeg concat failed: ${(stderr || "").slice(-500)}`));
+          resolve();
+        }
+      );
+    });
+  } finally {
+    // Clean up segment files and concat list
+    for (const f of segmentFiles) {
+      try { fs.unlinkSync(f); } catch (_) {}
     }
-
-    args.push(outputPath);
-
-    execFile(
-      "ffmpeg",
-      args,
-      { timeout: 15 * 60 * 1000 }, // 15 min for long files
-      (err, _stdout, stderr) => {
-        if (err) return reject(new Error(`ffmpeg trim failed: ${(stderr || "").slice(-500)}`));
-        resolve();
-      }
-    );
-  });
+    try { fs.unlinkSync(concatListPath); } catch (_) {}
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -413,8 +437,7 @@ async function preprocessVideo(inputPath, outputDir, options = {}) {
     console.log(`[preprocess] keeping ${segments.length} segments, removing ~${removedDuration.toFixed(1)}s of silence`);
 
     const trimOutputPath = path.join(outputDir, `${baseName}_trimmed${ext}`);
-    const complexFilter = buildComplexFilter(segments, info.hasVideo);
-    await runTrimFilter(inputPath, trimOutputPath, complexFilter, info.hasVideo);
+    await trimSegments(inputPath, trimOutputPath, segments, info.hasVideo);
 
     console.log(`[preprocess] trimmed: ${info.duration.toFixed(1)}s → ${estimatedDuration.toFixed(1)}s (removed ${removedDuration.toFixed(1)}s)`);
 
