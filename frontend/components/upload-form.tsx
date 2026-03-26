@@ -99,7 +99,7 @@ export function UploadForm() {
       </div>
 
       <div className="flex items-center gap-3">
-        <Select value={theme} onValueChange={setTheme}>
+        <Select value={theme} onValueChange={(v) => setTheme(v ?? "")}>
           <SelectTrigger className="w-48">
             <SelectValue placeholder="Auto-select theme" />
           </SelectTrigger>
