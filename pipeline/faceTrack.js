@@ -8,12 +8,31 @@
  *
  * The Remotion TalkingHead component uses these keypoints to set objectPosition
  * dynamically, keeping the speaker's face centered in the circular crop.
+ *
+ * MODEL SETUP:
+ *   The BlazeFace model weights are loaded from a local path if available,
+ *   falling back to the TFHub CDN. To bundle locally (recommended for prod):
+ *
+ *     mkdir -p models/blazeface-short
+ *     curl -L "https://tfhub.dev/mediapipe/tfjs-model/face_detection/short/1?tfjs-format=file" \
+ *       -o models/blazeface-short/model.json
+ *     # Then download each .bin shard referenced in model.json
+ *
+ *   Or add to Dockerfile:
+ *     RUN node -e "require('@tensorflow/tfjs-node'); \
+ *       require('@tensorflow/tfjs-converter').loadGraphModel( \
+ *         'https://tfhub.dev/mediapipe/tfjs-model/face_detection/short/1', \
+ *         {fromTFHub: true}).then(m => m.save('file://./models/blazeface-short'))"
  */
 
 const { execFile } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 const os = require("os");
+
+// Local model path (bundled during Docker build for offline/fast loading)
+const LOCAL_MODEL_PATH = path.join(__dirname, "..", "models", "blazeface-short", "model.json");
+const TFHUB_MODEL_URL = "https://tfhub.dev/mediapipe/tfjs-model/face_detection/short/1";
 
 // Lazy-load heavy deps so the module can be required without immediate cost
 let _tf = null;
@@ -42,9 +61,22 @@ async function getDetector() {
   if (_detector) return _detector;
   const tf = getTf();
   const faceDetection = getFaceDetection();
+
+  // Use local model if available (bundled during build), otherwise fetch from CDN
+  const useLocal = fs.existsSync(LOCAL_MODEL_PATH);
+  const detectorModelUrl = useLocal
+    ? `file://${LOCAL_MODEL_PATH}`
+    : TFHUB_MODEL_URL;
+
+  if (useLocal) {
+    console.log("[faceTrack] loading model from local bundle");
+  } else {
+    console.log("[faceTrack] loading model from CDN (bundle locally for faster startup)");
+  }
+
   _detector = await faceDetection.createDetector(
     faceDetection.SupportedModels.MediaPipeFaceDetector,
-    { runtime: "tfjs", maxFaces: 1 }
+    { runtime: "tfjs", maxFaces: 1, detectorModelUrl }
   );
   return _detector;
 }
