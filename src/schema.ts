@@ -733,6 +733,7 @@ export type P8Slide = z.infer<typeof P8SlideSchema>;
 
 export const Presentation8PropsSchema = z.object({
   slides: z.array(P8SlideSchema),
+  talkingHeadSrc: z.string().optional(),
 });
 
 export type Presentation8Props = z.infer<typeof Presentation8PropsSchema>;

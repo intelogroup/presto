@@ -61,7 +61,7 @@ const ALLOWED_MIME_TYPES = new Set([
 function maybeCleanup(job, jobId) {
   if (job.createdAt && Date.now() - job.createdAt > 24 * 60 * 60 * 1000) {
     const files = [
-      job.wavPath,
+      job.mp3Path,
       job.transcriptPath,
       job.outputPath,
       job.talkingHeadPublicPath,
@@ -100,7 +100,7 @@ function renderVideo(compositionId, inputProps) {
 }
 
 // --- Pipeline orchestrator ---
-async function runPipeline(jobId, videoPath) {
+async function runPipeline(jobId, videoPath, themeOverride = null) {
   try {
     // Step 1: Preprocess — validate, trim silences (>4s → 2s), compress if needed
     jobs.set(jobId, { ...jobs.get(jobId), status: "preprocessing", step: "preprocessing" });
@@ -122,11 +122,11 @@ async function runPipeline(jobId, videoPath) {
       ...jobs.get(jobId),
       status: "generating_slides",
       step: "generating_slides",
-      wavPath: transcript._wavPath,
+      mp3Path: transcript._mp3Path,
       transcriptPath: transcript._transcriptPath,
     });
     console.log(`[${jobId}] generating slides (theme selection + content)...`);
-    const { compositionId, themeId, slides, transitionFrames } = await generateSlides(transcript);
+    const { compositionId, themeId, slides, transitionFrames } = await generateSlides(transcript, themeOverride);
 
     // Step 4: Sync talking head + face tracking
     jobs.set(jobId, { ...jobs.get(jobId), status: "syncing", step: "syncing" });
@@ -176,6 +176,8 @@ app.post("/pipeline/start", upload.single("video"), (req, res) => {
     return res.status(400).json({ error: "Unsupported file type" });
   }
 
+  const themeOverride = req.body.themeOverride || null;
+
   // Max concurrent jobs check
   let activeCount = 0;
   for (const job of jobs.values()) {
@@ -211,7 +213,7 @@ app.post("/pipeline/start", upload.single("video"), (req, res) => {
     });
 
     // Fire-and-forget
-    runPipeline(jobId, videoPath);
+    runPipeline(jobId, videoPath, themeOverride);
 
     res.json({ jobId });
   });

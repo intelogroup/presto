@@ -2,7 +2,7 @@
 // "Clean Minimalist" — off-white bg, charcoal, generous whitespace, Apple/Linear/Vercel aesthetic
 
 import React from "react";
-import { AbsoluteFill } from "remotion";
+import { AbsoluteFill, OffthreadVideo, staticFile } from "remotion";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { slide } from "@remotion/transitions/slide";
 
@@ -16,7 +16,7 @@ import { MinimalIconFeaturesSlide8 } from "./slides8/MinimalIconFeaturesSlide8";
 import { MinimalProgressBarsSlide8 } from "./slides8/MinimalProgressBarsSlide8";
 import { Presentation8Props } from "./schema";
 
-export const Presentation8Demo: React.FC<Presentation8Props> = ({ slides }) => {
+export const Presentation8Demo: React.FC<Presentation8Props> = ({ slides, talkingHeadSrc }) => {
   const children: React.ReactElement[] = [];
 
   slides.forEach((slideData, index) => {
@@ -104,6 +104,36 @@ export const Presentation8Demo: React.FC<Presentation8Props> = ({ slides }) => {
   return (
     <AbsoluteFill style={{ backgroundColor: "#FAFAFA" }}>
       <TransitionSeries>{children}</TransitionSeries>
+      {talkingHeadSrc && (
+        <AbsoluteFill
+          style={{
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+            padding: 60,
+            pointerEvents: "none",
+          }}
+        >
+          <div
+            style={{
+              width: 300,
+              height: 300,
+              borderRadius: "50%",
+              overflow: "hidden",
+              border: "6px solid #1A1A1A",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+              backgroundColor: "black",
+            }}
+          >
+            {/* @ts-ignore loop is valid at runtime but missing from OffthreadVideo types in this version */}
+            <OffthreadVideo
+              loop
+              src={staticFile(talkingHeadSrc)}
+              startFrom={30}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </div>
+        </AbsoluteFill>
+      )}
     </AbsoluteFill>
   );
 };
