@@ -11,6 +11,7 @@ require("dotenv").config({ path: require("path").join(__dirname, "..", ".env.loc
 const path = require("path");
 const fs = require("fs");
 const { execFile } = require("child_process");
+const { preprocessVideo } = require("../pipeline/preprocess");
 const { transcribe } = require("../pipeline/transcribe");
 const { generateSlides } = require("../pipeline/generateSlides");
 const { syncTalkingHead } = require("../pipeline/syncTalkingHead");
@@ -44,8 +45,18 @@ async function main() {
   console.log(`[pipeline] jobId=${jobId}`);
   console.log(`[pipeline] video: ${videoPath}`);
 
+  console.log("[pipeline] preprocessing (trimming silences)...");
+  const trimmedPath = path.join("/tmp", `${jobId}_trimmed.mp4`);
+  const preprocessResult = await preprocessVideo(videoPath, trimmedPath);
+  const effectiveVideoPath = preprocessResult.trimmed ? trimmedPath : videoPath;
+  if (preprocessResult.trimmed) {
+    console.log(`[pipeline] trimmed ${preprocessResult.originalDuration.toFixed(0)}s → ${preprocessResult.trimmedDuration.toFixed(0)}s (removed ${preprocessResult.silencesFound} silences)`);
+  } else {
+    console.log("[pipeline] no long silences found, skipping trim");
+  }
+
   console.log("[pipeline] transcribing...");
-  const transcript = await transcribe(videoPath, jobId);
+  const transcript = await transcribe(effectiveVideoPath, jobId);
   console.log(`[pipeline] ${transcript.segments.length} segments transcribed`);
 
   console.log("[pipeline] generating slides...");
@@ -53,7 +64,7 @@ async function main() {
   console.log(`[pipeline] theme=${themeId}, ${slides.length} slides, tf=${transitionFrames}`);
 
   console.log("[pipeline] syncing talking head...");
-  const { inputProps } = await syncTalkingHead({ slides, videoPath, compositionId, jobId, transitionFrames });
+  const { inputProps } = await syncTalkingHead({ slides, videoPath: effectiveVideoPath, compositionId, jobId, transitionFrames });
 
   const remotionBin = path.join(ROOT, "node_modules", ".bin", "remotion");
   console.log(`[pipeline] rendering ${compositionId} → ${outputPath}`);

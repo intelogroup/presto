@@ -8,6 +8,7 @@ const { v4: uuidv4 } = require("uuid");
 const { transcribe } = require("./pipeline/transcribe");
 const { generateSlides } = require("./pipeline/generateSlides");
 const { syncTalkingHead } = require("./pipeline/syncTalkingHead");
+const { preprocessVideo } = require("./pipeline/preprocess");
 
 // nosemgrep: javascript.express.security.audit.express-check-csurf-middleware-usage.express-check-csurf-middleware-usage
 // CSRF not applicable: stateless JSON API authenticated via X-API-Key header, not cookies/sessions
@@ -52,6 +53,7 @@ function maybeCleanup(job, jobId) {
       job.transcriptPath,
       job.outputPath,
       job.talkingHeadPublicPath,
+      job.trimmedVideoPath,
     ].filter(Boolean);
     files.forEach((f) => fs.unlink(f, () => {}));
     jobs.delete(jobId);
@@ -88,10 +90,23 @@ function renderVideo(compositionId, inputProps) {
 // --- Pipeline orchestrator ---
 async function runPipeline(jobId, videoPath) {
   try {
+    // Step 1: Preprocess — trim long silences (>4s) from the video
+    jobs.set(jobId, { ...jobs.get(jobId), status: "preprocessing", step: "preprocessing" });
+    console.log(`[${jobId}] preprocessing (trimming silences)...`);
+    const trimmedPath = `/tmp/${jobId}_trimmed.mp4`;
+    const preprocessResult = await preprocessVideo(videoPath, trimmedPath);
+    const effectiveVideoPath = preprocessResult.trimmed ? trimmedPath : videoPath;
+    if (preprocessResult.trimmed) {
+      jobs.set(jobId, { ...jobs.get(jobId), trimmedVideoPath: trimmedPath });
+      console.log(`[${jobId}] trimmed ${preprocessResult.originalDuration.toFixed(0)}s → ${preprocessResult.trimmedDuration.toFixed(0)}s (removed ${preprocessResult.silencesFound} silences)`);
+    }
+
+    // Step 2: Transcribe the (trimmed) video
     jobs.set(jobId, { ...jobs.get(jobId), status: "transcribing", step: "transcribing" });
     console.log(`[${jobId}] transcribing...`);
-    const transcript = await transcribe(videoPath, jobId);
+    const transcript = await transcribe(effectiveVideoPath, jobId);
 
+    // Step 3: Generate slides from transcript
     jobs.set(jobId, {
       ...jobs.get(jobId),
       status: "generating_slides",
@@ -102,17 +117,19 @@ async function runPipeline(jobId, videoPath) {
     console.log(`[${jobId}] generating slides (theme selection + content)...`);
     const { compositionId, themeId, slides, transitionFrames } = await generateSlides(transcript);
 
+    // Step 4: Sync talking head + face tracking
     jobs.set(jobId, { ...jobs.get(jobId), status: "syncing", step: "syncing" });
     console.log(`[${jobId}] syncing talking head (themeId=${themeId}, compositionId=${compositionId}, transitionFrames=${transitionFrames})...`);
     const { inputProps, talkingHeadPublicPath } = await syncTalkingHead({
       slides,
-      videoPath,
+      videoPath: effectiveVideoPath,
       compositionId,
       jobId,
       transitionFrames,
     });
     jobs.set(jobId, { ...jobs.get(jobId), talkingHeadPublicPath });
 
+    // Step 5: Render with Remotion
     jobs.set(jobId, { ...jobs.get(jobId), status: "rendering", step: "rendering" });
     console.log(`[${jobId}] rendering with Remotion (${compositionId})...`);
     const outputPath = await renderVideo(compositionId, inputProps);
@@ -127,6 +144,7 @@ async function runPipeline(jobId, videoPath) {
     const job = jobs.get(jobId);
     const tempFiles = [
       job.videoPath,
+      job.trimmedVideoPath,
       job.wavPath,
       job.transcriptPath,
       job.talkingHeadPublicPath,
