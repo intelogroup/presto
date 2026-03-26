@@ -45,14 +45,16 @@ async function main() {
   console.log(`[pipeline] jobId=${jobId}`);
   console.log(`[pipeline] video: ${videoPath}`);
 
-  console.log("[pipeline] preprocessing (trimming silences)...");
-  const trimmedPath = path.join("/tmp", `${jobId}_trimmed.mp4`);
-  const preprocessResult = await preprocessVideo(videoPath, trimmedPath);
-  const effectiveVideoPath = preprocessResult.trimmed ? trimmedPath : videoPath;
+  console.log("[pipeline] preprocessing (validate + trim silences + compress)...");
+  const preprocessResult = await preprocessVideo(videoPath, "/tmp");
+  const effectiveVideoPath = preprocessResult.outputPath;
   if (preprocessResult.trimmed) {
     console.log(`[pipeline] trimmed ${preprocessResult.originalDuration.toFixed(0)}s → ${preprocessResult.trimmedDuration.toFixed(0)}s (removed ${preprocessResult.silencesFound} silences)`);
   } else {
     console.log("[pipeline] no long silences found, skipping trim");
+  }
+  if (preprocessResult.compressed) {
+    console.log(`[pipeline] compressed to ${preprocessResult.fileSizeMB.toFixed(1)} MB`);
   }
 
   console.log("[pipeline] transcribing...");

@@ -1,47 +1,132 @@
 /**
- * preprocess.js — Trim long silences from uploaded videos.
+ * preprocess.js — Validate, trim silences, and compress uploaded media.
  *
- * Detects silent segments (>4s by default) using ffmpeg's silencedetect filter,
- * then produces a trimmed video that keeps only ~0.5s of each silence gap.
- * This runs as the FIRST pipeline step, before transcription.
+ * Pipeline step 1 (before transcription):
+ *   1. Probe & validate the input file (reject no-audio, reject < 30s)
+ *   2. Detect long silences (>4s) and trim them down to ~2s
+ *   3. Compress video if file is too large or bitrate too high
  *
- * Why: Training/course videos often contain 3-5 minutes of dead air (pauses,
- * sneezing, coughing, note-flipping). Trimming before the pipeline means:
- *   - Whisper transcribes less audio (faster + cheaper)
- *   - GPT gets a cleaner transcript (better slides)
- *   - Remotion renders fewer frames (faster render)
- *   - User gets a tighter, more professional presentation
+ * Accepts both video files and audio-only files (e.g. for pairing with PPTX).
  */
 
 const { execFile } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
 /**
- * Detect silent segments in a video using ffmpeg silencedetect.
+ * Run ffprobe and return parsed JSON output.
+ * @param {string} filePath
+ * @param {string[]} extraArgs - additional ffprobe arguments
+ * @returns {Promise<object>}
+ */
+function ffprobeJson(filePath, extraArgs = []) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      "ffprobe",
+      [
+        "-v", "error",
+        "-print_format", "json",
+        ...extraArgs,
+        filePath,
+      ],
+      { timeout: 30 * 1000 },
+      (err, stdout, stderr) => {
+        if (err) return reject(new Error(`ffprobe failed: ${stderr}`));
+        try {
+          resolve(JSON.parse(stdout));
+        } catch (parseErr) {
+          reject(new Error(`ffprobe JSON parse error: ${parseErr.message}`));
+        }
+      }
+    );
+  });
+}
+
+/**
+ * Get file size in megabytes.
+ */
+function fileSizeMB(filePath) {
+  const stats = fs.statSync(filePath);
+  return stats.size / (1024 * 1024);
+}
+
+// ---------------------------------------------------------------------------
+// 1. Probe & Validate
+// ---------------------------------------------------------------------------
+
+/**
+ * Probe the input file and validate it meets requirements.
  *
- * @param {string} videoPath
+ * - REJECT if video has NO audio track (throw)
+ * - ACCEPT audio-only files (no video stream is OK)
+ * - REJECT if duration < 30 seconds (throw)
+ *
+ * @param {string} filePath - absolute path to media file
+ * @returns {Promise<{ hasVideo: boolean, hasAudio: boolean, duration: number, videoCodec: string|null, audioCodec: string|null, fileSizeMB: number }>}
+ */
+async function validateInput(filePath) {
+  const probe = await ffprobeJson(filePath, [
+    "-show_streams",
+    "-show_format",
+  ]);
+
+  const streams = probe.streams || [];
+  const format = probe.format || {};
+
+  const videoStream = streams.find((s) => s.codec_type === "video");
+  const audioStream = streams.find((s) => s.codec_type === "audio");
+
+  const hasVideo = !!videoStream;
+  const hasAudio = !!audioStream;
+  const duration = parseFloat(format.duration) || 0;
+  const videoCodec = videoStream ? videoStream.codec_name : null;
+  const audioCodec = audioStream ? audioStream.codec_name : null;
+  const sizeMB = fileSizeMB(filePath);
+
+  // Reject: video with no audio
+  if (hasVideo && !hasAudio) {
+    throw new Error("Video has no audio track");
+  }
+
+  // Reject: too short
+  if (duration < 30) {
+    throw new Error("File must be at least 30 seconds");
+  }
+
+  return { hasVideo, hasAudio, duration, videoCodec, audioCodec, fileSizeMB: sizeMB };
+}
+
+// ---------------------------------------------------------------------------
+// 2. Silence detection & trimming
+// ---------------------------------------------------------------------------
+
+/**
+ * Detect silent segments in a media file using ffmpeg silencedetect.
+ *
+ * @param {string} filePath
  * @param {object} [options]
  * @param {number} [options.silenceThresholdDb=-30] - dB threshold below which audio is "silent"
  * @param {number} [options.minSilenceDuration=4] - minimum silence duration in seconds to detect
  * @returns {Promise<Array<{ start: number, end: number }>>} silent segments
  */
-async function detectSilences(videoPath, options = {}) {
+async function detectSilences(filePath, options = {}) {
   const { silenceThresholdDb = -30, minSilenceDuration = 4 } = options;
 
   return new Promise((resolve, reject) => {
     execFile(
       "ffmpeg",
       [
-        "-i", videoPath,
+        "-i", filePath,
         "-af", `silencedetect=noise=${silenceThresholdDb}dB:d=${minSilenceDuration}`,
         "-f", "null", "-",
       ],
       { timeout: 5 * 60 * 1000 },
       (err, _stdout, stderr) => {
         // ffmpeg writes silencedetect output to stderr (this is normal)
-        // It also exits with 0 on success, but the error object may still be set
-        // if there are warnings. We parse stderr regardless.
         const output = stderr || "";
 
         const silences = [];
@@ -63,7 +148,7 @@ async function detectSilences(videoPath, options = {}) {
         for (let i = 0; i < starts.length; i++) {
           silences.push({
             start: starts[i],
-            end: i < ends.length ? ends[i] : Infinity, // silence extends to end of video
+            end: i < ends.length ? ends[i] : Infinity, // silence extends to end of file
           });
         }
 
@@ -78,37 +163,15 @@ async function detectSilences(videoPath, options = {}) {
 }
 
 /**
- * Get video duration in seconds via ffprobe.
- */
-async function getVideoDuration(videoPath) {
-  return new Promise((resolve, reject) => {
-    execFile(
-      "ffprobe",
-      [
-        "-v", "error",
-        "-show_entries", "format=duration",
-        "-of", "default=noprint_wrappers=1:nokey=1",
-        videoPath,
-      ],
-      { timeout: 30 * 1000 },
-      (err, stdout, stderr) => {
-        if (err) return reject(new Error(`ffprobe failed: ${stderr}`));
-        resolve(parseFloat(stdout.trim()));
-      }
-    );
-  });
-}
-
-/**
  * Build the list of segments to KEEP, given silent segments to trim.
  * Each silence >minDuration is trimmed down to `keepDuration` seconds.
  *
- * @param {number} totalDuration - video duration in seconds
+ * @param {number} totalDuration - file duration in seconds
  * @param {Array<{ start: number, end: number }>} silences - detected silent segments
- * @param {number} keepDuration - how much silence to preserve (default 0.5s)
+ * @param {number} [keepDuration=2.0] - how much silence to preserve (seconds)
  * @returns {Array<{ start: number, end: number }>} segments to keep
  */
-function buildKeepSegments(totalDuration, silences, keepDuration = 0.5) {
+function buildKeepSegments(totalDuration, silences, keepDuration = 2.0) {
   if (silences.length === 0) {
     return [{ start: 0, end: totalDuration }];
   }
@@ -142,108 +205,259 @@ function buildKeepSegments(totalDuration, silences, keepDuration = 0.5) {
 }
 
 /**
- * Generate a concat file for ffmpeg from keep segments.
- * Uses the "trim + concat" approach: each segment is extracted and concatenated.
+ * Generate an ffmpeg complex filter string from keep segments.
+ * Handles both audio+video and audio-only files.
+ *
+ * @param {Array<{ start: number, end: number }>} segments
+ * @param {boolean} hasVideo - whether the input file has a video stream
+ * @returns {string} ffmpeg -filter_complex value
  */
-function buildComplexFilter(segments) {
+function buildComplexFilter(segments, hasVideo = true) {
   const filters = [];
   const concatInputs = [];
 
-  segments.forEach((seg, i) => {
-    const start = seg.start.toFixed(4);
-    const duration = (seg.end - seg.start).toFixed(4);
-    filters.push(`[0:v]trim=start=${start}:duration=${duration},setpts=PTS-STARTPTS[v${i}]`);
-    filters.push(`[0:a]atrim=start=${start}:duration=${duration},asetpts=PTS-STARTPTS[a${i}]`);
-    concatInputs.push(`[v${i}][a${i}]`);
-  });
+  if (hasVideo) {
+    segments.forEach((seg, i) => {
+      const start = seg.start.toFixed(4);
+      const duration = (seg.end - seg.start).toFixed(4);
+      filters.push(`[0:v]trim=start=${start}:duration=${duration},setpts=PTS-STARTPTS[v${i}]`);
+      filters.push(`[0:a]atrim=start=${start}:duration=${duration},asetpts=PTS-STARTPTS[a${i}]`);
+      concatInputs.push(`[v${i}][a${i}]`);
+    });
 
-  const concatFilter = `${concatInputs.join("")}concat=n=${segments.length}:v=1:a=1[outv][outa]`;
-  filters.push(concatFilter);
+    const concatFilter = `${concatInputs.join("")}concat=n=${segments.length}:v=1:a=1[outv][outa]`;
+    filters.push(concatFilter);
+  } else {
+    // Audio-only: no video streams in filter
+    segments.forEach((seg, i) => {
+      const start = seg.start.toFixed(4);
+      const duration = (seg.end - seg.start).toFixed(4);
+      filters.push(`[0:a]atrim=start=${start}:duration=${duration},asetpts=PTS-STARTPTS[a${i}]`);
+      concatInputs.push(`[a${i}]`);
+    });
+
+    const concatFilter = `${concatInputs.join("")}concat=n=${segments.length}:v=0:a=1[outa]`;
+    filters.push(concatFilter);
+  }
 
   return filters.join(";");
 }
 
 /**
- * Main entry point: preprocess a video by trimming long silences.
+ * Run ffmpeg to trim the file using a complex filter.
  *
- * @param {string} videoPath - absolute path to input video
- * @param {string} outputPath - absolute path for trimmed output video
- * @param {object} [options]
- * @param {number} [options.silenceThresholdDb=-30] - dB threshold for silence detection
- * @param {number} [options.minSilenceDuration=4] - minimum silence to detect (seconds)
- * @param {number} [options.keepDuration=0.5] - how much silence to keep (seconds)
- * @returns {Promise<{ trimmed: boolean, originalDuration: number, trimmedDuration: number, silencesFound: number, outputPath: string }>}
+ * @param {string} inputPath
+ * @param {string} outputPath
+ * @param {string} complexFilter
+ * @param {boolean} hasVideo
+ * @returns {Promise<void>}
  */
-async function preprocessVideo(videoPath, outputPath, options = {}) {
-  const {
-    silenceThresholdDb = -30,
-    minSilenceDuration = 4,
-    keepDuration = 0.5,
-  } = options;
+function runTrimFilter(inputPath, outputPath, complexFilter, hasVideo) {
+  return new Promise((resolve, reject) => {
+    const args = [
+      "-y",
+      "-i", inputPath,
+      "-filter_complex", complexFilter,
+    ];
 
-  console.log("[preprocess] detecting silences...");
-  const [silences, totalDuration] = await Promise.all([
-    detectSilences(videoPath, { silenceThresholdDb, minSilenceDuration }),
-    getVideoDuration(videoPath),
-  ]);
+    if (hasVideo) {
+      args.push("-map", "[outv]", "-map", "[outa]");
+      args.push("-c:v", "libx264", "-preset", "fast", "-crf", "23");
+    } else {
+      args.push("-map", "[outa]");
+    }
 
-  console.log(`[preprocess] found ${silences.length} silences > ${minSilenceDuration}s in ${totalDuration.toFixed(1)}s video`);
+    args.push("-c:a", "aac", "-b:a", "128k");
 
-  if (silences.length === 0) {
-    // No long silences — skip trimming entirely, just use original
-    console.log("[preprocess] no trimming needed");
-    return {
-      trimmed: false,
-      originalDuration: totalDuration,
-      trimmedDuration: totalDuration,
-      silencesFound: 0,
-      outputPath: videoPath, // use original
-    };
+    if (hasVideo) {
+      args.push("-movflags", "+faststart");
+    }
+
+    args.push(outputPath);
+
+    execFile(
+      "ffmpeg",
+      args,
+      { timeout: 15 * 60 * 1000 }, // 15 min for long files
+      (err, _stdout, stderr) => {
+        if (err) return reject(new Error(`ffmpeg trim failed: ${(stderr || "").slice(-500)}`));
+        resolve();
+      }
+    );
+  });
+}
+
+// ---------------------------------------------------------------------------
+// 3. Compress large video
+// ---------------------------------------------------------------------------
+
+/**
+ * Re-encode the video if it is too large (>200 MB) or the video bitrate is
+ * too high (>5 Mbps). Audio-only files are skipped.
+ *
+ * @param {string} inputPath
+ * @param {string} outputPath - where to write the compressed file
+ * @param {object} info - result from validateInput
+ * @param {boolean} info.hasVideo
+ * @returns {Promise<{ compressed: boolean, outputPath: string }>}
+ */
+async function compressIfNeeded(inputPath, outputPath, info) {
+  // Skip compression for audio-only files
+  if (!info.hasVideo) {
+    return { compressed: false, outputPath: inputPath };
   }
 
-  const segments = buildKeepSegments(totalDuration, silences, keepDuration);
-  const estimatedDuration = segments.reduce((sum, s) => sum + (s.end - s.start), 0);
-  const removedDuration = totalDuration - estimatedDuration;
+  const sizeMB = fileSizeMB(inputPath);
 
-  console.log(`[preprocess] keeping ${segments.length} segments, removing ~${removedDuration.toFixed(1)}s of silence`);
+  // Check video bitrate via ffprobe
+  let videoBitrate = 0;
+  try {
+    const probe = await ffprobeJson(inputPath, ["-show_streams"]);
+    const videoStream = (probe.streams || []).find((s) => s.codec_type === "video");
+    if (videoStream && videoStream.bit_rate) {
+      videoBitrate = parseInt(videoStream.bit_rate, 10);
+    }
+  } catch (_) {
+    // If probe fails, fall back to size-based check only
+  }
 
-  // Build and run the ffmpeg complex filter
-  const complexFilter = buildComplexFilter(segments);
+  const fiveMbps = 5 * 1000 * 1000; // 5,000,000 bps
+
+  if (sizeMB <= 200 && videoBitrate <= fiveMbps) {
+    return { compressed: false, outputPath: inputPath };
+  }
+
+  console.log(
+    `[preprocess] compressing video (${sizeMB.toFixed(1)} MB, ` +
+    `bitrate ${(videoBitrate / 1e6).toFixed(1)} Mbps) → ~3 Mbps h264`
+  );
 
   await new Promise((resolve, reject) => {
     execFile(
       "ffmpeg",
       [
         "-y",
-        "-i", videoPath,
-        "-filter_complex", complexFilter,
-        "-map", "[outv]",
-        "-map", "[outa]",
+        "-i", inputPath,
         "-c:v", "libx264",
         "-preset", "fast",
-        "-crf", "23",
+        "-crf", "28",
+        "-b:v", "3M",
+        "-maxrate", "3M",
+        "-bufsize", "6M",
         "-c:a", "aac",
         "-b:a", "128k",
         "-movflags", "+faststart",
         outputPath,
       ],
-      { timeout: 15 * 60 * 1000 }, // 15 min for long videos
+      { timeout: 15 * 60 * 1000 },
       (err, _stdout, stderr) => {
-        if (err) return reject(new Error(`ffmpeg trim failed: ${stderr.slice(-500)}`));
+        if (err) return reject(new Error(`ffmpeg compress failed: ${(stderr || "").slice(-500)}`));
         resolve();
       }
     );
   });
 
-  console.log(`[preprocess] trimmed: ${totalDuration.toFixed(1)}s → ${estimatedDuration.toFixed(1)}s (removed ${removedDuration.toFixed(1)}s)`);
+  console.log(`[preprocess] compressed: ${sizeMB.toFixed(1)} MB → ${fileSizeMB(outputPath).toFixed(1)} MB`);
+
+  return { compressed: true, outputPath };
+}
+
+// ---------------------------------------------------------------------------
+// 4. Main entry point
+// ---------------------------------------------------------------------------
+
+/**
+ * Preprocess a media file: validate → trim silences → compress.
+ *
+ * @param {string} inputPath - absolute path to input media file
+ * @param {string} outputDir - directory for intermediate and final output files
+ * @param {object} [options]
+ * @param {number} [options.silenceThresholdDb=-30]
+ * @param {number} [options.minSilenceDuration=4]
+ * @param {number} [options.keepDuration=2.0]
+ * @returns {Promise<{ trimmed: boolean, compressed: boolean, hasVideo: boolean, hasAudio: boolean, originalDuration: number, trimmedDuration: number, silencesFound: number, outputPath: string, fileSizeMB: number }>}
+ */
+async function preprocessVideo(inputPath, outputDir, options = {}) {
+  const {
+    silenceThresholdDb = -30,
+    minSilenceDuration = 4,
+    keepDuration = 2.0,
+  } = options;
+
+  // ------ Step 1: Validate ------
+  console.log("[preprocess] validating input...");
+  const info = await validateInput(inputPath);
+  console.log(
+    `[preprocess] validated: hasVideo=${info.hasVideo} hasAudio=${info.hasAudio} ` +
+    `duration=${info.duration.toFixed(1)}s codec=${info.videoCodec || "none"}/${info.audioCodec} ` +
+    `size=${info.fileSizeMB.toFixed(1)}MB`
+  );
+
+  // ------ Step 2: Detect silences & trim ------
+  console.log("[preprocess] detecting silences...");
+  const silences = await detectSilences(inputPath, { silenceThresholdDb, minSilenceDuration });
+  console.log(`[preprocess] found ${silences.length} silences > ${minSilenceDuration}s in ${info.duration.toFixed(1)}s file`);
+
+  const ext = path.extname(inputPath) || (info.hasVideo ? ".mp4" : ".m4a");
+  const baseName = path.basename(inputPath, path.extname(inputPath));
+
+  let currentPath = inputPath;
+  let trimmed = false;
+  let trimmedDuration = info.duration;
+
+  if (silences.length > 0) {
+    const segments = buildKeepSegments(info.duration, silences, keepDuration);
+    const estimatedDuration = segments.reduce((sum, s) => sum + (s.end - s.start), 0);
+    const removedDuration = info.duration - estimatedDuration;
+
+    console.log(`[preprocess] keeping ${segments.length} segments, removing ~${removedDuration.toFixed(1)}s of silence`);
+
+    const trimOutputPath = path.join(outputDir, `${baseName}_trimmed${ext}`);
+    const complexFilter = buildComplexFilter(segments, info.hasVideo);
+    await runTrimFilter(inputPath, trimOutputPath, complexFilter, info.hasVideo);
+
+    console.log(`[preprocess] trimmed: ${info.duration.toFixed(1)}s → ${estimatedDuration.toFixed(1)}s (removed ${removedDuration.toFixed(1)}s)`);
+
+    currentPath = trimOutputPath;
+    trimmed = true;
+    trimmedDuration = estimatedDuration;
+  } else {
+    console.log("[preprocess] no trimming needed");
+  }
+
+  // ------ Step 3: Compress if needed ------
+  const compressOutputPath = path.join(outputDir, `${baseName}_compressed${ext}`);
+  const compressResult = await compressIfNeeded(currentPath, compressOutputPath, info);
+
+  if (compressResult.compressed) {
+    currentPath = compressResult.outputPath;
+  }
+
+  const finalSizeMB = fileSizeMB(currentPath);
+
+  console.log(`[preprocess] done → ${currentPath} (${finalSizeMB.toFixed(1)} MB)`);
 
   return {
-    trimmed: true,
-    originalDuration: totalDuration,
-    trimmedDuration: estimatedDuration,
+    trimmed,
+    compressed: compressResult.compressed,
+    hasVideo: info.hasVideo,
+    hasAudio: info.hasAudio,
+    originalDuration: info.duration,
+    trimmedDuration,
     silencesFound: silences.length,
-    outputPath,
+    outputPath: currentPath,
+    fileSizeMB: finalSizeMB,
   };
 }
 
-module.exports = { preprocessVideo, detectSilences, buildKeepSegments };
+// ---------------------------------------------------------------------------
+// Exports
+// ---------------------------------------------------------------------------
+
+module.exports = {
+  preprocessVideo,
+  validateInput,
+  detectSilences,
+  buildKeepSegments,
+  compressIfNeeded,
+};
