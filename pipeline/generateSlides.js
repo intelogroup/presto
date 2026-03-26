@@ -3,7 +3,7 @@ const { z } = require("zod");
 
 let _openai = null;
 function getOpenAI() {
-  if (!_openai) _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  if (!_openai) _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 3 });
   return _openai;
 }
 
@@ -145,7 +145,13 @@ Select the single best theme for the transcript. Respond with JSON.`,
     ],
   });
 
-  return JSON.parse(response.choices[0].message.content);
+  let parsed;
+  try {
+    parsed = JSON.parse(response.choices[0].message.content);
+  } catch (e) {
+    throw new Error(`Failed to parse theme selection response: ${e.message}`);
+  }
+  return parsed;
 }
 
 /**
@@ -233,7 +239,11 @@ ${segmentList}`,
     ],
   });
 
-  return JSON.parse(response.choices[0].message.content);
+  try {
+    return JSON.parse(response.choices[0].message.content);
+  } catch (parseError) {
+    return { _parseError: "GPT response was not valid JSON: " + parseError.message };
+  }
 }
 
 /**
@@ -254,6 +264,11 @@ async function generateSlides(transcript) {
 
   for (let attempt = 0; attempt < 3; attempt++) {
     const result = await generateSlidesForTheme(themeId, segments, lastError);
+
+    if (result._parseError) {
+      lastError = result._parseError;
+      continue;
+    }
 
     if (!result.slides || !Array.isArray(result.slides)) {
       lastError = "Response must have a 'slides' array";
@@ -316,6 +331,26 @@ async function generateSlides(transcript) {
     throw new Error(`generateSlides failed after 3 attempts. Last error:\n${lastError}`);
   }
 
+  // --- Revalidation pass (belt-and-suspenders) ---
+  // Re-parse every non-reuse slide through the Zod schema one final time.
+  // If any fail here it is fatal — retries have already been exhausted.
+  const revalidationErrors = [];
+  for (let i = 0; i < rawSlides.length; i++) {
+    const slide = rawSlides[i];
+    if (slide.reuseSlideIndex !== undefined) continue;
+    const parsed = theme.schema.safeParse(slide);
+    if (!parsed.success) {
+      revalidationErrors.push(
+        `slide[${i}] (type="${slide.type}"): ${parsed.error.issues.map((e) => e.message).join("; ")}`
+      );
+    }
+  }
+  if (revalidationErrors.length > 0) {
+    throw new Error(
+      `Post-retry revalidation failed (fatal):\n${revalidationErrors.join("\n")}`
+    );
+  }
+
   // Post-process: resolve reuse slides, inject duration from segment timestamps
   const resolvedSlides = [];
   const finalSlides = rawSlides.map((slide, i) => {
@@ -356,6 +391,34 @@ async function generateSlides(transcript) {
     resolvedSlides.push(slideContent);
     return slideContent;
   });
+
+  // --- Duration revalidation ---
+  if (finalSlides.length === 0) {
+    throw new Error("Post-processing produced 0 slides — cannot render an empty presentation");
+  }
+
+  for (let i = 0; i < finalSlides.length; i++) {
+    const d = finalSlides[i].duration;
+    if (d < 60) {
+      throw new Error(
+        `Slide ${i} duration is ${d} frames (${(d / 30).toFixed(1)}s) — minimum is 60 frames (2s)`
+      );
+    }
+    if (d > 600) {
+      console.warn(
+        `[generateSlides] WARNING: slide ${i} duration is ${d} frames (${(d / 30).toFixed(1)}s) — may indicate a segment coverage issue`
+      );
+    }
+  }
+
+  const totalEffectiveFrames =
+    finalSlides.reduce((sum, s) => sum + s.duration, 0) -
+    (finalSlides.length - 1) * theme.transitionFrames;
+  if (totalEffectiveFrames <= 0) {
+    throw new Error(
+      `Total effective frames is ${totalEffectiveFrames} (sum of durations minus ${finalSlides.length - 1} transitions of ${theme.transitionFrames}f each) — must be > 0`
+    );
+  }
 
   return { compositionId: theme.compositionId, themeId, slides: finalSlides, transitionFrames: theme.transitionFrames };
 }

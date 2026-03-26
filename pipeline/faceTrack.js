@@ -1,0 +1,244 @@
+/**
+ * faceTrack.js — Extract face position keypoints from a video.
+ *
+ * Extracts frames at ~2fps using ffmpeg, runs BlazeFace face detection via
+ * TensorFlow.js, and returns an array of { t, x, y } keypoints (normalized
+ * 0-1) representing the face center at each sample. An exponential moving
+ * average is applied to smooth jitter.
+ *
+ * The Remotion TalkingHead component uses these keypoints to set objectPosition
+ * dynamically, keeping the speaker's face centered in the circular crop.
+ *
+ * MODEL SETUP:
+ *   The BlazeFace model weights are loaded from a local path if available,
+ *   falling back to the TFHub CDN. To bundle locally (recommended for prod):
+ *
+ *     mkdir -p models/blazeface-short
+ *     curl -L "https://tfhub.dev/mediapipe/tfjs-model/face_detection/short/1?tfjs-format=file" \
+ *       -o models/blazeface-short/model.json
+ *     # Then download each .bin shard referenced in model.json
+ *
+ *   Or add to Dockerfile:
+ *     RUN node -e "require('@tensorflow/tfjs-node'); \
+ *       require('@tensorflow/tfjs-converter').loadGraphModel( \
+ *         'https://tfhub.dev/mediapipe/tfjs-model/face_detection/short/1', \
+ *         {fromTFHub: true}).then(m => m.save('file://./models/blazeface-short'))"
+ */
+
+const { execFile } = require("child_process");
+const path = require("path");
+const fs = require("fs");
+const os = require("os");
+
+// Local model path (bundled during Docker build for offline/fast loading)
+const LOCAL_MODEL_PATH = path.join(__dirname, "..", "models", "blazeface-short", "model.json");
+const TFHUB_MODEL_URL = "https://tfhub.dev/mediapipe/tfjs-model/face_detection/short/1";
+
+// Lazy-load heavy deps so the module can be required without immediate cost
+let _tf = null;
+let _faceDetection = null;
+let _canvas = null;
+
+function getTf() {
+  if (!_tf) _tf = require("@tensorflow/tfjs-node");
+  return _tf;
+}
+
+function getFaceDetection() {
+  if (!_faceDetection)
+    _faceDetection = require("@tensorflow-models/face-detection");
+  return _faceDetection;
+}
+
+function getCanvas() {
+  if (!_canvas) _canvas = require("canvas");
+  return _canvas;
+}
+
+let _detectorPromise = null;
+
+function getDetector() {
+  if (_detectorPromise) return _detectorPromise;
+
+  _detectorPromise = (async () => {
+    const tf = getTf();
+    const faceDetection = getFaceDetection();
+
+    // Use local model if available (bundled during build), otherwise fetch from CDN
+    const useLocal = fs.existsSync(LOCAL_MODEL_PATH);
+    const detectorModelUrl = useLocal
+      ? `file://${LOCAL_MODEL_PATH}`
+      : TFHUB_MODEL_URL;
+
+    if (useLocal) {
+      console.log("[faceTrack] loading model from local bundle");
+    } else {
+      console.log("[faceTrack] loading model from CDN (bundle locally for faster startup)");
+    }
+
+    const detector = await faceDetection.createDetector(
+      faceDetection.SupportedModels.MediaPipeFaceDetector,
+      { runtime: "tfjs", maxFaces: 1, detectorModelUrl }
+    );
+    return detector;
+  })();
+
+  _detectorPromise.catch(() => {
+    _detectorPromise = null;
+  });
+
+  return _detectorPromise;
+}
+
+/**
+ * Extract frames from video at the given fps rate into a temp directory.
+ * Returns the directory path containing frame_0001.jpg, frame_0002.jpg, ...
+ */
+async function extractFrames(videoPath, fps = 1) {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "facetrack-"));
+  const outputPattern = path.join(tmpDir, "frame_%04d.jpg");
+
+  await new Promise((resolve, reject) => {
+    execFile(
+      "ffmpeg",
+      [
+        "-y",
+        "-i", videoPath,
+        "-vf", `fps=${fps},scale=320:-1`,
+        "-q:v", "8",
+        outputPattern,
+      ],
+      { timeout: 3 * 60 * 1000 },
+      (err, _stdout, stderr) => {
+        if (err) return reject(new Error(`ffmpeg frame extraction failed: ${stderr}`));
+        resolve();
+      }
+    );
+  });
+
+  const files = fs.readdirSync(tmpDir)
+    .filter((f) => f.startsWith("frame_") && f.endsWith(".jpg"))
+    .sort();
+
+  return { tmpDir, files };
+}
+
+/**
+ * Load a JPEG file into a TensorFlow.js tensor suitable for face detection.
+ */
+async function loadImageAsTensor(imagePath) {
+  const tf = getTf();
+  const { loadImage } = getCanvas();
+  const img = await loadImage(imagePath);
+  const canvas = getCanvas().createCanvas(img.width, img.height);
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0);
+  const imageData = ctx.getImageData(0, 0, img.width, img.height);
+  // Create a 3-channel tensor (RGB) from RGBA image data
+  const tensor = tf.tidy(() => {
+    const raw = tf.tensor3d(
+      new Uint8Array(imageData.data),
+      [img.height, img.width, 4]
+    );
+    return raw.slice([0, 0, 0], [-1, -1, 3]); // drop alpha
+  });
+  return { tensor, width: img.width, height: img.height };
+}
+
+/**
+ * Apply exponential moving average to smooth face position jitter.
+ */
+function smoothKeypoints(keypoints, alpha = 0.4) {
+  if (keypoints.length === 0) return keypoints;
+
+  const smoothed = [keypoints[0]];
+  for (let i = 1; i < keypoints.length; i++) {
+    const prev = smoothed[i - 1];
+    const curr = keypoints[i];
+    smoothed.push({
+      t: curr.t,
+      x: alpha * curr.x + (1 - alpha) * prev.x,
+      y: alpha * curr.y + (1 - alpha) * prev.y,
+    });
+  }
+  return smoothed;
+}
+
+/**
+ * Main entry point: extract face tracking keypoints from a video.
+ *
+ * @param {string} videoPath - absolute path to video file
+ * @param {object} [options]
+ * @param {number} [options.sampleFps=1] - frames per second to sample (1fps is plenty for talking heads)
+ * @param {number} [options.smoothingAlpha=0.4] - EMA smoothing (0=smooth, 1=raw)
+ * @returns {Promise<Array<{ t: number, x: number, y: number }>>}
+ *   Normalized coordinates: x,y in [0,1] where 0,0 = top-left.
+ *   Returns empty array if no faces detected (caller should default to center).
+ */
+async function extractFaceTrack(videoPath, options = {}) {
+  const { sampleFps = 1, smoothingAlpha = 0.4 } = options;
+
+  console.log(`[faceTrack] extracting frames at ${sampleFps}fps...`);
+  const { tmpDir, files } = await extractFrames(videoPath, sampleFps);
+
+  try {
+    if (files.length === 0) {
+      console.warn("[faceTrack] no frames extracted");
+      return [];
+    }
+
+    console.log(`[faceTrack] ${files.length} frames, running face detection...`);
+    const detector = await getDetector();
+    const tf = getTf();
+
+    const rawKeypoints = [];
+    let lastGoodPoint = { x: 0.5, y: 0.4 }; // default: center-ish, slightly above middle
+
+    for (let i = 0; i < files.length; i++) {
+      const framePath = path.join(tmpDir, files[i]);
+      const t = i / sampleFps; // timestamp in seconds
+
+      try {
+        const { tensor, width, height } = await loadImageAsTensor(framePath);
+        try {
+          const faces = await detector.estimateFaces(tensor);
+
+          if (faces.length > 0) {
+            const face = faces[0];
+            // face.box = { xMin, yMin, xMax, yMax, width, height }
+            const box = face.box;
+            const cx = (box.xMin + box.width / 2) / width;
+            const cy = (box.yMin + box.height / 2) / height;
+            // Clamp to [0, 1]
+            const x = Math.max(0, Math.min(1, cx));
+            const y = Math.max(0, Math.min(1, cy));
+            lastGoodPoint = { x, y };
+            rawKeypoints.push({ t, x, y });
+          } else {
+            // No face detected — hold last known position
+            rawKeypoints.push({ t, ...lastGoodPoint });
+          }
+        } finally {
+          tensor.dispose();
+        }
+      } catch (err) {
+        // Frame failed — hold last known position
+        console.warn(`[faceTrack] frame ${i} failed: ${err.message}`);
+        rawKeypoints.push({ t, ...lastGoodPoint });
+      }
+    }
+
+    const smoothed = smoothKeypoints(rawKeypoints, smoothingAlpha);
+    console.log(`[faceTrack] done — ${smoothed.length} keypoints`);
+
+    return smoothed;
+  } finally {
+    // Cleanup temp frames
+    files.forEach((f) => {
+      try { fs.unlinkSync(path.join(tmpDir, f)); } catch (_) {}
+    });
+    try { fs.rmdirSync(tmpDir); } catch (_) {}
+  }
+}
+
+module.exports = { extractFaceTrack };

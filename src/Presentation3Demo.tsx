@@ -1,6 +1,6 @@
 // src/Presentation3Demo.tsx
 import React from "react";
-import { AbsoluteFill, OffthreadVideo, staticFile } from "remotion";
+import { AbsoluteFill } from "remotion";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { slide } from "@remotion/transitions/slide";
 import { wipe } from "@remotion/transitions/wipe";
@@ -12,6 +12,7 @@ import { BarRaceSlide3 } from "./slides3/BarRaceSlide3";
 import { MilestoneSlide3 } from "./slides3/MilestoneSlide3";
 import { theme3 } from "./slides3/theme3";
 import { Presentation3Props } from "./schema";
+import { TalkingHead } from "./TalkingHead";
 
 const TRANSITIONS = [
   slide({ direction: "from-right" }),
@@ -25,6 +26,7 @@ const TRANSITIONS = [
 export const Presentation3Demo: React.FC<Presentation3Props> = ({
   slides,
   talkingHeadSrc,
+  faceTrack,
 }) => {
   const children: React.ReactElement[] = [];
 
@@ -101,35 +103,9 @@ export const Presentation3Demo: React.FC<Presentation3Props> = ({
     <AbsoluteFill>
       <TransitionSeries>{children}</TransitionSeries>
 
-      {/* Talking head circle — bottom right */}
+      {/* Talking head circle — bottom right, auto-focuses on speaker's face */}
       {talkingHeadSrc && (
-        <AbsoluteFill
-          style={{
-            justifyContent: "flex-end",
-            alignItems: "flex-end",
-            padding: 60,
-            pointerEvents: "none",
-          }}
-        >
-          <div
-            style={{
-              width: 300,
-              height: 300,
-              borderRadius: "50%",
-              overflow: "hidden",
-              border: `6px solid ${theme3.green}`,
-              boxShadow: "0 10px 30px rgba(0,0,0,0.6)",
-              backgroundColor: "black",
-            }}
-          >
-            <OffthreadVideo
-              loop
-              src={staticFile(talkingHeadSrc)}
-              startFrom={30}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </div>
-        </AbsoluteFill>
+        <TalkingHead src={talkingHeadSrc} faceTrack={faceTrack} borderColor={theme3.green} />
       )}
     </AbsoluteFill>
   );

@@ -8,6 +8,7 @@ const { v4: uuidv4 } = require("uuid");
 const { transcribe } = require("./pipeline/transcribe");
 const { generateSlides } = require("./pipeline/generateSlides");
 const { syncTalkingHead } = require("./pipeline/syncTalkingHead");
+const { preprocessVideo } = require("./pipeline/preprocess");
 
 // nosemgrep: javascript.express.security.audit.express-check-csurf-middleware-usage.express-check-csurf-middleware-usage
 // CSRF not applicable: stateless JSON API authenticated via X-API-Key header, not cookies/sessions
@@ -35,23 +36,36 @@ fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 const upload = multer({
   storage: multer.diskStorage({
     destination: "/tmp",
-    filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+    filename: (req, file, cb) => {
+      // Extract extension safely — strip path components, allow only simple extensions
+      const rawExt = path.extname(file.originalname).toLowerCase();
+      const safeExt = /^\.[a-z0-9]{1,8}$/.test(rawExt) ? rawExt : "";
+      cb(null, `${uuidv4()}${safeExt}`);
+    },
   }),
   limits: { fileSize: 500 * 1024 * 1024 }, // 500MB
 });
 
 // --- In-memory job store ---
-// jobId → { status, step, createdAt, videoPath, wavPath, transcriptPath, outputPath, talkingHeadPublicPath, error }
+// jobId → { status, step, createdAt, videoPath, wavPath, transcriptPath, outputPath, talkingHeadPublicPath, error, originalName, mimeType }
 const jobs = new Map();
 
-// TTL cleanup: delete temp files on /status poll after 1hr
+const MAX_CONCURRENT_JOBS = 10;
+
+const ALLOWED_MIME_TYPES = new Set([
+  "video/mp4", "video/quicktime", "video/webm", "video/x-msvideo", "video/x-matroska",
+  "audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/ogg", "audio/webm",
+]);
+
+// TTL cleanup: delete temp files on /status poll after 24hr
 function maybeCleanup(job, jobId) {
-  if (job.createdAt && Date.now() - job.createdAt > 60 * 60 * 1000) {
+  if (job.createdAt && Date.now() - job.createdAt > 24 * 60 * 60 * 1000) {
     const files = [
       job.wavPath,
       job.transcriptPath,
       job.outputPath,
       job.talkingHeadPublicPath,
+      job.trimmedVideoPath,
     ].filter(Boolean);
     files.forEach((f) => fs.unlink(f, () => {}));
     jobs.delete(jobId);
@@ -64,7 +78,7 @@ const remotionBin = path.join(__dirname, "node_modules", ".bin", "remotion");
 function renderVideo(compositionId, inputProps) {
   return new Promise((resolve, reject) => {
     const safeCompositionId = compositionId.replace(/[^a-zA-Z0-9_\-]/g, "_");
-    const filename = `${safeCompositionId}_${Date.now()}.mp4`;
+    const filename = `${safeCompositionId}_${uuidv4()}.mp4`;
     const outputPath = path.join(OUTPUT_DIR, filename);
     execFile(
       remotionBin,
@@ -88,10 +102,22 @@ function renderVideo(compositionId, inputProps) {
 // --- Pipeline orchestrator ---
 async function runPipeline(jobId, videoPath) {
   try {
+    // Step 1: Preprocess — validate, trim silences (>4s → 2s), compress if needed
+    jobs.set(jobId, { ...jobs.get(jobId), status: "preprocessing", step: "preprocessing" });
+    console.log(`[${jobId}] preprocessing...`);
+    const preprocessResult = await preprocessVideo(videoPath, "/tmp");
+    const effectiveVideoPath = preprocessResult.outputPath;
+    if (preprocessResult.trimmed || preprocessResult.compressed) {
+      jobs.set(jobId, { ...jobs.get(jobId), trimmedVideoPath: preprocessResult.outputPath });
+      console.log(`[${jobId}] preprocessed: ${preprocessResult.originalDuration.toFixed(0)}s → ${preprocessResult.trimmedDuration.toFixed(0)}s, ${preprocessResult.silencesFound} silences removed, compressed=${preprocessResult.compressed}`);
+    }
+
+    // Step 2: Transcribe the (trimmed) video
     jobs.set(jobId, { ...jobs.get(jobId), status: "transcribing", step: "transcribing" });
     console.log(`[${jobId}] transcribing...`);
-    const transcript = await transcribe(videoPath, jobId);
+    const transcript = await transcribe(effectiveVideoPath, jobId);
 
+    // Step 3: Generate slides from transcript
     jobs.set(jobId, {
       ...jobs.get(jobId),
       status: "generating_slides",
@@ -102,17 +128,19 @@ async function runPipeline(jobId, videoPath) {
     console.log(`[${jobId}] generating slides (theme selection + content)...`);
     const { compositionId, themeId, slides, transitionFrames } = await generateSlides(transcript);
 
+    // Step 4: Sync talking head + face tracking
     jobs.set(jobId, { ...jobs.get(jobId), status: "syncing", step: "syncing" });
     console.log(`[${jobId}] syncing talking head (themeId=${themeId}, compositionId=${compositionId}, transitionFrames=${transitionFrames})...`);
     const { inputProps, talkingHeadPublicPath } = await syncTalkingHead({
       slides,
-      videoPath,
+      videoPath: effectiveVideoPath,
       compositionId,
       jobId,
       transitionFrames,
     });
     jobs.set(jobId, { ...jobs.get(jobId), talkingHeadPublicPath });
 
+    // Step 5: Render with Remotion
     jobs.set(jobId, { ...jobs.get(jobId), status: "rendering", step: "rendering" });
     console.log(`[${jobId}] rendering with Remotion (${compositionId})...`);
     const outputPath = await renderVideo(compositionId, inputProps);
@@ -122,6 +150,17 @@ async function runPipeline(jobId, videoPath) {
   } catch (e) {
     console.error("[pipeline error]", "jobId=" + jobId, e.message);
     jobs.set(jobId, { ...jobs.get(jobId), status: "error", error: e.message });
+
+    // Clean up temp files on failure
+    const job = jobs.get(jobId);
+    const tempFiles = [
+      job.videoPath,
+      job.trimmedVideoPath,
+      job.wavPath,
+      job.transcriptPath,
+      job.talkingHeadPublicPath,
+    ].filter(Boolean);
+    tempFiles.forEach((f) => fs.unlink(f, () => {}));
   }
 }
 
@@ -131,20 +170,51 @@ async function runPipeline(jobId, videoPath) {
 app.post("/pipeline/start", upload.single("video"), (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No video file uploaded" });
 
-  const jobId = uuidv4();
-  const videoPath = req.file.path;
+  // MIME type validation
+  if (!ALLOWED_MIME_TYPES.has(req.file.mimetype)) {
+    fs.unlink(req.file.path, () => {});
+    return res.status(400).json({ error: "Unsupported file type" });
+  }
 
-  jobs.set(jobId, {
-    status: "uploading",
-    step: "uploading",
-    createdAt: Date.now(),
-    videoPath,
+  // Max concurrent jobs check
+  let activeCount = 0;
+  for (const job of jobs.values()) {
+    if (!["done", "error"].includes(job.status)) activeCount++;
+  }
+  if (activeCount >= MAX_CONCURRENT_JOBS) {
+    fs.unlink(req.file.path, () => {});
+    return res.status(429).json({ error: "Too many concurrent jobs, try again later" });
+  }
+
+  // Disk space check
+  execFile("df", ["-B1", "--output=avail", "/tmp"], (err, stdout) => {
+    if (err) {
+      fs.unlink(req.file.path, () => {});
+      return res.status(500).json({ error: "Failed to check disk space" });
+    }
+    const avail = parseInt(stdout.trim().split("\n").pop(), 10);
+    if (avail < 2 * 1024 * 1024 * 1024) {
+      fs.unlink(req.file.path, () => {});
+      return res.status(507).json({ error: "Insufficient disk space" });
+    }
+
+    const jobId = uuidv4();
+    const videoPath = req.file.path;
+
+    jobs.set(jobId, {
+      status: "uploading",
+      step: "uploading",
+      createdAt: Date.now(),
+      videoPath,
+      originalName: req.file.originalname,
+      mimeType: req.file.mimetype,
+    });
+
+    // Fire-and-forget
+    runPipeline(jobId, videoPath);
+
+    res.json({ jobId });
   });
-
-  // Fire-and-forget
-  runPipeline(jobId, videoPath);
-
-  res.json({ jobId });
 });
 
 // GET /pipeline/:jobId/status
@@ -210,6 +280,48 @@ app.get("/download/:filename", (req, res) => {
 
 // GET /health
 app.get("/health", (_, res) => res.json({ status: "ok" }));
+
+// --- Periodic sweep: clean up stale jobs and old output files every hour ---
+const SWEEP_INTERVAL = 60 * 60 * 1000; // 1 hour
+const JOB_TTL = 24 * 60 * 60 * 1000; // 24 hours
+
+setInterval(() => {
+  const now = Date.now();
+  let swept = 0;
+
+  for (const [jobId, job] of jobs) {
+    if (job.createdAt && now - job.createdAt > JOB_TTL) {
+      const files = [
+        job.videoPath,
+        job.wavPath,
+        job.transcriptPath,
+        job.outputPath,
+        job.talkingHeadPublicPath,
+        job.trimmedVideoPath,
+      ].filter(Boolean);
+      files.forEach((f) => fs.unlink(f, () => {}));
+      jobs.delete(jobId);
+      swept++;
+    }
+  }
+
+  // Clean up old files in OUTPUT_DIR
+  try {
+    const outputFiles = fs.readdirSync(OUTPUT_DIR);
+    for (const file of outputFiles) {
+      const filePath = path.join(OUTPUT_DIR, file);
+      try {
+        const stat = fs.statSync(filePath);
+        if (now - stat.mtimeMs > JOB_TTL) {
+          fs.unlink(filePath, () => {});
+          swept++;
+        }
+      } catch (_) { /* ignore stat errors */ }
+    }
+  } catch (_) { /* ignore readdir errors */ }
+
+  if (swept > 0) console.log(`[sweep] Cleaned up ${swept} stale jobs/files`);
+}, SWEEP_INTERVAL);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Remotion render server listening on :${PORT}`));
