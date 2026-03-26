@@ -85,7 +85,7 @@ async function getDetector() {
  * Extract frames from video at the given fps rate into a temp directory.
  * Returns the directory path containing frame_0001.jpg, frame_0002.jpg, ...
  */
-async function extractFrames(videoPath, fps = 2) {
+async function extractFrames(videoPath, fps = 1) {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "facetrack-"));
   const outputPattern = path.join(tmpDir, "frame_%04d.jpg");
 
@@ -160,14 +160,14 @@ function smoothKeypoints(keypoints, alpha = 0.4) {
  *
  * @param {string} videoPath - absolute path to video file
  * @param {object} [options]
- * @param {number} [options.sampleFps=2] - frames per second to sample
+ * @param {number} [options.sampleFps=1] - frames per second to sample (1fps is plenty for talking heads)
  * @param {number} [options.smoothingAlpha=0.4] - EMA smoothing (0=smooth, 1=raw)
  * @returns {Promise<Array<{ t: number, x: number, y: number }>>}
  *   Normalized coordinates: x,y in [0,1] where 0,0 = top-left.
  *   Returns empty array if no faces detected (caller should default to center).
  */
 async function extractFaceTrack(videoPath, options = {}) {
-  const { sampleFps = 2, smoothingAlpha = 0.4 } = options;
+  const { sampleFps = 1, smoothingAlpha = 0.4 } = options;
 
   console.log(`[faceTrack] extracting frames at ${sampleFps}fps...`);
   const { tmpDir, files } = await extractFrames(videoPath, sampleFps);
