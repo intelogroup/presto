@@ -44,7 +44,7 @@ Always use `multer.diskStorage()` — never memory storage. A 500MB video in RAM
 
 ## Project Structure
 
-```
+```text
 presto/
 ├── server.js                    # Express backend (Render.com) — routes, job orchestrator
 ├── pipeline/
