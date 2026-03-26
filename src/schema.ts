@@ -10,6 +10,17 @@ const IconNameSchema = z.string().refine(
 
 // ─── Presentation1 Slide Schemas ─────────────────────────────────────────────
 
+// Face tracking keypoint: normalized position of speaker's face at a given time
+export const FaceTrackPointSchema = z.object({
+  t: z.number(), // timestamp in seconds
+  x: z.number().min(0).max(1), // horizontal center (0=left, 1=right)
+  y: z.number().min(0).max(1), // vertical center (0=top, 1=bottom)
+});
+
+export const FaceTrackSchema = z.array(FaceTrackPointSchema).optional();
+
+export type FaceTrackPoint = z.infer<typeof FaceTrackPointSchema>;
+
 // duration is in frames at 30fps (min 60 = 2 seconds)
 const DurationBase = z.object({ duration: z.number().int().min(60) });
 
@@ -119,6 +130,7 @@ export const Presentation1PropsSchema = z.object({
   slides: z.array(P1SlideSchema),
   logoSrc: z.string().optional(),
   talkingHeadSrc: z.string().optional(),
+  faceTrack: FaceTrackSchema,
 });
 
 export type Presentation1Props = z.infer<typeof Presentation1PropsSchema>;
@@ -266,6 +278,7 @@ export type P3Slide = z.infer<typeof P3SlideSchema>;
 export const Presentation3PropsSchema = z.object({
   slides: z.array(P3SlideSchema),
   talkingHeadSrc: z.string().optional(),
+  faceTrack: FaceTrackSchema,
 });
 
 export type Presentation3Props = z.infer<typeof Presentation3PropsSchema>;
@@ -1363,5 +1376,6 @@ export type P17Slide = z.infer<typeof P17SlideSchema>;
 export const Presentation17PropsSchema = z.object({
   slides: z.array(P17SlideSchema),
   talkingHeadSrc: z.string().optional(),
+  faceTrack: FaceTrackSchema,
 });
 export type Presentation17Props = z.infer<typeof Presentation17PropsSchema>;

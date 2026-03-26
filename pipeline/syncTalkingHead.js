@@ -1,6 +1,7 @@
 const { execFile } = require("child_process");
 const path = require("path");
 const fs = require("fs");
+const { extractFaceTrack } = require("./faceTrack");
 
 const PUBLIC_DIR = path.join(__dirname, "..", "public");
 
@@ -101,13 +102,21 @@ async function syncTalkingHead({ slides, videoPath, compositionId, jobId, transi
   if (!talkingHeadPublicPath.startsWith(PUBLIC_DIR + path.sep) && talkingHeadPublicPath !== PUBLIC_DIR) {
     throw new Error("Path traversal detected in jobId");
   }
-  await fs.promises.copyFile(videoPath, talkingHeadPublicPath);
+  // Run face tracking and video copy in parallel
+  const [faceTrack] = await Promise.all([
+    extractFaceTrack(videoPath).catch((err) => {
+      console.warn(`[syncTalkingHead] face tracking failed (falling back to center): ${err.message}`);
+      return undefined; // graceful degradation — TalkingHead defaults to center
+    }),
+    fs.promises.copyFile(videoPath, talkingHeadPublicPath),
+  ]);
 
   return {
     compositionId,
     inputProps: {
       slides: cleanSlides,
       talkingHeadSrc: talkingHeadFilename,
+      ...(faceTrack && faceTrack.length > 0 ? { faceTrack } : {}),
     },
     talkingHeadPublicPath,
   };

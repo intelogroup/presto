@@ -1,6 +1,6 @@
 // src/Presentation17Demo.tsx — Prestige Academic theme
 import React from "react";
-import { AbsoluteFill, OffthreadVideo, staticFile } from "remotion";
+import { AbsoluteFill } from "remotion";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 
@@ -12,10 +12,11 @@ import { ExpectSlide17 } from "./slides17/ExpectSlide17";
 import { CTASlide17 } from "./slides17/CTASlide17";
 import { theme17 } from "./slides17/theme17";
 import { Presentation17Props } from "./schema";
+import { TalkingHead } from "./TalkingHead";
 
 // IMPORTANT: TransitionSeries children must be a flat array — no React.Fragment wrappers.
 
-export const Presentation17Demo: React.FC<Presentation17Props> = ({ slides, talkingHeadSrc }) => {
+export const Presentation17Demo: React.FC<Presentation17Props> = ({ slides, talkingHeadSrc, faceTrack }) => {
   const children: React.ReactElement[] = [];
 
   slides.forEach((slideData, i) => {
@@ -70,36 +71,9 @@ export const Presentation17Demo: React.FC<Presentation17Props> = ({ slides, talk
     <AbsoluteFill>
       <TransitionSeries>{children}</TransitionSeries>
 
-      {/* Talking head circle — bottom right, looping (optional) */}
+      {/* Talking head circle — bottom right, auto-focuses on speaker's face */}
       {talkingHeadSrc && (
-        <AbsoluteFill
-          style={{
-            justifyContent: "flex-end",
-            alignItems: "flex-end",
-            padding: 60,
-            pointerEvents: "none",
-          }}
-        >
-          <div
-            style={{
-              width: 300,
-              height: 300,
-              borderRadius: "50%",
-              overflow: "hidden",
-              border: "6px solid #38bdf8",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
-              backgroundColor: "black",
-            }}
-          >
-            {/* @ts-ignore loop is valid at runtime but missing from OffthreadVideo types in this version */}
-            <OffthreadVideo
-              loop
-              src={staticFile(talkingHeadSrc)}
-              startFrom={30}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </div>
-        </AbsoluteFill>
+        <TalkingHead src={talkingHeadSrc} faceTrack={faceTrack} borderColor="#38bdf8" />
       )}
     </AbsoluteFill>
   );
