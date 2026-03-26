@@ -181,20 +181,24 @@ function buildKeepSegments(totalDuration, silences, keepDuration = 2.0) {
   let cursor = 0;
 
   for (const silence of silences) {
-    // Keep everything from cursor to start of silence + half of keepDuration
     const silenceStart = silence.start;
     const silenceEnd = Math.min(silence.end, totalDuration);
 
-    if (silenceStart > cursor) {
-      // Add the non-silent segment + a tiny bit of the silence for natural pacing
+    // At boundaries, give full keepDuration to the side that has audio content
+    const hasAudioBefore = silenceStart > cursor + 0.01;
+    const hasAudioAfter = silenceEnd < totalDuration - 0.01;
+    const tailKeep = hasAudioBefore ? (hasAudioAfter ? keepDuration / 2 : keepDuration) : 0;
+    const leadKeep = hasAudioAfter ? (hasAudioBefore ? keepDuration / 2 : keepDuration) : 0;
+
+    if (hasAudioBefore) {
       segments.push({
         start: cursor,
-        end: Math.min(silenceStart + keepDuration / 2, silenceEnd),
+        end: Math.min(silenceStart + tailKeep, silenceEnd),
       });
     }
 
     // Skip most of the silence, resume just before it ends
-    cursor = Math.max(silenceEnd - keepDuration / 2, silenceStart + keepDuration / 2);
+    cursor = Math.max(silenceEnd - leadKeep, silenceStart + tailKeep);
   }
 
   // Add the remaining segment after the last silence
@@ -434,16 +438,20 @@ async function preprocessVideo(inputPath, outputDir, options = {}) {
     const estimatedDuration = segments.reduce((sum, s) => sum + (s.end - s.start), 0);
     const removedDuration = info.duration - estimatedDuration;
 
-    console.log(`[preprocess] keeping ${segments.length} segments, removing ~${removedDuration.toFixed(1)}s of silence`);
+    if (segments.length === 0) {
+      console.log("[preprocess] entire file is silence — skipping trim");
+    } else {
+      console.log(`[preprocess] keeping ${segments.length} segments, removing ~${removedDuration.toFixed(1)}s of silence`);
 
-    const trimOutputPath = path.join(outputDir, `${baseName}_trimmed${ext}`);
-    await trimSegments(inputPath, trimOutputPath, segments, info.hasVideo);
+      const trimOutputPath = path.join(outputDir, `${baseName}_trimmed${ext}`);
+      await trimSegments(inputPath, trimOutputPath, segments, info.hasVideo);
 
-    console.log(`[preprocess] trimmed: ${info.duration.toFixed(1)}s → ${estimatedDuration.toFixed(1)}s (removed ${removedDuration.toFixed(1)}s)`);
+      console.log(`[preprocess] trimmed: ${info.duration.toFixed(1)}s → ${estimatedDuration.toFixed(1)}s (removed ${removedDuration.toFixed(1)}s)`);
 
-    currentPath = trimOutputPath;
-    trimmed = true;
-    trimmedDuration = estimatedDuration;
+      currentPath = trimOutputPath;
+      trimmed = true;
+      trimmedDuration = estimatedDuration;
+    }
   } else {
     console.log("[preprocess] no trimming needed");
   }

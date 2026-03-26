@@ -9,7 +9,7 @@
  */
 
 import React from "react";
-import { AbsoluteFill, OffthreadVideo, staticFile, useCurrentFrame, interpolate } from "remotion";
+import { AbsoluteFill, OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import type { FaceTrackPoint } from "./schema";
 
 interface TalkingHeadProps {
@@ -31,10 +31,12 @@ interface TalkingHeadProps {
  */
 function useFacePosition(
   faceTrack: FaceTrackPoint[] | undefined,
-  fps: number = 30
+  fps: number,
+  startFrom: number = 0
 ): { x: number; y: number } {
   const frame = useCurrentFrame();
-  const currentTime = frame / fps;
+  // Account for startFrom: when frame=0, the video is already at startFrom frames in
+  const currentTime = (frame + startFrom) / fps;
 
   if (!faceTrack || faceTrack.length === 0) {
     return { x: 50, y: 40 }; // sensible default: center, slightly above middle
@@ -78,7 +80,8 @@ export const TalkingHead: React.FC<TalkingHeadProps> = ({
   padding = 60,
   startFrom = 30,
 }) => {
-  const { x, y } = useFacePosition(faceTrack);
+  const { fps } = useVideoConfig();
+  const { x, y } = useFacePosition(faceTrack, fps, startFrom);
 
   return (
     <AbsoluteFill

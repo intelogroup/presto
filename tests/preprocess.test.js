@@ -46,18 +46,20 @@ console.log("Test 2: Single silence in middle (keepDuration=0.5)");
 
 console.log("Test 3: Silence at start (keepDuration=0.5)");
 {
+  // Boundary: no audio before silence, so full keepDuration preserved on lead side
   const segs = buildKeepSegments(60, [{ start: 0, end: 10 }], 0.5);
   assert(segs.length === 1, `should return 1 segment (got ${segs.length})`);
-  assert(approxEqual(segs[0].start, 9.75), `starts near 9.75 (got ${segs[0].start})`);
+  assert(approxEqual(segs[0].start, 9.5), `starts near 9.5 (got ${segs[0].start})`);
   assert(segs[0].end === 60, "ends at 60");
 }
 
 console.log("Test 4: Silence at end (keepDuration=0.5)");
 {
+  // Boundary: no audio after silence, so full keepDuration preserved on tail side
   const segs = buildKeepSegments(60, [{ start: 50, end: 60 }], 0.5);
   assert(segs.length >= 1, `should return at least 1 segment (got ${segs.length})`);
   assert(segs[0].start === 0, "starts at 0");
-  assert(approxEqual(segs[0].end, 50.25), `main segment ends near 50.25 (got ${segs[0].end})`);
+  assert(approxEqual(segs[0].end, 50.5), `main segment ends near 50.5 (got ${segs[0].end})`);
   const totalKept = segs.reduce((sum, s) => sum + (s.end - s.start), 0);
   assert(totalKept < 51, `total kept is reasonable (${totalKept.toFixed(1)}s)`);
 }
@@ -79,10 +81,11 @@ console.log("Test 5: Multiple silences (keepDuration=0.5)");
 
 console.log("Test 6: Silence to end (Infinity, keepDuration=0.5)");
 {
+  // Boundary: silence extends to end, so full keepDuration preserved on tail side
   const segs = buildKeepSegments(60, [{ start: 45, end: Infinity }], 0.5);
   assert(segs.length >= 1, `should return at least 1 segment (got ${segs.length})`);
   assert(segs[0].start === 0, "starts at 0");
-  assert(approxEqual(segs[0].end, 45.25), `main segment ends near 45.25 (got ${segs[0].end})`);
+  assert(approxEqual(segs[0].end, 45.5), `main segment ends near 45.5 (got ${segs[0].end})`);
 }
 
 console.log("Test 7: Entire video is silence (keepDuration=0.5)");
