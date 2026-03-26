@@ -15,18 +15,50 @@ const { preprocessVideo } = require("./pipeline/preprocess");
 const app = express(); // nosemgrep
 app.use(express.json());
 
+// CORS: allow browser direct uploads from Vercel frontend
+// Hardcoded literal — never reflect user-supplied Origin header (CWE-346)
+const VERCEL_ORIGIN = "https://presto-lake.vercel.app";
+app.use((req, res, next) => {
+  if (req.headers.origin === VERCEL_ORIGIN) {
+    res.setHeader("Access-Control-Allow-Origin", VERCEL_ORIGIN);
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "x-api-key, x-upload-token, content-type");
+  }
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
+
 // API key auth — all routes require X-API-Key header matching RENDER_API_SECRET env var
+// OR a short-lived HMAC upload token (x-upload-token) for large direct uploads from clients
 const API_SECRET = process.env.RENDER_API_SECRET;
+const { createHmac, timingSafeEqual } = require("crypto");
+
+function validateUploadToken(header, secret) {
+  if (!header || !secret) return false;
+  const parts = header.split(":");
+  if (parts.length !== 3) return false;
+  const [expiresAt, nonce, sig] = parts;
+  if (Date.now() > Number(expiresAt)) return false; // expired
+  const payload = `${expiresAt}:${nonce}`;
+  const expected = createHmac("sha256", secret).update(payload).digest("hex");
+  try {
+    return timingSafeEqual(Buffer.from(sig, "hex"), Buffer.from(expected, "hex"));
+  } catch {
+    return false;
+  }
+}
+
 app.use((req, res, next) => {
   if (req.path === "/health") return next();
   if (!API_SECRET) {
     console.warn("WARNING: RENDER_API_SECRET not set — server is unprotected");
     return next();
   }
-  if (req.headers["x-api-key"] !== API_SECRET) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  next();
+  const apiKey = req.headers["x-api-key"];
+  const uploadToken = req.headers["x-upload-token"];
+  if (apiKey === API_SECRET) return next();
+  if (validateUploadToken(uploadToken, API_SECRET)) return next();
+  return res.status(401).json({ error: "Unauthorized" });
 });
 
 const OUTPUT_DIR = path.join(__dirname, "output");

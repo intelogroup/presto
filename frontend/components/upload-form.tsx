@@ -55,14 +55,24 @@ export function UploadForm() {
     setUploading(true);
     setError(null);
 
-    const body = new FormData();
-    body.append("video", file);
-    if (theme) body.append("themeOverride", theme);
-
     try {
-      const res = await fetch("/api/start", { method: "POST", body });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Upload failed");
+      // Step 1: get a short-lived upload token from our server (no body → no 413)
+      const tokenRes = await fetch("/api/upload-token");
+      const tokenData = await tokenRes.json();
+      if (!tokenRes.ok) throw new Error(tokenData.error ?? "Could not get upload token");
+
+      // Step 2: upload directly to Render with the HMAC token (bypasses Vercel body limit)
+      const body = new FormData();
+      body.append("video", file);
+      if (theme) body.append("themeOverride", theme);
+
+      const uploadRes = await fetch(`${tokenData.uploadUrl}/pipeline/start`, {
+        method: "POST",
+        headers: { "x-upload-token": tokenData.token },
+        body,
+      });
+      const data = await uploadRes.json();
+      if (!uploadRes.ok) throw new Error(data.error ?? "Upload failed");
       router.push(`/status/${data.jobId}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
