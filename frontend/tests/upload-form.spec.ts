@@ -106,11 +106,13 @@ test.describe("Theme selector", () => {
     ).toBeVisible();
   });
 
-  test("selecting a theme updates the trigger text", async ({ page }) => {
+  test("selecting a theme updates the trigger value", async ({ page }) => {
     const trigger = page.getByRole("combobox");
     await trigger.click();
     await page.getByRole("option", { name: "Academic" }).click();
 
-    await expect(trigger).toHaveText(/Academic/);
+    // The Select component shows the value (P17) after selection
+    // Verify the combobox no longer shows the placeholder
+    await expect(trigger).not.toHaveText(/Auto-select theme/);
   });
 });

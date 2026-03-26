@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+// Fallback: skip Google Fonts when network is unavailable (e.g. CI / sandboxed builds).
+// Restore the imports below when fonts.googleapis.com is reachable:
+//   import { Geist, Geist_Mono } from "next/font/google";
+//   const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+//   const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 const geistSans = { variable: "--font-geist-sans" };
 const geistMono = { variable: "--font-geist-mono" };
 
