@@ -17,7 +17,7 @@ function getOpenAI() {
  *
  * @param {string} videoPath - absolute path to video file
  * @param {string} jobId - used to name temp files
- * @returns {{ text: string, segments: Array<{start,end,text}>, words: Array<{word,start,end}> }}
+ * @returns {{ text: string, segments: Array<{start,end,text}> }}
  */
 async function transcribe(videoPath, jobId) {
   const audioPath = `/tmp/${jobId}.mp3`;
@@ -40,6 +40,9 @@ async function transcribe(videoPath, jobId) {
   const audioStat = fs.statSync(audioPath);
   const audioSizeMB = audioStat.size / (1024 * 1024);
   console.log(`[transcribe] extracted audio: ${audioSizeMB.toFixed(1)} MB (MP3 64kbps mono 16kHz)`);
+  if (audioSizeMB > 25) {
+    throw new Error(`Extracted audio is ${audioSizeMB.toFixed(1)} MB — exceeds Whisper 25MB limit. Try a shorter video.`);
+  }
   if (audioSizeMB > 24) {
     console.warn(`[transcribe] WARNING: audio file is ${audioSizeMB.toFixed(1)} MB — approaching Whisper 25MB limit`);
   }
@@ -79,11 +82,6 @@ async function transcribe(videoPath, jobId) {
       start: s.start,
       end: s.end,
       text: s.text,
-    })),
-    words: (response.words || []).map((w) => ({
-      word: w.word,
-      start: w.start,
-      end: w.end,
     })),
     _wavPath: audioPath,
     _transcriptPath: transcriptPath,

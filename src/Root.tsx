@@ -24,11 +24,9 @@ import { Presentation16Demo } from "./Presentation16Demo";
 import { Presentation15Demo } from "./Presentation15Demo";
 import { Presentation17Demo } from "./Presentation17Demo";
 
-const TRANSITION_FRAMES = 20;
-
-function calcDuration(slides: Array<{ duration: number }>): number {
+function calcDuration(slides: Array<{ duration: number }>, transitionFrames: number = 20): number {
   const total = slides.reduce((sum, s) => sum + s.duration, 0);
-  const transitionOverlap = Math.max(0, slides.length - 1) * TRANSITION_FRAMES;
+  const transitionOverlap = Math.max(0, slides.length - 1) * transitionFrames;
   return total - transitionOverlap;
 }
 
@@ -90,11 +88,9 @@ export const RemotionRoot: React.FC = () => {
           talkingHeadSrc: "talkinghead_clean.mp4",
           slides: DEFAULT_P3_SLIDES,
         }}
-        calculateMetadata={({ props }) => {
-          const total = props.slides.reduce((sum, s) => sum + s.duration, 0);
-          const overlap = Math.max(0, props.slides.length - 1) * 10;
-          return { durationInFrames: total - overlap };
-        }}
+        calculateMetadata={({ props }) => ({
+          durationInFrames: calcDuration(props.slides, 10),
+        })}
       />
       <Composition
         id="Presentation4"

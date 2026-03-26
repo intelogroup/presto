@@ -55,30 +55,39 @@ function getCanvas() {
   return _canvas;
 }
 
-let _detector = null;
+let _detectorPromise = null;
 
-async function getDetector() {
-  if (_detector) return _detector;
-  const tf = getTf();
-  const faceDetection = getFaceDetection();
+function getDetector() {
+  if (_detectorPromise) return _detectorPromise;
 
-  // Use local model if available (bundled during build), otherwise fetch from CDN
-  const useLocal = fs.existsSync(LOCAL_MODEL_PATH);
-  const detectorModelUrl = useLocal
-    ? `file://${LOCAL_MODEL_PATH}`
-    : TFHUB_MODEL_URL;
+  _detectorPromise = (async () => {
+    const tf = getTf();
+    const faceDetection = getFaceDetection();
 
-  if (useLocal) {
-    console.log("[faceTrack] loading model from local bundle");
-  } else {
-    console.log("[faceTrack] loading model from CDN (bundle locally for faster startup)");
-  }
+    // Use local model if available (bundled during build), otherwise fetch from CDN
+    const useLocal = fs.existsSync(LOCAL_MODEL_PATH);
+    const detectorModelUrl = useLocal
+      ? `file://${LOCAL_MODEL_PATH}`
+      : TFHUB_MODEL_URL;
 
-  _detector = await faceDetection.createDetector(
-    faceDetection.SupportedModels.MediaPipeFaceDetector,
-    { runtime: "tfjs", maxFaces: 1, detectorModelUrl }
-  );
-  return _detector;
+    if (useLocal) {
+      console.log("[faceTrack] loading model from local bundle");
+    } else {
+      console.log("[faceTrack] loading model from CDN (bundle locally for faster startup)");
+    }
+
+    const detector = await faceDetection.createDetector(
+      faceDetection.SupportedModels.MediaPipeFaceDetector,
+      { runtime: "tfjs", maxFaces: 1, detectorModelUrl }
+    );
+    return detector;
+  })();
+
+  _detectorPromise.catch(() => {
+    _detectorPromise = null;
+  });
+
+  return _detectorPromise;
 }
 
 /**
@@ -172,59 +181,64 @@ async function extractFaceTrack(videoPath, options = {}) {
   console.log(`[faceTrack] extracting frames at ${sampleFps}fps...`);
   const { tmpDir, files } = await extractFrames(videoPath, sampleFps);
 
-  if (files.length === 0) {
-    console.warn("[faceTrack] no frames extracted");
-    return [];
-  }
+  try {
+    if (files.length === 0) {
+      console.warn("[faceTrack] no frames extracted");
+      return [];
+    }
 
-  console.log(`[faceTrack] ${files.length} frames, running face detection...`);
-  const detector = await getDetector();
-  const tf = getTf();
+    console.log(`[faceTrack] ${files.length} frames, running face detection...`);
+    const detector = await getDetector();
+    const tf = getTf();
 
-  const rawKeypoints = [];
-  let lastGoodPoint = { x: 0.5, y: 0.4 }; // default: center-ish, slightly above middle
+    const rawKeypoints = [];
+    let lastGoodPoint = { x: 0.5, y: 0.4 }; // default: center-ish, slightly above middle
 
-  for (let i = 0; i < files.length; i++) {
-    const framePath = path.join(tmpDir, files[i]);
-    const t = i / sampleFps; // timestamp in seconds
+    for (let i = 0; i < files.length; i++) {
+      const framePath = path.join(tmpDir, files[i]);
+      const t = i / sampleFps; // timestamp in seconds
 
-    try {
-      const { tensor, width, height } = await loadImageAsTensor(framePath);
-      const faces = await detector.estimateFaces(tensor);
-      tensor.dispose();
+      try {
+        const { tensor, width, height } = await loadImageAsTensor(framePath);
+        try {
+          const faces = await detector.estimateFaces(tensor);
 
-      if (faces.length > 0) {
-        const face = faces[0];
-        // face.box = { xMin, yMin, xMax, yMax, width, height }
-        const box = face.box;
-        const cx = (box.xMin + box.width / 2) / width;
-        const cy = (box.yMin + box.height / 2) / height;
-        // Clamp to [0, 1]
-        const x = Math.max(0, Math.min(1, cx));
-        const y = Math.max(0, Math.min(1, cy));
-        lastGoodPoint = { x, y };
-        rawKeypoints.push({ t, x, y });
-      } else {
-        // No face detected — hold last known position
+          if (faces.length > 0) {
+            const face = faces[0];
+            // face.box = { xMin, yMin, xMax, yMax, width, height }
+            const box = face.box;
+            const cx = (box.xMin + box.width / 2) / width;
+            const cy = (box.yMin + box.height / 2) / height;
+            // Clamp to [0, 1]
+            const x = Math.max(0, Math.min(1, cx));
+            const y = Math.max(0, Math.min(1, cy));
+            lastGoodPoint = { x, y };
+            rawKeypoints.push({ t, x, y });
+          } else {
+            // No face detected — hold last known position
+            rawKeypoints.push({ t, ...lastGoodPoint });
+          }
+        } finally {
+          tensor.dispose();
+        }
+      } catch (err) {
+        // Frame failed — hold last known position
+        console.warn(`[faceTrack] frame ${i} failed: ${err.message}`);
         rawKeypoints.push({ t, ...lastGoodPoint });
       }
-    } catch (err) {
-      // Frame failed — hold last known position
-      console.warn(`[faceTrack] frame ${i} failed: ${err.message}`);
-      rawKeypoints.push({ t, ...lastGoodPoint });
     }
+
+    const smoothed = smoothKeypoints(rawKeypoints, smoothingAlpha);
+    console.log(`[faceTrack] done — ${smoothed.length} keypoints`);
+
+    return smoothed;
+  } finally {
+    // Cleanup temp frames
+    files.forEach((f) => {
+      try { fs.unlinkSync(path.join(tmpDir, f)); } catch (_) {}
+    });
+    try { fs.rmdirSync(tmpDir); } catch (_) {}
   }
-
-  // Cleanup temp frames
-  files.forEach((f) => {
-    try { fs.unlinkSync(path.join(tmpDir, f)); } catch (_) {}
-  });
-  try { fs.rmdirSync(tmpDir); } catch (_) {}
-
-  const smoothed = smoothKeypoints(rawKeypoints, smoothingAlpha);
-  console.log(`[faceTrack] done — ${smoothed.length} keypoints`);
-
-  return smoothed;
 }
 
 module.exports = { extractFaceTrack };

@@ -153,7 +153,7 @@ async function detectSilences(filePath, options = {}) {
           });
         }
 
-        if (err && silences.length === 0) {
+        if (err) {
           return reject(new Error(`silencedetect failed: ${output.slice(-500)}`));
         }
 
@@ -234,7 +234,7 @@ async function trimSegments(inputPath, outputPath, segments, hasVideo) {
     await new Promise((resolve, reject) => {
       execFile(
         "ffmpeg",
-        ["-y", "-i", inputPath, "-filter_complex", filters.join(";"), "-map", "[outa]", "-c:a", "aac", "-b:a", "128k", outputPath],
+        ["-y", "-i", inputPath, "-filter_complex", filters.join(";"), "-map", "[outa]", "-c:a", "aac", "-b:a", "128k", "-f", "mp4", outputPath],
         { timeout: 15 * 60 * 1000 },
         (err, _stdout, stderr) => {
           if (err) return reject(new Error(`ffmpeg audio trim failed: ${(stderr || "").slice(-500)}`));
@@ -422,7 +422,7 @@ async function preprocessVideo(inputPath, outputDir, options = {}) {
   const silences = await detectSilences(inputPath, { silenceThresholdDb, minSilenceDuration });
   console.log(`[preprocess] found ${silences.length} silences > ${minSilenceDuration}s in ${info.duration.toFixed(1)}s file`);
 
-  const ext = path.extname(inputPath) || (info.hasVideo ? ".mp4" : ".m4a");
+  const ext = info.hasVideo ? (path.extname(inputPath) || ".mp4") : ".m4a";
   const baseName = path.basename(inputPath, path.extname(inputPath));
 
   let currentPath = inputPath;

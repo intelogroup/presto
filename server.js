@@ -36,7 +36,12 @@ fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 const upload = multer({
   storage: multer.diskStorage({
     destination: "/tmp",
-    filename: (req, file, cb) => cb(null, `${uuidv4()}-${file.originalname}`),
+    filename: (req, file, cb) => {
+      // Extract extension safely — strip path components, allow only simple extensions
+      const rawExt = path.extname(file.originalname).toLowerCase();
+      const safeExt = /^\.[a-z0-9]{1,8}$/.test(rawExt) ? rawExt : "";
+      cb(null, `${uuidv4()}${safeExt}`);
+    },
   }),
   limits: { fileSize: 500 * 1024 * 1024 }, // 500MB
 });

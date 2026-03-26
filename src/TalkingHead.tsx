@@ -47,15 +47,22 @@ function useFacePosition(
     };
   }
 
-  // Find the two surrounding keypoints for interpolation
-  const timestamps = faceTrack.map((kp) => kp.t);
+  // Memoize interpolation arrays so they aren't rebuilt every frame
+  const { timestamps, xValues, yValues } = React.useMemo(() => {
+    if (!faceTrack || faceTrack.length <= 1) return { timestamps: [], xValues: [], yValues: [] };
+    return {
+      timestamps: faceTrack.map((kp) => kp.t),
+      xValues: faceTrack.map((kp) => kp.x * 100),
+      yValues: faceTrack.map((kp) => kp.y * 100),
+    };
+  }, [faceTrack]);
 
-  const x = interpolate(currentTime, timestamps, faceTrack.map((kp) => kp.x * 100), {
+  const x = interpolate(currentTime, timestamps, xValues, {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  const y = interpolate(currentTime, timestamps, faceTrack.map((kp) => kp.y * 100), {
+  const y = interpolate(currentTime, timestamps, yValues, {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });

@@ -6,35 +6,36 @@ const { extractFaceTrack } = require("./faceTrack");
 const PUBLIC_DIR = path.join(__dirname, "..", "public");
 
 /**
- * Calculates total video frames via ffprobe.
- * @param {string} videoPath
- * @returns {Promise<number>} frame count at 30fps
+ * Probes a media file for duration and video stream presence via ffprobe.
+ * @param {string} mediaPath
+ * @returns {Promise<{ frames: number, duration: number, hasVideo: boolean }>}
  */
-async function getVideoFrames(videoPath) {
+async function getMediaInfo(mediaPath) {
   return new Promise((resolve, reject) => {
     execFile(
       "ffprobe",
       [
         "-v", "error",
-        "-select_streams", "v:0",
-        "-show_entries", "stream=nb_frames,duration",
+        "-show_streams",
+        "-show_format",
         "-of", "json",
-        videoPath,
+        mediaPath,
       ],
       { timeout: 30 * 1000 },
       (err, stdout, stderr) => {
         if (err) return reject(new Error(`ffprobe failed: ${stderr}`));
         const info = JSON.parse(stdout);
-        const stream = info.streams && info.streams[0];
-        if (!stream) return reject(new Error("ffprobe: no video stream found"));
 
-        // Prefer nb_frames if available, otherwise calculate from duration
-        if (stream.nb_frames && stream.nb_frames !== "N/A") {
-          // nb_frames is at the video's native fps — re-derive at 30fps using duration
-        }
-        const duration = parseFloat(stream.duration || "0");
+        const duration = parseFloat(
+          (info.format && info.format.duration) || "0"
+        );
+        const videoStream =
+          info.streams &&
+          info.streams.find((s) => s.codec_type === "video");
+        const hasVideo = !!videoStream;
         const frames = Math.round(duration * 30);
-        resolve(frames);
+
+        resolve({ frames, duration, hasVideo });
       }
     );
   });
@@ -44,13 +45,13 @@ async function getVideoFrames(videoPath) {
  * Adjusts last slide duration to absorb rounding drift, copies video to public/.
  * @param {object} params
  * @param {Array<object>} params.slides - slides from generateSlides (with _segmentStart/_segmentEnd)
- * @param {string} params.videoPath - path to uploaded video
+ * @param {string} params.videoPath - path to uploaded media file (video or audio)
  * @param {string} params.compositionId - from generateSlides
  * @param {string} params.jobId
- * @returns {{ compositionId, inputProps: { slides, talkingHeadSrc }, talkingHeadPublicPath }}
+ * @returns {{ compositionId, inputProps: { slides, talkingHeadSrc?, faceTrack? }, talkingHeadPublicPath: string|null }}
  */
 async function syncTalkingHead({ slides, videoPath, compositionId, jobId, transitionFrames = 20 }) {
-  const totalVideoFrames = await getVideoFrames(videoPath);
+  const { frames: totalVideoFrames, hasVideo } = await getMediaInfo(videoPath);
 
   // Strip internal _segmentStart/_segmentEnd from slides
   const cleanSlides = slides.map(({ _segmentStart, _segmentEnd, ...rest }) => rest);
@@ -94,31 +95,42 @@ async function syncTalkingHead({ slides, videoPath, compositionId, jobId, transi
     }
   }
 
-  // Sanitize jobId to alphanumeric+dash only before using in a path
-  const safeJobId = jobId.replace(/[^a-zA-Z0-9\-]/g, "_");
-  const talkingHeadFilename = `${safeJobId}_talkinghead.mp4`;
-  const talkingHeadPublicPath = path.join(PUBLIC_DIR, talkingHeadFilename);
-  // Confirm the resolved path stays inside PUBLIC_DIR (defense-in-depth)
-  if (!talkingHeadPublicPath.startsWith(PUBLIC_DIR + path.sep) && talkingHeadPublicPath !== PUBLIC_DIR) {
-    throw new Error("Path traversal detected in jobId");
-  }
-  // Run face tracking and video copy in parallel
-  const [faceTrack] = await Promise.all([
-    extractFaceTrack(videoPath).catch((err) => {
-      console.warn(`[syncTalkingHead] face tracking failed (falling back to center): ${err.message}`);
-      return undefined; // graceful degradation — TalkingHead defaults to center
-    }),
-    fs.promises.copyFile(videoPath, talkingHeadPublicPath),
-  ]);
+  if (hasVideo) {
+    // Sanitize jobId to alphanumeric+dash only before using in a path
+    const safeJobId = jobId.replace(/[^a-zA-Z0-9\-]/g, "_");
+    const talkingHeadFilename = `${safeJobId}_talkinghead.mp4`;
+    const talkingHeadPublicPath = path.join(PUBLIC_DIR, talkingHeadFilename);
+    // Confirm the resolved path stays inside PUBLIC_DIR (defense-in-depth)
+    if (!talkingHeadPublicPath.startsWith(PUBLIC_DIR + path.sep) && talkingHeadPublicPath !== PUBLIC_DIR) {
+      throw new Error("Path traversal detected in jobId");
+    }
+    // Run face tracking and video copy in parallel
+    const [faceTrack] = await Promise.all([
+      extractFaceTrack(videoPath).catch((err) => {
+        console.warn(`[syncTalkingHead] face tracking failed (falling back to center): ${err.message}`);
+        return undefined; // graceful degradation — TalkingHead defaults to center
+      }),
+      fs.promises.copyFile(videoPath, talkingHeadPublicPath),
+    ]);
 
+    return {
+      compositionId,
+      inputProps: {
+        slides: cleanSlides,
+        talkingHeadSrc: talkingHeadFilename,
+        ...(faceTrack && faceTrack.length > 0 ? { faceTrack } : {}),
+      },
+      talkingHeadPublicPath,
+    };
+  }
+
+  // Audio-only: no face tracking, no video copy
   return {
     compositionId,
     inputProps: {
       slides: cleanSlides,
-      talkingHeadSrc: talkingHeadFilename,
-      ...(faceTrack && faceTrack.length > 0 ? { faceTrack } : {}),
     },
-    talkingHeadPublicPath,
+    talkingHeadPublicPath: null,
   };
 }
 
