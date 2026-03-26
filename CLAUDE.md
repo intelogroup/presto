@@ -40,7 +40,7 @@ Always use `multer.diskStorage()` — never memory storage. A 500MB video in RAM
 ### Frame Math
 - 30fps throughout. `durationInFrames = Math.round((end - start) * 30)`, minimum 60 frames (2s)
 - Last slide absorbs rounding drift: `lastSlide.duration += (totalVideoFrames - sumOfAllFrames)`
-- Re-enforce min floor after drift: `Math.max(60, lastSlide.duration)`
+- Reinforce min floor after drift: `Math.max(60, lastSlide.duration)`
 
 ## Project Structure
 
@@ -72,7 +72,7 @@ presto/
 │   │   ├── status-tracker.tsx   # Step progress bar
 │   │   └── ui/                  # shadcn primitives
 │   └── tests/                   # Playwright E2E tests (26 specs)
-├── tests/                       # Node.js unit tests (preprocess)
+├── tests/                       # Vitest unit/integration tests (pipeline, server, schema, preprocess)
 ├── scope.md                     # Feature scope document
 ├── roadmap.md                   # Development phases & checklist
 └── pipeline-plan.md             # Detailed pipeline architecture

@@ -87,13 +87,15 @@ Current pages use hardcoded Tailwind colors (`bg-gray-50`, `text-blue-700`, `bor
 | Route | Purpose | Auth | Priority |
 |-------|---------|------|----------|
 | `/` | Landing page (marketing + pricing) | Public | Phase B |
-| `/login` | WorkOS login/signup | Public | Phase D |
+| `/login` | Login/signup (simple auth initially, WorkOS later) | Public | Phase D |
 | `/app` | Dashboard — project list | Protected | Phase C |
 | `/app/new` | Upload + theme selection | Protected | Phase C |
 | `/app/project/[jobId]` | Status → preview → download | Protected | Phase C |
 | `/app/settings` | Profile + billing tabs | Protected | Phase D-E |
 
 6 routes total. The current `/` upload page moves to `/app/new`. Current `/status/[jobId]` moves to `/app/project/[jobId]`.
+
+**Note**: WorkOS integration is deferred. Initial MVP will use simplified auth (e.g., email magic links or session cookies) for `/app/*` routes. WorkOS replaces this in Phase D.
 
 ---
 
@@ -144,7 +146,7 @@ Relocated upload form. Same HMAC flow, improved layout:
 
 - **Section 1: File upload** — Same drag-drop zone, migrated to token colors. Accepted formats listed below the zone.
 - **Section 2: Theme selection** — Visual grid replacing the dropdown. Each theme is a card showing a mini preview frame (placeholder colored rectangle per theme) + theme name below. 4 columns desktop, 2 mobile. Click to select (primary border on selected). "Auto-select" option as first card with sparkles icon.
-- **Section 3: Headshot (conditional)** — Only visible when uploaded file is audio-only (MP3/M4A/WAV). "Optional: Add a headshot photo" with small drop zone. Muted text: "If skipped, we'll use your profile photo or a placeholder."
+- **Section 3: Headshot (conditional)** — Only visible when uploaded file is audio-only (MP3/M4A/WAV). "Optional: Add a headshot photo" with small drop zone. Accepted formats: JPEG/PNG, max 5 MB, square or 3:4 aspect ratio recommended. Muted text: "If skipped, we'll use your profile photo or a placeholder." Backend resolves headshot via fallback chain: uploaded photo → WorkOS profile avatar → themed generic silhouette.
 - **Submit button** — Full width at bottom: "Generate Presentation". Disabled until file selected.
 
 On submit → redirect to `/app/project/[jobId]`.
@@ -156,6 +158,7 @@ Three states:
 **Processing:**
 - Keep current StatusTracker component (migrated to token colors)
 - Add estimated time text below progress bar: "Usually takes 2-5 minutes"
+- Future enhancement: replace polling with SSE (`/api/project/[jobId]/stream`) for instant progress updates. Fall back to polling if stream fails.
 - "Cancel" outline button at bottom
 
 **Ready — two-panel layout (desktop), stacked (mobile):**
@@ -183,11 +186,20 @@ Right panel (40% width) — **Chat Editor:**
 
 **Chat flow:**
 1. User types a plain language edit request
-2. Frontend sends `POST /api/project/[jobId]/edit` with `{ message: "..." }`
+2. Frontend sends `POST /api/project/[jobId]/edit` with `{ message: "...", preview: true }`
 3. Backend parses intent via GPT-4o → maps to slide/theme/timing mutations
-4. Backend returns structured response: `{ reply: "Done — changed slide 3 title.", changes: [...], requiresRerender: true }`
-5. If `requiresRerender: true` → status switches back to "Processing" while Remotion re-renders. Chat stays visible with a "Re-rendering your video..." system message.
-6. If `requiresRerender: false` (metadata-only change) → update immediately, show confirmation message
+4. Backend returns preview: `{ reply: "I'll change slide 3 title to '...'", changes: [...], requiresRerender: true }`
+5. User confirms → frontend sends `POST /api/project/[jobId]/edit` with `{ message: "...", commit: true }`
+6. If `requiresRerender: true` → status switches back to "Processing" while Remotion re-renders. Chat stays visible with a "Re-rendering your video..." system message.
+7. If `requiresRerender: false` (metadata-only change) → update immediately, show confirmation message
+
+**Safeguards:**
+- Rate limit: 10 edit requests per project per hour
+- Per-plan quotas: Free = 5 edits/project, Pro = unlimited
+- GPT-4o fallback: on parse failure, show friendly system message ("Couldn't understand that. Try rephrasing?") with retry option — no hard errors
+- Re-render throttling: max 1 concurrent re-render per project, queue subsequent requests
+- Edit logs stored as lightweight operation arrays (`changes[]`), not full state snapshots
+- MVP scope: title/content/theme changes first, expand to timing/layout in later iterations
 
 **Chat UI states:**
 - **Empty**: "Ask me to change anything — slide content, timing, theme, or layout." placeholder with 3-4 example chips the user can click
@@ -198,8 +210,9 @@ Right panel (40% width) — **Chat Editor:**
 
 **Edit history sidebar (collapsed by default):**
 - Toggle via "History" button in chat header
-- Shows a vertical timeline of all edits: timestamp, user message summary, status (applied/failed/reverted)
-- Each entry has a "Revert" button that undoes that specific change and triggers re-render
+- Shows a vertical timeline of all edits: timestamp, user message summary, status (applied/failed/undone)
+- Only the most recent edit exposes an "Undo Last Change" button that rolls back that edit and triggers re-render
+- Older entries are read-only history for reference — no arbitrary per-entry revert (avoids conflict resolution, cascading re-renders, and per-edit state snapshots; deferred to a later iteration)
 
 **Failed:**
 - Error card (destructive background): error message from server
@@ -293,7 +306,7 @@ Every page must handle all applicable states:
 | `/api/checkout` | POST | Create Stripe Checkout Session, return URL |
 | `/api/webhooks/stripe` | POST | Handle `checkout.session.completed`, `invoice.paid`, `customer.subscription.deleted` |
 | `/api/subscription` | GET | Return current user's plan + usage |
-| `/api/project/[jobId]/edit` | POST | Send `{ message: "..." }` → GPT-4o parses intent → returns `{ reply, changes[], requiresRerender }` |
+| `/api/project/[jobId]/edit` | POST | Send `{ message, preview?, commit? }` → GPT-4o parses intent → returns `{ reply, changes[], requiresRerender }`. Rate limit: 10 req/hr per project. |
 
 ### Flow
 
@@ -350,7 +363,9 @@ Every page must handle all applicable states:
 
 ### Phase D — Auth (2-3 days)
 
-- [ ] `/login` page with WorkOS redirect buttons
+**Note**: WorkOS is deferred. Start with simplified auth (email magic links or session cookies). Replace with WorkOS when ready.
+
+- [ ] `/login` page with simple auth (magic links initially, WorkOS later)
 - [ ] Auth callback handler
 - [ ] Next.js middleware protecting `/app/*` routes
 - [ ] `AvatarMenu` in `AppHeader` with sign out
@@ -374,6 +389,15 @@ Every page must handle all applicable states:
 - [ ] Playwright E2E tests for new routes (dashboard, settings, login, landing)
 - [ ] Accessibility audit (ARIA labels, focus management, color contrast)
 - [ ] SEO: OG tags, structured data, sitemap
+
+### Phase G — Production Operations (post-launch)
+
+- [ ] Error tracking (Sentry)
+- [ ] Analytics (PostHog or Plausible)
+- [ ] Performance monitoring (Web Vitals — CLS, LCP, INP)
+- [ ] Feature flags for gradual rollouts (PostHog or LaunchDarkly)
+- [ ] Cookie consent banner (GDPR/CCPA compliance)
+- [ ] Data retention policy documentation
 
 ---
 
