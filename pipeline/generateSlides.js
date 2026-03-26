@@ -65,6 +65,42 @@ const P17SlideSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("cta17"), headline: z.string(), instruction: z.string() }),
 ]);
 
+const P8SlideSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("minimalHero"), title: z.string(), subtitle: z.string(), tag: z.string() }),
+  z.object({
+    type: z.literal("minimalStats"), title: z.string(),
+    stats: z.tuple([
+      z.object({ value: z.string(), label: z.string(), note: z.string().optional() }),
+      z.object({ value: z.string(), label: z.string(), note: z.string().optional() }),
+      z.object({ value: z.string(), label: z.string(), note: z.string().optional() }),
+    ]),
+  }),
+  z.object({ type: z.literal("minimalList"), title: z.string(), items: z.array(z.string()) }),
+  z.object({ type: z.literal("minimalQuote"), quote: z.string(), author: z.string(), role: z.string().optional() }),
+  z.object({
+    type: z.literal("minimalGrid"), headline: z.string(),
+    items: z.tuple([
+      z.object({ title: z.string(), body: z.string() }),
+      z.object({ title: z.string(), body: z.string() }),
+      z.object({ title: z.string(), body: z.string() }),
+      z.object({ title: z.string(), body: z.string() }),
+    ]),
+  }),
+  z.object({ type: z.literal("minimalClosing"), headline: z.string(), tagline: z.string() }),
+  z.object({
+    type: z.literal("minimalIconFeatures"), headline: z.string(),
+    features: z.tuple([
+      z.object({ iconName: z.string(), title: z.string(), body: z.string() }),
+      z.object({ iconName: z.string(), title: z.string(), body: z.string() }),
+      z.object({ iconName: z.string(), title: z.string(), body: z.string() }),
+    ]),
+  }),
+  z.object({
+    type: z.literal("minimalProgressBars"), title: z.string(),
+    bars: z.array(z.object({ label: z.string(), value: z.number().min(0).max(100), note: z.string().optional() })).min(3).max(5),
+  }),
+]);
+
 const THEME_CONFIGS = {
   P1: {
     compositionId: "Presentation",
@@ -107,6 +143,22 @@ const THEME_CONFIGS = {
 - expect17: { title: string, items: string[] }
 - cta17: { headline: string, instruction: string }`,
     schema: P17SlideSchema,
+  },
+  P8: {
+    compositionId: "Presentation8",
+    name: "Clean Minimalist",
+    vibe: "product launches, SaaS, design, tech, how-to tutorials — off-white background, charcoal text, Apple/Linear/Vercel aesthetic",
+    transitionFrames: 15,
+    slideTypes: `
+- minimalHero: { title: string, subtitle: string, tag: string } — opening slide with large title, supporting subtitle, small tag label
+- minimalStats: { title: string, stats: [EXACTLY 3 × {value: string, label: string, note?: string}] } — three key numbers side by side
+- minimalList: { title: string, items: string[] } — bulleted list of 3-6 items
+- minimalQuote: { quote: string, author: string, role?: string } — pull-quote with attribution
+- minimalGrid: { headline: string, items: [EXACTLY 4 × {title: string, body: string}] } — 2×2 card grid
+- minimalIconFeatures: { headline: string, features: [EXACTLY 3 × {iconName: string, title: string, body: string}] } — icon must be one of: ${VALID_ICON_NAMES.join(", ")}
+- minimalProgressBars: { title: string, bars: 3-5 × [{label: string, value: 0-100, note?: string}] } — horizontal progress bars
+- minimalClosing: { headline: string, tagline: string } — closing call-to-action`,
+    schema: P8SlideSchema,
   },
 };
 
@@ -222,8 +274,8 @@ SYNC RULES (critical — follow exactly):
 - segmentIndices MUST be contiguous (e.g. [3,4,5] not [3,5])
 - Every segment index from 0 to ${segments.length - 1} must appear in exactly one slide — no gaps, no overlaps
 - Slides will be shown on screen during exactly the segments they reference — the viewer sees this slide while the speaker says those words
-- Assign 2–3 contiguous segments per slide — NEVER more than 4. Each slide should be on screen for roughly 10–20 seconds.
-- Target approximately 1 slide per 4–5 segments. For ${segments.length} segments you should produce roughly ${Math.round(segments.length / 4)} slides.
+- Assign 2–4 contiguous segments per slide — NEVER more than 4. Each slide should be on screen for roughly 10–20 seconds.
+- Target approximately 1 slide per 3–4 segments. For ${segments.length} segments you should produce roughly ${Math.round(segments.length / 3)} slides.
 - AVOID reuseSlideIndex — only use it if the speaker explicitly returns to a named topic from earlier. Never use it just to fill time. Prefer creating a new slide with fresh content.
 
 CONTENT RULES:
@@ -251,11 +303,17 @@ ${segmentList}`,
  * @param {{ text: string, segments: Array<{start,end,text}> }} transcript
  * @returns {{ compositionId: string, themeId: string, slides: Array<object & {duration: number}> }}
  */
-async function generateSlides(transcript) {
+async function generateSlides(transcript, themeOverride = null) {
   const { segments } = transcript;
 
-  // Phase 1: Theme selection
-  const { themeId } = await selectTheme(transcript.text);
+  // Phase 1: Theme selection (skip if override provided)
+  let themeId;
+  if (themeOverride && THEME_CONFIGS[themeOverride]) {
+    themeId = themeOverride;
+    console.log(`[generateSlides] theme override: ${themeId}`);
+  } else {
+    themeId = (await selectTheme(transcript.text)).themeId;
+  }
   const theme = THEME_CONFIGS[themeId];
 
   // Phase 2: Slide generation with retry
