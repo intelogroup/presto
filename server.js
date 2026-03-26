@@ -35,7 +35,7 @@ fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 const upload = multer({
   storage: multer.diskStorage({
     destination: "/tmp",
-    filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+    filename: (req, file, cb) => cb(null, `${uuidv4()}-${file.originalname}`),
   }),
   limits: { fileSize: 500 * 1024 * 1024 }, // 500MB
 });
@@ -64,7 +64,7 @@ const remotionBin = path.join(__dirname, "node_modules", ".bin", "remotion");
 function renderVideo(compositionId, inputProps) {
   return new Promise((resolve, reject) => {
     const safeCompositionId = compositionId.replace(/[^a-zA-Z0-9_\-]/g, "_");
-    const filename = `${safeCompositionId}_${Date.now()}.mp4`;
+    const filename = `${safeCompositionId}_${uuidv4()}.mp4`;
     const outputPath = path.join(OUTPUT_DIR, filename);
     execFile(
       remotionBin,
@@ -122,6 +122,16 @@ async function runPipeline(jobId, videoPath) {
   } catch (e) {
     console.error("[pipeline error]", "jobId=" + jobId, e.message);
     jobs.set(jobId, { ...jobs.get(jobId), status: "error", error: e.message });
+
+    // Clean up temp files on failure
+    const job = jobs.get(jobId);
+    const tempFiles = [
+      job.videoPath,
+      job.wavPath,
+      job.transcriptPath,
+      job.talkingHeadPublicPath,
+    ].filter(Boolean);
+    tempFiles.forEach((f) => fs.unlink(f, () => {}));
   }
 }
 

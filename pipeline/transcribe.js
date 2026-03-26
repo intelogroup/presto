@@ -5,7 +5,7 @@ const OpenAI = require("openai");
 
 let _openai = null;
 function getOpenAI() {
-  if (!_openai) _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  if (!_openai) _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 3 });
   return _openai;
 }
 
@@ -23,6 +23,7 @@ async function transcribe(videoPath, jobId) {
     execFile(
       "ffmpeg",
       ["-y", "-i", videoPath, "-ar", "16000", "-ac", "1", "-f", "wav", wavPath],
+      { timeout: 5 * 60 * 1000 },
       (err, _stdout, stderr) => {
         if (err) return reject(new Error(`ffmpeg failed: ${stderr}`));
         resolve();
@@ -32,12 +33,17 @@ async function transcribe(videoPath, jobId) {
 
   // Transcribe with Whisper
   const fileStream = fs.createReadStream(wavPath);
-  const response = await getOpenAI().audio.transcriptions.create({
-    model: "whisper-1",
-    file: fileStream,
-    response_format: "verbose_json",
-    timestamp_granularities: ["segment"],
-  });
+  let response;
+  try {
+    response = await getOpenAI().audio.transcriptions.create({
+      model: "whisper-1",
+      file: fileStream,
+      response_format: "verbose_json",
+      timestamp_granularities: ["segment"],
+    });
+  } finally {
+    fileStream.destroy();
+  }
 
   if (!response.text || response.text.trim().length === 0) {
     throw new Error("Whisper returned an empty transcript");

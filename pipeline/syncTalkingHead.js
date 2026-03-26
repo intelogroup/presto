@@ -20,6 +20,7 @@ async function getVideoFrames(videoPath) {
         "-of", "json",
         videoPath,
       ],
+      { timeout: 30 * 1000 },
       (err, stdout, stderr) => {
         if (err) return reject(new Error(`ffprobe failed: ${stderr}`));
         const info = JSON.parse(stdout);
@@ -87,6 +88,9 @@ async function syncTalkingHead({ slides, videoPath, compositionId, jobId, transi
         remaining -= step;
       }
     }
+    if (remaining !== 0) {
+      console.warn(`[syncTalkingHead] unresolvable drift: ${remaining} frames could not be redistributed across slides`);
+    }
   }
 
   // Sanitize jobId to alphanumeric+dash only before using in a path
@@ -97,7 +101,7 @@ async function syncTalkingHead({ slides, videoPath, compositionId, jobId, transi
   if (!talkingHeadPublicPath.startsWith(PUBLIC_DIR + path.sep) && talkingHeadPublicPath !== PUBLIC_DIR) {
     throw new Error("Path traversal detected in jobId");
   }
-  fs.copyFileSync(videoPath, talkingHeadPublicPath);
+  await fs.promises.copyFile(videoPath, talkingHeadPublicPath);
 
   return {
     compositionId,

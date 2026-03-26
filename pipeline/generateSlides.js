@@ -3,7 +3,7 @@ const { z } = require("zod");
 
 let _openai = null;
 function getOpenAI() {
-  if (!_openai) _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  if (!_openai) _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 3 });
   return _openai;
 }
 
@@ -145,7 +145,13 @@ Select the single best theme for the transcript. Respond with JSON.`,
     ],
   });
 
-  return JSON.parse(response.choices[0].message.content);
+  let parsed;
+  try {
+    parsed = JSON.parse(response.choices[0].message.content);
+  } catch (e) {
+    throw new Error(`Failed to parse theme selection response: ${e.message}`);
+  }
+  return parsed;
 }
 
 /**
