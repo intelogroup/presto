@@ -1,15 +1,25 @@
 import { test, expect } from "@playwright/test";
 import path from "path";
 import fs from "fs";
+import os from "os";
+
+let tmpDir: string;
 
 // Helper: create a temp file for upload tests
 function createTempFile(name: string, sizeBytes: number): string {
-  const dir = path.join(__dirname, ".tmp");
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  const fp = path.join(dir, name);
+  if (!tmpDir) {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "pw-upload-"));
+  }
+  const fp = path.join(tmpDir, name);
   fs.writeFileSync(fp, Buffer.alloc(sizeBytes));
   return fp;
 }
+
+test.afterAll(() => {
+  if (tmpDir && fs.existsSync(tmpDir)) {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
 
 test.describe("Upload form interactions", () => {
   test.beforeEach(async ({ page }) => {

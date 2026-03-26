@@ -116,7 +116,7 @@
 
 ### Current (Development — Render.com)
 
-```
+```text
 Browser (Vercel)
   ├─ GET /api/upload-token → Next.js generates HMAC token
   ├─ PUT directly to Render (video upload with x-upload-token)
@@ -131,7 +131,7 @@ Pipeline on Render:
 
 ### Planned (Production — AWS)
 
-```
+```text
 Browser
   ├─ WorkOS login → JWT
   ├─ GET /api/upload-url → Lambda returns S3 pre-signed URL
@@ -157,7 +157,7 @@ User uploads a video with face visible → animated `TalkingHead` overlay with f
 User uploads audio only (MP3, M4A, WAV) → static headshot in the same circular frame, no animation.
 
 **Headshot fallback chain:**
-```
+```text
 1. User uploads a photo alongside audio  → use uploaded photo
 2. No photo uploaded                      → pull WorkOS profile avatar
 3. No WorkOS avatar                       → themed generic silhouette placeholder
@@ -166,7 +166,7 @@ User uploads audio only (MP3, M4A, WAV) → static headshot in the same circular
 The generic placeholder is a neutral head+shoulders silhouette (no face details) — tinted to match the active theme's palette. No animation on static headshots.
 
 **Pipeline branch:**
-```
+```text
 Has video stream?
   ├─ Yes → TalkingHead.tsx (OffthreadVideo + face tracking)
   └─ No (audio-only) →

@@ -144,7 +144,7 @@ describe("filename sanitization", () => {
     expect(safeExt("test.mov")).toBe(".mov");
   });
 
-  it("rejects dangerous extensions", () => {
+  it("extracts last extension (no deny list)", () => {
     expect(safeExt("file.mp4.exe")).toBe(".exe"); // extname takes last
     expect(safeExt("file.")).toBe(""); // trailing dot
     expect(safeExt("file")).toBe(""); // no extension

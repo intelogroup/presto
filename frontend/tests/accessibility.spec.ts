@@ -34,11 +34,9 @@ test.describe("Accessibility basics", () => {
     await combobox.focus();
     await expect(combobox).toBeFocused();
 
-    // The submit button is disabled (no file selected), but it still has
-    // tabindex="0" — verify its tabindex attribute is set for keyboard access
+    // The submit button is disabled (no file selected)
     const btn = page.getByRole("button", { name: "Generate slides" });
-    const tabindex = await btn.getAttribute("tabindex");
-    expect(tabindex).toBe("0");
+    await expect(btn).toBeDisabled();
   });
 
   test("theme selector is keyboard-operable", async ({ page }) => {

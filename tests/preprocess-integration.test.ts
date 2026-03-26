@@ -63,7 +63,6 @@ afterAll(() => {
   for (const f of fixtures) {
     try { fs.unlinkSync(f); } catch {}
   }
-  try { fs.unlinkSync("/tmp/test_int_corrupt.mp4"); } catch {}
 });
 
 describe("preprocessVideo (integration)", () => {
@@ -103,6 +102,7 @@ describe("preprocessVideo (integration)", () => {
 
   it.skipIf(!ffmpegAvailable)("rejects corrupt file", async () => {
     fs.writeFileSync("/tmp/test_int_corrupt.mp4", "corrupt data here");
+    fixtures.push("/tmp/test_int_corrupt.mp4");
     await expect(preprocessVideo("/tmp/test_int_corrupt.mp4", "/tmp"))
       .rejects.toThrow("ffprobe failed");
   });

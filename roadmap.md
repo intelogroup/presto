@@ -159,17 +159,18 @@
 
 | Area | Framework | Tests | Status |
 |------|-----------|-------|--------|
-| Preprocess logic | Node.js (plain) | 44 | Pass |
-| Input validation | Node.js (plain) | ~10 | Needs ffmpeg |
-| Preprocess integration | Node.js (plain) | ~8 | Needs ffmpeg |
+| Preprocess logic | Vitest 4 + TypeScript | 14 | Pass |
+| Input validation | Vitest 4 + TypeScript | 6 | Pass (skips if no ffmpeg) |
+| Preprocess integration | Vitest 4 + TypeScript | 6 | Pass (skips if no ffmpeg) |
+| generateSlides logic | Vitest 4 + TypeScript | 24 | Pass |
+| syncTalkingHead logic | Vitest 4 + TypeScript | 16 | Pass |
+| server.js logic | Vitest 4 + TypeScript | 27 | Pass |
+| Schema validation (Zod) | Vitest 4 + TypeScript | 33 | Pass |
 | Frontend E2E | Playwright | 26 | Pass |
-| generateSlides | — | 0 | Not written |
-| syncTalkingHead | — | 0 | Not written |
 | faceTrack | — | 0 | Not written |
-| server.js routes | — | 0 | Not written |
 | Remotion render | — | 0 | Not written |
 
-**Test framework:** Currently plain Node.js scripts. Vitest recommended for new tests (see testing notes below).
+**Test framework:** Tests run with Vitest 4 in TypeScript. Add missing tests (faceTrack, Remotion render) using Vitest + mocks or integration setups.
 
 ---
 

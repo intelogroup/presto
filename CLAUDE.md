@@ -90,7 +90,7 @@ presto/
 
 - **Backend**: `node server.js` on Render.com (or locally)
 - **Frontend**: `cd frontend && npm run dev` on Vercel (or locally)
-- **Tests**: `node tests/preprocess.test.js` (unit), `cd frontend && npx playwright test` (E2E)
+- **Tests**: `npm test` (unit via Vitest), `cd frontend && npx playwright test` (E2E)
 - **Remotion Studio**: `npx remotion studio` (preview themes)
 
 ## Known Gaps (Priority Order)
