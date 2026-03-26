@@ -158,11 +158,48 @@ Three states:
 - Add estimated time text below progress bar: "Usually takes 2-5 minutes"
 - "Cancel" outline button at bottom
 
-**Ready:**
-- 16:9 video player (native `<video>` element with `controls`, or a black placeholder with play icon if no URL)
+**Ready — two-panel layout (desktop), stacked (mobile):**
+
+Left panel (60% width):
+- 16:9 video player (native `<video>` element with `controls`, or black placeholder with play icon if no URL)
 - Below video: row of slide thumbnails (horizontal scroll, read-only). Each thumbnail is a small colored rect with slide type label. Shows duration in seconds overlay.
 - Action bar: "Download MP4" primary button, "Create Another" outline button
 - Metadata: Theme, duration, slide count, created date
+
+Right panel (40% width) — **Chat Editor:**
+- Chat-style interface for modifying the video with plain language
+- Scrollable message history (user messages right-aligned, system responses left-aligned)
+- Text input at bottom with send button and placeholder: "Describe changes to your video..."
+- Messages use simple bubbles: user = primary bg, system = muted bg
+
+**Example prompts users can send:**
+- "Change slide 3 title to 'Q4 Revenue Results'"
+- "Make the intro slide longer, about 5 seconds"
+- "Switch to the Dashboard theme"
+- "Remove the last slide"
+- "Add a new slide about our team after slide 2"
+- "Change the color scheme to blue tones"
+- "Make the talking head smaller"
+
+**Chat flow:**
+1. User types a plain language edit request
+2. Frontend sends `POST /api/project/[jobId]/edit` with `{ message: "..." }`
+3. Backend parses intent via GPT-4o → maps to slide/theme/timing mutations
+4. Backend returns structured response: `{ reply: "Done — changed slide 3 title.", changes: [...], requiresRerender: true }`
+5. If `requiresRerender: true` → status switches back to "Processing" while Remotion re-renders. Chat stays visible with a "Re-rendering your video..." system message.
+6. If `requiresRerender: false` (metadata-only change) → update immediately, show confirmation message
+
+**Chat UI states:**
+- **Empty**: "Ask me to change anything — slide content, timing, theme, or layout." placeholder with 3-4 example chips the user can click
+- **Thinking**: Animated dots in a system bubble while GPT-4o processes
+- **Re-rendering**: System message with inline progress bar: "Re-rendering... (usually 1-2 min)"
+- **Error**: System message in destructive style: "Couldn't apply that change. Try rephrasing?"
+- **History**: All past edits persist for the session. Scroll up to see previous changes.
+
+**Edit history sidebar (collapsed by default):**
+- Toggle via "History" button in chat header
+- Shows a vertical timeline of all edits: timestamp, user message summary, status (applied/failed/reverted)
+- Each entry has a "Revert" button that undoes that specific change and triggers re-render
 
 **Failed:**
 - Error card (destructive background): error message from server
@@ -215,6 +252,8 @@ These are compatible with the existing `base-nova` style and `neutral` base colo
 | `HeadshotUpload` | `components/headshot-upload.tsx` | Small drop zone for optional photo |
 | `SlideStrip` | `components/slide-strip.tsx` | Horizontal scrollable slide thumbnails |
 | `PricingCard` | `components/pricing-card.tsx` | Plan card with feature list + CTA |
+| `ChatEditor` | `components/chat-editor.tsx` | Chat interface for plain-language video edits. Props: `jobId`. Manages message history, sends to `/api/project/[jobId]/edit`, shows thinking/re-rendering states |
+| `EditHistory` | `components/edit-history.tsx` | Collapsible sidebar timeline of past edits with revert buttons. Props: `jobId`, `edits[]` |
 
 ---
 
@@ -254,6 +293,7 @@ Every page must handle all applicable states:
 | `/api/checkout` | POST | Create Stripe Checkout Session, return URL |
 | `/api/webhooks/stripe` | POST | Handle `checkout.session.completed`, `invoice.paid`, `customer.subscription.deleted` |
 | `/api/subscription` | GET | Return current user's plan + usage |
+| `/api/project/[jobId]/edit` | POST | Send `{ message: "..." }` → GPT-4o parses intent → returns `{ reply, changes[], requiresRerender }` |
 
 ### Flow
 
@@ -301,7 +341,10 @@ Every page must handle all applicable states:
 - [ ] Move upload form to `/app/new` with `ThemeGrid` (visual theme picker)
 - [ ] Add conditional `HeadshotUpload` for audio-only files
 - [ ] Move status page to `/app/project/[jobId]`
-- [ ] Add "Ready" state: video player + `SlideStrip` + download actions
+- [ ] Add "Ready" state: two-panel layout with video player + `SlideStrip` + download actions
+- [ ] Build `ChatEditor` component (message list, input, example chips, thinking/re-rendering states)
+- [ ] Build `EditHistory` sidebar (timeline, revert buttons)
+- [ ] Wire `POST /api/project/[jobId]/edit` route (proxy to backend GPT-4o edit endpoint)
 - [ ] Add "Failed" state with retry
 - [ ] Loading skeletons for dashboard and project detail
 
@@ -379,6 +422,9 @@ frontend/
 │   │   ├── upload-token/route.ts     # (existing)
 │   │   ├── status/[jobId]/route.ts   # (existing)
 │   │   ├── download/[jobId]/route.ts # (existing)
+│   │   ├── project/
+│   │   │   └── [jobId]/
+│   │   │       └── edit/route.ts     # Chat edit → GPT-4o → mutations
 │   │   ├── checkout/route.ts         # Stripe session creation
 │   │   ├── subscription/route.ts     # Plan status
 │   │   └── webhooks/
@@ -392,7 +438,9 @@ frontend/
 │   ├── status-badge.tsx              # Processing/Ready/Failed
 │   ├── theme-grid.tsx                # Visual theme picker
 │   ├── headshot-upload.tsx           # Optional photo upload
-│   ├── slide-strip.tsx              # Horizontal slide thumbnails
+│   ├── slide-strip.tsx               # Horizontal slide thumbnails
+│   ├── chat-editor.tsx               # Plain-language video editor
+│   ├── edit-history.tsx              # Edit timeline sidebar
 │   ├── pricing-card.tsx              # Plan card
 │   ├── upload-form.tsx               # (existing, updated)
 │   ├── status-tracker.tsx            # (existing, updated)
