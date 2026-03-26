@@ -1,6 +1,6 @@
 # Presto — Full Pipeline Scope
 
-**Goal:** User uploads a talking head video → system fully auto-generates a synced presentation video with slides derived from the speech.
+**Goal:** User uploads a talking head video (or audio-only with optional headshot) → system fully auto-generates a synced presentation video with slides derived from the speech.
 
 ---
 
@@ -145,6 +145,40 @@ Storage: S3 (videos) + DynamoDB (job metadata)
 Auth: WorkOS
 Compute: Lambda (API + light pipeline) + ECS Fargate (Remotion renders)
 ```
+
+---
+
+## Headshot Modes
+
+### Mode 1: Video Upload (Talking Head)
+User uploads a video with face visible → animated `TalkingHead` overlay with face tracking.
+
+### Mode 2: Audio-Only Upload (Static Headshot)
+User uploads audio only (MP3, M4A, WAV) → static headshot in the same circular frame, no animation.
+
+**Headshot fallback chain:**
+```
+1. User uploads a photo alongside audio  → use uploaded photo
+2. No photo uploaded                      → pull WorkOS profile avatar
+3. No WorkOS avatar                       → themed generic silhouette placeholder
+```
+
+The generic placeholder is a neutral head+shoulders silhouette (no face details) — tinted to match the active theme's palette. No animation on static headshots.
+
+**Pipeline branch:**
+```
+Has video stream?
+  ├─ Yes → TalkingHead.tsx (OffthreadVideo + face tracking)
+  └─ No (audio-only) →
+       ├─ User uploaded photo? → StaticHeadshot.tsx (still image)
+       ├─ WorkOS profile avatar? → StaticHeadshot.tsx (fetched image)
+       └─ Neither → StaticHeadshot.tsx (themed placeholder)
+```
+
+**Components needed:**
+- `src/StaticHeadshot.tsx` — same circular frame as TalkingHead, renders `<Img>` instead of `<OffthreadVideo>`, no face tracking, no animation
+- `frontend/components/upload-form.tsx` — optional photo upload field (shown when audio file selected)
+- Generic placeholder SVGs/PNGs per theme palette
 
 ---
 

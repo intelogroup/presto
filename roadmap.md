@@ -71,6 +71,8 @@
 - [ ] File clear/remove button after selection
 - [ ] Check token expiry client-side before upload; auto-refresh if expired
 - [ ] Toast/notification system (sonner or react-hot-toast)
+- [ ] Optional headshot photo upload field — shown when user selects an audio-only file (MP3, M4A, WAV)
+- [ ] Headshot preview thumbnail after photo selection
 
 ### 3.2 Status & Download
 - [ ] Video preview player on completion (embed `<video>` with download URL)
@@ -110,7 +112,16 @@
 - [ ] Add P8 to frontend theme selector dropdown
 - [ ] Add `talkingHeadSrc` to P8 default props in `Root.tsx`
 
-### 4.3 Consistency
+### 4.3 Static Headshot for Audio-Only Uploads
+- [ ] Create `src/StaticHeadshot.tsx` — same circular frame as TalkingHead, renders `<Img>` (no animation, no face tracking)
+- [ ] Create themed placeholder silhouette assets (neutral head+shoulders, tinted per theme palette)
+- [ ] Add headshot fallback chain in pipeline: uploaded photo → WorkOS avatar → themed placeholder
+- [ ] Branch pipeline on video stream detection: video → TalkingHead flow, audio-only → StaticHeadshot flow
+- [ ] Add `headshotSrc` field to theme schemas (optional, alongside `talkingHeadSrc`)
+- [ ] Update `syncTalkingHead.js` to skip face tracking + video copy when audio-only
+- [ ] Pass headshot image path to Remotion inputProps for StaticHeadshot rendering
+
+### 4.4 Consistency
 - [ ] Refactor all 13 inline `reduce`/overlap calculations to use shared `calcDuration` helper
 - [ ] Fix P17 TalkingHead border color (uses P1 blue `#38bdf8` instead of theme accent)
 - [ ] Replace hardcoded hex colors in slide components with theme object references

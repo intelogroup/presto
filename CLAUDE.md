@@ -29,8 +29,10 @@ This project uses **Next.js 16.2.1** and **React 19.2.4**. APIs, conventions, an
 - P17 = `"Presentation17"`
 - All others follow `"PresentationNDemo"` pattern
 
-### Talking Head Support
+### Talking Head / Static Headshot
 Only P1, P3, P17 have full `talkingHeadSrc` + `faceTrack` in their schemas. P8 has `talkingHeadSrc` but is missing `faceTrack` (known gap). All other themes render slides-only.
+
+**Audio-only uploads** use a static headshot instead of animated talking head. Fallback chain: user-uploaded photo → WorkOS profile avatar → themed generic silhouette placeholder. No animation on static headshots. Component: `StaticHeadshot.tsx` (planned, not yet built).
 
 ### Multer Storage
 Always use `multer.diskStorage()` — never memory storage. A 500MB video in RAM will OOM.
