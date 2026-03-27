@@ -1,8 +1,41 @@
 import { EmptyState } from "@/components/empty-state";
+import { ProjectCard } from "@/components/project-card";
+
+// Mock data — replaced with real API call when backend persistence lands
+const MOCK_PROJECTS: {
+  jobId: string;
+  filename: string;
+  status: "processing" | "ready" | "failed";
+  theme?: string;
+  createdAt: string;
+}[] = [
+  {
+    jobId: "demo-1",
+    filename: "quarterly-review.mp4",
+    status: "ready",
+    theme: "Dark Tech",
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    jobId: "demo-2",
+    filename: "product-launch-talk.mov",
+    status: "processing",
+    theme: "Dashboard / KPI",
+    createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+  },
+  {
+    jobId: "demo-3",
+    filename: "team-standup-mar25.mp3",
+    status: "failed",
+    theme: "Academic",
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+  },
+];
 
 export default function DashboardPage() {
-  // TODO: Fetch projects from backend when persistence is added
-  const projects: unknown[] = [];
+  // Toggle between empty and populated states for development.
+  // When backend persistence is added, fetch real projects here.
+  const projects = MOCK_PROJECTS;
 
   if (projects.length === 0) {
     return (
@@ -31,5 +64,14 @@ export default function DashboardPage() {
     );
   }
 
-  return null;
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-12">
+      <h1 className="text-xl font-semibold text-foreground">Projects</h1>
+      <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {projects.map((p) => (
+          <ProjectCard key={p.jobId} {...p} />
+        ))}
+      </div>
+    </div>
+  );
 }
