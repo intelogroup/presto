@@ -251,6 +251,12 @@ app.post("/pipeline/start", uploadLimiter, upload.single("video"), (req, res) =>
     return res.status(429).json({ error: "Too many concurrent jobs, try again later" });
   }
 
+  // Hard cap on total tracked jobs to prevent unbounded memory growth
+  if (jobs.size >= 10_000) {
+    fs.unlink(req.file.path, () => {});
+    return res.status(503).json({ error: "Server at capacity, try again later" });
+  }
+
   // Disk space check
   execFile("df", ["-B1", "--output=avail", "/tmp"], (err, stdout) => {
     if (err) {
