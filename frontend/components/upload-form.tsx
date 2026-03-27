@@ -84,7 +84,7 @@ export function UploadForm() {
     <div className="space-y-4">
       <div
         className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors ${
-          dragging ? "border-blue-400 bg-blue-50" : "border-gray-300 hover:border-gray-400"
+          dragging ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground"
         }`}
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
@@ -99,11 +99,11 @@ export function UploadForm() {
           onChange={handleChange}
         />
         {file ? (
-          <p className="text-sm font-medium text-gray-700">{file.name}</p>
+          <p className="text-sm font-medium text-foreground">{file.name}</p>
         ) : (
           <div className="space-y-1">
-            <p className="text-sm text-gray-600">Drop a video or audio file here</p>
-            <p className="text-xs text-gray-400">MP4, MOV, WebM, MP3, M4A — up to 500MB</p>
+            <p className="text-sm text-muted-foreground">Drop a video or audio file here</p>
+            <p className="text-xs text-muted-foreground/70">MP4, MOV, WebM, MP3, M4A — up to 500MB</p>
           </div>
         )}
       </div>
@@ -127,7 +127,7 @@ export function UploadForm() {
       </div>
 
       {error && (
-        <p className="text-sm text-red-600">{error}</p>
+        <p className="text-sm text-destructive">{error}</p>
       )}
     </div>
   );

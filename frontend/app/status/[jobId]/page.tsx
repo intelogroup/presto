@@ -12,7 +12,7 @@ interface JobStatus {
   error?: string;
 }
 
-// Next.js 15: params is a Promise — unwrap with use()
+// Next.js 16: params is a Promise — unwrap with use()
 export default function StatusPage({
   params,
 }: {
@@ -47,16 +47,16 @@ export default function StatusPage({
   const isError = job?.status === "error";
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <main className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-lg space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">
+          <h1 className="text-2xl font-semibold text-foreground">
             {isDone ? "Done!" : isError ? "Failed" : "Processing…"}
           </h1>
-          <p className="text-xs text-gray-400 mt-1 font-mono">{jobId}</p>
+          <p className="text-xs text-muted-foreground/70 mt-1 font-mono">{jobId}</p>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
           {job ? (
             <StatusTracker
               step={job.step}
@@ -64,9 +64,9 @@ export default function StatusPage({
               error={job.error}
             />
           ) : fetchError ? (
-            <p className="text-sm text-gray-500">{fetchError}</p>
+            <p className="text-sm text-muted-foreground">{fetchError}</p>
           ) : (
-            <p className="text-sm text-gray-400">Connecting…</p>
+            <p className="text-sm text-muted-foreground/70">Connecting…</p>
           )}
         </div>
 

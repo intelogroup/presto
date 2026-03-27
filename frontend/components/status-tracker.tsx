@@ -52,21 +52,21 @@ export function StatusTracker({ step, status, error }: StatusTrackerProps) {
               <div
                 className={`h-2 w-2 rounded-full flex-shrink-0 ${
                   isDone
-                    ? "bg-green-500"
+                    ? "bg-accent"
                     : isCurrent
-                    ? "bg-blue-500 animate-pulse"
-                    : "bg-gray-200"
+                    ? "bg-primary animate-pulse"
+                    : "bg-border"
                 }`}
               />
               <span
                 className={`text-sm ${
                   isDone
-                    ? "text-green-700"
+                    ? "text-accent"
                     : isCurrent
-                    ? "font-medium text-blue-700"
+                    ? "font-medium text-primary"
                     : isPending
-                    ? "text-gray-400"
-                    : "text-gray-600"
+                    ? "text-muted-foreground/50"
+                    : "text-muted-foreground"
                 }`}
               >
                 {STEP_LABELS[s]}
@@ -77,14 +77,14 @@ export function StatusTracker({ step, status, error }: StatusTrackerProps) {
                 </Badge>
               )}
               {isDone && s !== "done" && (
-                <span className="text-xs text-green-600">✓</span>
+                <span className="text-xs text-accent">✓</span>
               )}
             </div>
           );
         })}
       </div>
       {error && (
-        <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
           {error}
         </div>
       )}
