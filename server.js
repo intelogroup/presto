@@ -70,7 +70,11 @@ function validateUploadToken(header, secret) {
 app.use((req, res, next) => {
   if (req.path === "/health") return next();
   if (!API_SECRET) {
-    console.warn("WARNING: RENDER_API_SECRET not set — server is unprotected");
+    if (process.env.NODE_ENV === "production") {
+      console.error("FATAL: RENDER_API_SECRET is not set in production — refusing to start");
+      process.exit(1);
+    }
+    console.warn("WARNING: RENDER_API_SECRET not set — server is unprotected (dev mode)");
     return next();
   }
   const apiKey = req.headers["x-api-key"];
