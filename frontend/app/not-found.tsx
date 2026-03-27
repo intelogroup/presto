@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
@@ -35,15 +34,11 @@ export default function NotFound() {
 
         {/* Actions */}
         <div className="flex items-center justify-center gap-3 pt-2">
-          <Link href="/">
-            <Button className="rounded-xl shadow-md shadow-primary/20">
-              Go home
-            </Button>
+          <Link href="/" className="inline-flex items-center justify-center rounded-xl bg-primary px-4 h-9 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20 hover:bg-primary/90 transition-colors">
+            Go home
           </Link>
-          <Link href="/app">
-            <Button variant="outline" className="rounded-xl">
-              Dashboard
-            </Button>
+          <Link href="/app" className="inline-flex items-center justify-center rounded-xl border border-border bg-background px-4 h-9 text-sm font-medium text-foreground hover:bg-muted transition-colors">
+            Dashboard
           </Link>
         </div>
       </div>

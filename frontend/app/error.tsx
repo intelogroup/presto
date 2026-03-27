@@ -47,10 +47,8 @@ export default function GlobalError({
           <Button onClick={reset} className="rounded-xl shadow-md shadow-primary/20">
             Try again
           </Button>
-          <Link href="/">
-            <Button variant="outline" className="rounded-xl">
-              Go home
-            </Button>
+          <Link href="/" className="inline-flex items-center justify-center rounded-xl border border-border bg-background px-4 h-9 text-sm font-medium text-foreground hover:bg-muted transition-colors">
+            Go home
           </Link>
         </div>
       </div>

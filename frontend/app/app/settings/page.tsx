@@ -169,10 +169,8 @@ export default function SettingsPage() {
                   </span>
                 </div>
               </div>
-              <Link href="/#pricing">
-                <Button className="rounded-xl shadow-sm shadow-primary/20">
-                  Upgrade to Pro
-                </Button>
+              <Link href="/#pricing" className="inline-flex items-center justify-center rounded-xl bg-primary px-4 h-9 text-sm font-semibold text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90 transition-colors">
+                Upgrade to Pro
               </Link>
             </div>
 
@@ -262,7 +260,9 @@ function NotificationRow({
         <p className="text-xs text-muted-foreground">{description}</p>
       </div>
       <button
+        type="button"
         role="switch"
+        aria-label={label}
         aria-checked={checked}
         onClick={() => setChecked(!checked)}
         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
@@ -270,7 +270,7 @@ function NotificationRow({
         }`}
       >
         <span
-          className={`pointer-events-none block size-5 rounded-full bg-white shadow-sm ring-0 transition-transform ${
+          className={`pointer-events-none block size-5 rounded-full bg-background shadow-sm ring-0 transition-transform ${
             checked ? "translate-x-5" : "translate-x-0"
           }`}
         />

@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RootLoading() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 animate-fade-in">
+    <div className="mx-auto max-w-6xl px-4 py-12 motion-safe:animate-fade-in">
       {/* Header skeleton */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">

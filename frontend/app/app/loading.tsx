@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardLoading() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 animate-fade-in">
+    <div className="mx-auto max-w-6xl px-4 py-10 motion-safe:animate-fade-in">
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div className="space-y-2">
@@ -16,7 +16,7 @@ export default function DashboardLoading() {
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-xl border border-border/40 bg-card/50 overflow-hidden"
+            className="rounded-xl border border-border/40 bg-card/50 overflow-hidden animate-fade-in"
             style={{ animationDelay: `${i * 80}ms` }}
           >
             {/* Thumbnail */}
