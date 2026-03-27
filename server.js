@@ -9,10 +9,19 @@ const { transcribe } = require("./pipeline/transcribe");
 const { generateSlides } = require("./pipeline/generateSlides");
 const { syncTalkingHead } = require("./pipeline/syncTalkingHead");
 const { preprocessVideo } = require("./pipeline/preprocess");
+const helmet = require("helmet");
+const morgan = require("morgan");
+const rateLimit = require("express-rate-limit");
+const { createWatchdog } = require("./pipeline/watchdog");
 
 // nosemgrep: javascript.express.security.audit.express-check-csurf-middleware-usage.express-check-csurf-middleware-usage
 // CSRF not applicable: stateless JSON API authenticated via X-API-Key header, not cookies/sessions
 const app = express(); // nosemgrep
+app.use(helmet());
+// Request logging — skip /health to avoid noise
+app.use(morgan("combined", {
+  skip: (req) => req.path === "/health",
+}));
 app.use(express.json());
 
 // CORS: allow browser direct uploads from Vercel frontend and local dev
