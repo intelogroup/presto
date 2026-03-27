@@ -2,7 +2,6 @@
 
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { StatusTracker } from "@/components/status-tracker";
 import { SlideStrip } from "@/components/slide-strip";
 import { ChatEditor } from "@/components/chat-editor";
@@ -96,9 +95,7 @@ export default function ProjectDetailPage({
           <p className="text-center text-xs text-muted-foreground/50">Usually takes 2-5 minutes</p>
 
           <div className="text-center">
-            <Link href="/app">
-              <Button variant="ghost" size="sm">Cancel</Button>
-            </Link>
+            <Link href="/app" className="inline-flex items-center justify-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Cancel</Link>
           </div>
         </div>
       </div>
@@ -123,8 +120,8 @@ export default function ProjectDetailPage({
             <p className="text-sm text-destructive">{job?.error ?? "An unexpected error occurred."}</p>
           </div>
           <div className="flex justify-center gap-3">
-            <Link href="/app/new"><Button className="rounded-xl">Try Again</Button></Link>
-            <Link href="/app"><Button variant="outline" className="rounded-xl">Dashboard</Button></Link>
+            <Link href="/app/new" className="inline-flex items-center justify-center rounded-xl bg-primary px-4 h-10 text-sm font-semibold text-primary-foreground shadow-sm">Try Again</Link>
+            <Link href="/app" className="inline-flex items-center justify-center rounded-xl border border-input bg-background px-4 h-10 text-sm font-semibold shadow-sm hover:bg-accent hover:text-accent-foreground">Dashboard</Link>
           </div>
         </div>
       </div>
@@ -137,7 +134,7 @@ export default function ProjectDetailPage({
       {/* Top toolbar */}
       <div className="flex items-center justify-between border-b border-border/40 bg-card/50 px-4 py-2">
         <div className="flex items-center gap-3">
-          <Link href="/app" className="text-muted-foreground hover:text-foreground transition-colors">
+          <Link href="/app" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Back to projects">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
             </svg>
@@ -148,13 +145,11 @@ export default function ProjectDetailPage({
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground">{MOCK_SLIDES.length} slides</span>
           <div className="ml-3 flex items-center gap-2">
-            <a href={`/api/download/${jobId}`} download>
-              <Button size="sm" className="rounded-lg shadow-sm shadow-primary/20">
+            <a href={`/api/download/${jobId}`} download className="inline-flex items-center justify-center rounded-lg bg-primary px-3 h-9 text-sm font-medium text-primary-foreground shadow-sm shadow-primary/20">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="mr-1.5 size-3.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                 </svg>
                 Export
-              </Button>
             </a>
           </div>
         </div>
@@ -199,12 +194,12 @@ export default function ProjectDetailPage({
               </div>
 
               {/* Play button overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <button className="group flex size-14 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all hover:bg-white/20 hover:scale-110">
+              <div className="absolute inset-0 flex items-center justify-center" role="presentation" aria-hidden="true">
+                <div className="group flex size-14 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all hover:bg-white/20 hover:scale-110">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-white/80 group-hover:text-white ml-0.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                   </svg>
-                </button>
+                </div>
               </div>
 
               {/* Bottom controls */}

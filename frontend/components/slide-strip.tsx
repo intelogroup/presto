@@ -57,7 +57,7 @@ export function SlideStrip({ slides }: SlideStripProps) {
       ))}
 
       {/* Add slide */}
-      <button className="flex-shrink-0 flex items-center justify-center w-16 h-[72px] rounded-lg border border-dashed border-white/10 text-white/20 transition-colors hover:border-primary/40 hover:text-primary/50">
+      <button disabled aria-disabled="true" className="flex-shrink-0 flex items-center justify-center w-16 h-[72px] rounded-lg border border-dashed border-white/10 text-white/20 cursor-not-allowed opacity-50">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>

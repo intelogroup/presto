@@ -10,16 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-const THEMES = [
-  { id: "P1", label: "Dark Tech" },
-  { id: "P2", label: "Gradient" },
-  { id: "P3", label: "Dashboard / KPI" },
-  { id: "P5", label: "Bold Color" },
-  { id: "P7", label: "Neon" },
-  { id: "P16", label: "Glassmorphism" },
-  { id: "P17", label: "Academic" },
-];
+import { cn } from "@/lib/utils";
+import { THEMES } from "@/lib/themes";
 
 const ACCEPTED = ["video/mp4", "video/quicktime", "video/webm", "audio/mpeg", "audio/mp4"];
 const MAX_SIZE_BYTES = 500 * 1024 * 1024; // 500 MB
@@ -87,13 +79,14 @@ export function UploadForm() {
   return (
     <div className="space-y-4">
       <div
-        className={`group relative overflow-hidden rounded-xl border-2 border-dashed p-10 text-center cursor-pointer transition-all duration-200 ${
+        className={cn(
+          "group relative overflow-hidden rounded-xl border-2 border-dashed p-10 text-center cursor-pointer transition-all duration-200",
           dragging
             ? "border-primary bg-primary/5 shadow-lg shadow-primary/10"
             : file
             ? "border-accent/40 bg-accent/5"
             : "border-border hover:border-primary/40 hover:bg-primary/[0.02]"
-        }`}
+        )}
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
@@ -143,7 +136,7 @@ export function UploadForm() {
             <SelectValue placeholder="Auto-select theme" />
           </SelectTrigger>
           <SelectContent>
-            {THEMES.map((t) => (
+            {THEMES.filter((t) => t.id !== "").map((t) => (
               <SelectItem key={t.id} value={t.id}>
                 {t.label}
               </SelectItem>

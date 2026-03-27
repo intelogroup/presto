@@ -2,7 +2,6 @@
 
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { StatusTracker } from "@/components/status-tracker";
 
 interface JobStatus {
@@ -112,24 +111,18 @@ export default function StatusPage({
 
         {isDone && (
           <div className="flex gap-3">
-            <a href={`/api/download/${jobId}`} download>
-              <Button size="lg" className="rounded-xl shadow-md shadow-primary/20">
+            <a href={`/api/download/${jobId}`} download className="inline-flex items-center justify-center rounded-xl bg-primary px-6 h-11 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="mr-2 size-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                 </svg>
                 Download video
-              </Button>
             </a>
-            <Link href="/">
-              <Button variant="outline" size="lg" className="rounded-xl">Start over</Button>
-            </Link>
+            <Link href="/" className="inline-flex items-center justify-center rounded-xl border border-input bg-background px-6 h-11 text-sm font-semibold shadow-sm hover:bg-accent hover:text-accent-foreground">Start over</Link>
           </div>
         )}
 
         {isError && (
-          <Link href="/">
-            <Button variant="outline" size="lg" className="rounded-xl">Try again</Button>
-          </Link>
+          <Link href="/" className="inline-flex items-center justify-center rounded-xl border border-input bg-background px-6 h-11 text-sm font-semibold shadow-sm hover:bg-accent hover:text-accent-foreground">Try again</Link>
         )}
       </div>
     </main>

@@ -246,7 +246,7 @@ export default function Home() {
         </section>
 
         {/* Pricing */}
-        <section id="pricing" className="border-t border-border/50 bg-muted/30 py-20 md:py-24">
+        <section id="pricing" className="relative border-t border-border/50 bg-muted/30 py-20 md:py-24">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_40%_at_50%_100%,oklch(0.52_0.24_265_/_0.04),transparent)]" />
           <div className="mx-auto max-w-5xl px-4">
             <h2 className="text-center text-3xl font-bold text-foreground md:text-4xl">

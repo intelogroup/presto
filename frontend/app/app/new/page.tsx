@@ -100,6 +100,8 @@ export default function NewProjectPage() {
             Upload file
           </h2>
           <div
+            role="button"
+            tabIndex={0}
             className={`group relative cursor-pointer rounded-xl border-2 border-dashed p-10 text-center transition-all duration-200 ${
               dragging
                 ? "border-primary bg-primary/5 shadow-lg shadow-primary/10"
@@ -111,6 +113,12 @@ export default function NewProjectPage() {
             onDragLeave={() => setDragging(false)}
             onDrop={handleDrop}
             onClick={() => inputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                if (e.key === " ") e.preventDefault();
+                inputRef.current?.click();
+              }
+            }}
           >
             <input
               ref={inputRef}
@@ -162,7 +170,7 @@ export default function NewProjectPage() {
               Add a headshot
               <span className="font-normal text-muted-foreground">(optional)</span>
             </h2>
-            <div className="cursor-pointer rounded-xl border-2 border-dashed border-border/60 p-6 text-center transition-all hover:border-primary/40 hover:bg-primary/[0.02]">
+            <div className="rounded-xl border-2 border-dashed border-border/60 p-6 text-center transition-all">
               <p className="text-sm text-muted-foreground">
                 Drop a photo here (JPEG/PNG, max 5 MB)
               </p>

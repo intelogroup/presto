@@ -1,4 +1,5 @@
 import { chromium } from "playwright";
+import fs from "node:fs";
 
 const BASE = "http://localhost:3099";
 const pages = [
@@ -12,20 +13,31 @@ const pages = [
   { name: "08-status-legacy", url: "/status/demo-1", viewport: { width: 1440, height: 900 } },
 ];
 
+fs.mkdirSync("/tmp/screenshots", { recursive: true });
+
 const browser = await chromium.launch();
 
-for (const p of pages) {
-  const context = await browser.newContext({ viewport: p.viewport });
-  const page = await context.newPage();
-  await page.goto(`${BASE}${p.url}`, { waitUntil: "networkidle", timeout: 15000 }).catch(() => {});
-  await page.waitForTimeout(1000);
-  await page.screenshot({
-    path: `/tmp/screenshots/${p.name}.png`,
-    fullPage: p.fullPage ?? false,
-  });
-  await context.close();
-  console.log(`✓ ${p.name}`);
+try {
+  for (const p of pages) {
+    const context = await browser.newContext({ viewport: p.viewport });
+    const page = await context.newPage();
+    try {
+      await page.goto(`${BASE}${p.url}`, { waitUntil: "networkidle", timeout: 15000 });
+    } catch (err) {
+      console.error(`Failed to load ${p.url}:`, err.message);
+      await context.close();
+      continue;
+    }
+    await page.waitForTimeout(1000);
+    await page.screenshot({
+      path: `/tmp/screenshots/${p.name}.png`,
+      fullPage: p.fullPage ?? false,
+    });
+    await context.close();
+    console.log(`✓ ${p.name}`);
+  }
+} finally {
+  await browser.close();
 }
 
-await browser.close();
 console.log("Done — screenshots in /tmp/screenshots/");

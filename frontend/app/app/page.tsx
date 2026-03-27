@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { ProjectCard } from "@/components/project-card";
 
@@ -82,7 +83,7 @@ export default function DashboardPage() {
       <div className="mt-12 rounded-2xl border border-border/40 bg-card/50 p-8 text-center">
         <h2 className="text-lg font-bold text-foreground">Create your next presentation</h2>
         <p className="mt-1 text-sm text-muted-foreground">Upload a recording and let AI do the rest.</p>
-        <a
+        <Link
           href="/app/new"
           className="mt-5 inline-flex items-center justify-center rounded-xl bg-primary px-6 h-10 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30"
         >
@@ -90,7 +91,7 @@ export default function DashboardPage() {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="ml-2 size-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -183,6 +183,7 @@ export function ChatEditor({ jobId }: ChatEditorProps) {
           <button
             type="submit"
             disabled={!input.trim() || sending}
+            aria-label="Send message"
             className="absolute right-2 top-1/2 -translate-y-1/2 flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-30 disabled:hover:bg-primary"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
