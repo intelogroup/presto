@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { StatusTracker } from "@/components/status-tracker";
 
@@ -74,16 +75,16 @@ export default function StatusPage({
             <a href={`/api/download/${jobId}`} download>
               <Button>Download video</Button>
             </a>
-            <a href="/">
+            <Link href="/">
               <Button variant="outline">Start over</Button>
-            </a>
+            </Link>
           </div>
         )}
 
         {isError && (
-          <a href="/">
+          <Link href="/">
             <Button variant="outline">Try again</Button>
-          </a>
+          </Link>
         )}
       </div>
     </main>
