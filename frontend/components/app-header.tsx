@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { buttonVariants } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -11,8 +12,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
 export function AppHeader() {
+  const router = useRouter();
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-card/80 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
@@ -21,8 +25,8 @@ export function AppHeader() {
         </Link>
 
         <div className="flex items-center gap-3">
-          <Link href="/app/new">
-            <Button size="sm">New Project</Button>
+          <Link href="/app/new" className={cn(buttonVariants({ size: "sm" }))}>
+            New Project
           </Link>
 
           <DropdownMenu>
@@ -37,18 +41,20 @@ export function AppHeader() {
                 <div className="text-muted-foreground">user@example.com</div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Link href="/app/settings" className="w-full">
-                  Settings
-                </Link>
+              <DropdownMenuItem onClick={() => router.push("/app/settings")}>
+                Settings
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href="/app/settings" className="w-full">
-                  Billing
-                </Link>
+              <DropdownMenuItem onClick={() => router.push("/app/settings")}>
+                Billing
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={() => {
+                  // TODO: Wire to auth sign-out when auth is implemented
+                  router.push("/login");
+                }}
+              >
                 Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>

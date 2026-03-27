@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface EmptyStateProps {
   icon: ReactNode;
@@ -20,9 +21,16 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
         {description}
       </p>
       {action && (
-        <a href={action.href} className="mt-6">
-          <Button>{action.label}</Button>
-        </a>
+        <Link
+          href={action.href}
+          className={cn(
+            "mt-6 inline-flex shrink-0 items-center justify-center rounded-lg text-sm font-medium transition-all",
+            "bg-primary text-primary-foreground",
+            "h-8 px-2.5"
+          )}
+        >
+          {action.label}
+        </Link>
       )}
     </div>
   );

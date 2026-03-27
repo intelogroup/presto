@@ -31,6 +31,7 @@ function Dialog({
 function DialogTrigger({
   className,
   children,
+  onClick,
   ...props
 }: React.ComponentProps<"button">) {
   const { onOpenChange } = React.useContext(DialogContext)
@@ -38,8 +39,11 @@ function DialogTrigger({
     <button
       data-slot="dialog-trigger"
       className={className}
-      onClick={() => onOpenChange(true)}
       {...props}
+      onClick={(e) => {
+        onClick?.(e)
+        if (!e.defaultPrevented) onOpenChange(true)
+      }}
     >
       {children}
     </button>
@@ -133,6 +137,7 @@ function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
 function DialogClose({
   className,
   children,
+  onClick,
   ...props
 }: React.ComponentProps<"button">) {
   const { onOpenChange } = React.useContext(DialogContext)
@@ -140,8 +145,11 @@ function DialogClose({
     <button
       data-slot="dialog-close"
       className={className}
-      onClick={() => onOpenChange(false)}
       {...props}
+      onClick={(e) => {
+        onClick?.(e)
+        if (!e.defaultPrevented) onOpenChange(false)
+      }}
     >
       {children}
     </button>

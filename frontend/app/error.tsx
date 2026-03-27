@@ -17,8 +17,13 @@ export default function GlobalError({
             Something went wrong
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {error.message || "An unexpected error occurred. Please try again."}
+            An unexpected error occurred. Please try again.
           </p>
+          {error.digest && (
+            <p className="mt-1 text-xs text-muted-foreground/70">
+              Reference: {error.digest}
+            </p>
+          )}
         </div>
         <Button onClick={reset}>Try again</Button>
       </div>

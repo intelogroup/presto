@@ -50,6 +50,7 @@ function TabsList({ className, ...props }: React.ComponentProps<"div">) {
 function TabsTrigger({
   className,
   value,
+  onClick,
   ...props
 }: React.ComponentProps<"button"> & { value: string }) {
   const ctx = React.useContext(TabsContext)
@@ -68,8 +69,11 @@ function TabsTrigger({
           : "hover:text-foreground",
         className
       )}
-      onClick={() => ctx.onValueChange(value)}
       {...props}
+      onClick={(e) => {
+        onClick?.(e)
+        if (!e.defaultPrevented) ctx.onValueChange(value)
+      }}
     />
   )
 }

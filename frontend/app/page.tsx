@@ -2,7 +2,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { Footer } from "@/components/footer";
 import { PricingCard } from "@/components/pricing-card";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const STEPS = [
   {
@@ -93,13 +93,25 @@ export default function Home() {
             minutes.
           </p>
           <div className="mt-8 flex items-center justify-center gap-3">
-            <Link href="/login">
-              <Button size="lg">Get Started</Button>
+            <Link
+              href="/login"
+              className={cn(
+                "inline-flex shrink-0 items-center justify-center rounded-lg text-sm font-medium transition-all",
+                "bg-primary text-primary-foreground",
+                "h-9 px-2.5"
+              )}
+            >
+              Get Started
             </Link>
-            <Link href="#how-it-works">
-              <Button variant="outline" size="lg">
-                See how it works
-              </Button>
+            <Link
+              href="#how-it-works"
+              className={cn(
+                "inline-flex shrink-0 items-center justify-center rounded-lg border border-border text-sm font-medium transition-all",
+                "bg-background hover:bg-muted hover:text-foreground",
+                "h-9 px-2.5"
+              )}
+            >
+              See how it works
             </Link>
           </div>
 

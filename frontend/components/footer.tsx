@@ -14,10 +14,10 @@ export function Footer() {
           <Link href="/login" className="hover:text-foreground">
             Log in
           </Link>
-          <Link href="#" className="hover:text-foreground">
+          <Link href="/terms" className="hover:text-foreground">
             Terms
           </Link>
-          <Link href="#" className="hover:text-foreground">
+          <Link href="/privacy" className="hover:text-foreground">
             Privacy
           </Link>
         </nav>

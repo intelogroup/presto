@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   return (
@@ -9,13 +9,25 @@ export function SiteHeader() {
           Presto
         </Link>
         <nav className="flex items-center gap-2">
-          <Link href="/login">
-            <Button variant="ghost" size="sm">
-              Log in
-            </Button>
+          <Link
+            href="/login"
+            className={cn(
+              "inline-flex shrink-0 items-center justify-center rounded-lg text-sm font-medium transition-all",
+              "hover:bg-muted hover:text-foreground",
+              "h-7 px-2.5"
+            )}
+          >
+            Log in
           </Link>
-          <Link href="/login">
-            <Button size="sm">Get Started</Button>
+          <Link
+            href="/login"
+            className={cn(
+              "inline-flex shrink-0 items-center justify-center rounded-lg text-sm font-medium transition-all",
+              "bg-primary text-primary-foreground",
+              "h-7 px-2.5"
+            )}
+          >
+            Get Started
           </Link>
         </nav>
       </div>

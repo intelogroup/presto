@@ -20,6 +20,7 @@ function DropdownMenu({ children }: { children: React.ReactNode }) {
 function DropdownMenuTrigger({
   className,
   children,
+  onClick,
   ...props
 }: React.ComponentProps<"button">) {
   const { open, onOpenChange } = React.useContext(DropdownContext)
@@ -29,8 +30,11 @@ function DropdownMenuTrigger({
       aria-expanded={open}
       aria-haspopup="true"
       className={className}
-      onClick={() => onOpenChange(!open)}
       {...props}
+      onClick={(e) => {
+        onClick?.(e)
+        if (!e.defaultPrevented) onOpenChange(!open)
+      }}
     >
       {children}
     </button>
@@ -78,6 +82,7 @@ function DropdownMenuContent({
 
 function DropdownMenuItem({
   className,
+  onClick,
   ...props
 }: React.ComponentProps<"button">) {
   const { onOpenChange } = React.useContext(DropdownContext)
@@ -89,11 +94,11 @@ function DropdownMenuItem({
         "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-foreground outline-none hover:bg-muted focus:bg-muted",
         className
       )}
-      onClick={(e) => {
-        props.onClick?.(e)
-        onOpenChange(false)
-      }}
       {...props}
+      onClick={(e) => {
+        onClick?.(e)
+        if (!e.defaultPrevented) onOpenChange(false)
+      }}
     />
   )
 }
