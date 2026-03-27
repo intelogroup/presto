@@ -104,6 +104,7 @@ const upload = multer({
 // --- In-memory job store ---
 // jobId → { status, step, createdAt, videoPath, wavPath, transcriptPath, outputPath, talkingHeadPublicPath, error, originalName, mimeType }
 const jobs = new Map();
+const watchdog = createWatchdog(jobs, { stallMs: 30 * 60 * 1000 });
 
 const MAX_CONCURRENT_JOBS = 10;
 
@@ -403,5 +404,26 @@ setInterval(() => {
   if (swept > 0) console.log(`[sweep] Cleaned up ${swept} stale jobs/files`);
 }, SWEEP_INTERVAL);
 
+// Dead job watchdog: every 5 minutes, mark stalled jobs as error
+watchdog.start(5 * 60 * 1000);
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Remotion render server listening on :${PORT}`));
+const server = app.listen(PORT, () => console.log(`Remotion render server listening on :${PORT}`));
+
+// Graceful shutdown: stop accepting new requests, wait up to 30s for in-flight to finish
+const SHUTDOWN_TIMEOUT_MS = 30_000;
+
+function gracefulShutdown(signal) {
+  console.log(`[shutdown] Received ${signal} — stopping server`);
+  server.close(() => {
+    console.log("[shutdown] HTTP server closed. Exiting.");
+    process.exit(0);
+  });
+  setTimeout(() => {
+    console.error("[shutdown] Timeout — forcing exit");
+    process.exit(1);
+  }, SHUTDOWN_TIMEOUT_MS).unref();
+}
+
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+process.on("SIGINT",  () => gracefulShutdown("SIGINT"));
