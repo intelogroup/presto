@@ -79,7 +79,7 @@ export default function Home() {
         {/* Hero */}
         <section className="relative overflow-hidden">
           {/* Background — stronger gradients */}
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.52_0.24_265_/_0.15),transparent),radial-gradient(ellipse_60%_40%_at_80%_0%,oklch(0.68_0.16_165_/_0.10),transparent),radial-gradient(ellipse_50%_50%_at_20%_10%,oklch(0.62_0.20_300_/_0.08),transparent)]" />
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_90%_70%_at_50%_0%,oklch(0.52_0.24_265_/_0.18),transparent_70%),radial-gradient(ellipse_70%_60%_at_90%_10%,oklch(0.68_0.16_165_/_0.12),transparent_70%),radial-gradient(ellipse_60%_60%_at_10%_20%,oklch(0.62_0.20_300_/_0.10),transparent_70%)]" />
 
           <div className="mx-auto max-w-5xl px-4 pt-24 pb-16 text-center md:pt-32 md:pb-24">
             <div className="animate-fade-up">

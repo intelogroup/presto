@@ -193,7 +193,7 @@ export default function NewProjectPage() {
 
         {/* Submit */}
         <Button
-          className="w-full rounded-xl shadow-md shadow-primary/20"
+          className="w-full rounded-xl shadow-lg shadow-primary/30 h-12 text-base font-semibold"
           size="lg"
           disabled={!file || uploading}
           onClick={handleSubmit}

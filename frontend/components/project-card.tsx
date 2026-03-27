@@ -38,7 +38,12 @@ export function ProjectCard({
       className="group block rounded-2xl border border-border/60 bg-card gradient-card-hover overflow-hidden"
     >
       {/* Thumbnail placeholder */}
-      <div className="relative aspect-video w-full bg-gradient-to-br from-muted to-muted/60 flex items-center justify-center">
+      <div className={cn(
+        "relative aspect-video w-full flex items-center justify-center",
+        status === "processing" ? "bg-gradient-to-br from-primary/25 via-primary/10 to-card"
+          : status === "ready" ? "bg-gradient-to-br from-accent/25 via-accent/10 to-card"
+          : "bg-gradient-to-br from-destructive/20 via-destructive/8 to-card"
+      )}>
         <div className={cn(
           "flex size-12 items-center justify-center rounded-2xl transition-transform group-hover:scale-110",
           status === "processing" ? "bg-primary/10" : status === "ready" ? "bg-accent/10" : "bg-destructive/10"

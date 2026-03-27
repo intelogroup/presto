@@ -11,6 +11,9 @@ const pages = [
   { name: "06-new-project", url: "/app/new", viewport: { width: 1440, height: 900 }, fullPage: true },
   { name: "07-project-editor", url: "/app/project/demo-1", viewport: { width: 1440, height: 900 } },
   { name: "08-status-legacy", url: "/status/demo-1", viewport: { width: 1440, height: 900 } },
+  { name: "09-settings", url: "/app/settings", viewport: { width: 1440, height: 900 }, fullPage: true },
+  { name: "10-error", url: "/__error_test__", viewport: { width: 1440, height: 900 } },
+  { name: "11-not-found", url: "/nonexistent-page", viewport: { width: 1440, height: 900 } },
 ];
 
 fs.mkdirSync("/tmp/screenshots", { recursive: true });
