@@ -61,8 +61,8 @@ export function ThemeGrid({ value, onChange }: ThemeGridProps) {
               className={cn(
                 "aspect-video w-full rounded-lg flex items-center justify-center border",
                 theme.color,
-                /* Ensure light-colored themes have visible borders in dark mode */
-                ["P4", "P12", "P16"].includes(theme.id) ? "border-border" : "border-transparent"
+                /* Visible borders on themes that blend with dark backgrounds */
+                "border-border/50"
               )}
             >
               {isAuto && (

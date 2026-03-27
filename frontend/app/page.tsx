@@ -5,63 +5,19 @@ import { PricingCard } from "@/components/pricing-card";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
-  {
-    number: 1,
-    title: "Upload",
-    description: "Drop a video or audio file — we handle the rest.",
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
-      </svg>
-    ),
-  },
-  {
-    number: 2,
-    title: "Transcribe",
-    description: "Whisper converts your speech to text with precise timestamps.",
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
-      </svg>
-    ),
-  },
-  {
-    number: 3,
-    title: "Generate slides",
-    description: "GPT-4o creates themed slides matched to your content.",
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
-      </svg>
-    ),
-  },
-  {
-    number: 4,
-    title: "Track & sync",
-    description: "BlazeFace detects your face and overlays the talking head.",
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-      </svg>
-    ),
-  },
-  {
-    number: 5,
-    title: "Download",
-    description: "Get your finished presentation video, ready to share.",
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-      </svg>
-    ),
-  },
+  { title: "Upload", desc: "Drop a video or audio file" },
+  { title: "Transcribe", desc: "Whisper extracts speech" },
+  { title: "Generate", desc: "GPT-4o creates slides" },
+  { title: "Track", desc: "BlazeFace syncs your face" },
+  { title: "Export", desc: "Download the final MP4" },
 ];
 
 const FEATURES = [
   {
     title: "17 presentation themes",
-    description: "From dark tech to academic — pick a style that fits your content.",
-    gradient: "from-primary/10 to-primary/5",
+    description: "Dark tech, neon, glassmorphism, academic — pick a visual style that matches your message.",
+    color: "text-primary",
+    bg: "bg-primary/10",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 0 0 3.75-3.75V8.197M6.75 17.25h.008v.008H6.75v-.008Z" />
@@ -70,8 +26,9 @@ const FEATURES = [
   },
   {
     title: "AI transcription",
-    description: "Whisper-powered speech-to-text with accurate timestamps.",
-    gradient: "from-accent/10 to-accent/5",
+    description: "Whisper-powered speech-to-text with word-level timestamps for perfect slide sync.",
+    color: "text-accent",
+    bg: "bg-accent/10",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
@@ -80,8 +37,9 @@ const FEATURES = [
   },
   {
     title: "Face tracking overlay",
-    description: "Your talking head follows along, positioned automatically.",
-    gradient: "from-chart-3/10 to-chart-3/5",
+    description: "BlazeFace detects your face in every frame and positions the talking-head circle automatically.",
+    color: "text-chart-3",
+    bg: "bg-chart-3/10",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
@@ -89,22 +47,24 @@ const FEATURES = [
     ),
   },
   {
-    title: "One-click export",
-    description: "Download your finished MP4 — ready to share anywhere.",
-    gradient: "from-primary/10 to-accent/5",
+    title: "AI chat editor",
+    description: "Change slides, timing, themes, and layout by describing what you want in plain English.",
+    color: "text-primary",
+    bg: "bg-primary/10",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
       </svg>
     ),
   },
   {
-    title: "AI chat editor",
-    description: "Refine slides, timing, and themes with natural language.",
-    gradient: "from-chart-3/10 to-primary/5",
+    title: "One-click export",
+    description: "Download a polished MP4 with slides, talking head, and transitions — ready to share.",
+    color: "text-accent",
+    bg: "bg-accent/10",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
       </svg>
     ),
   },
@@ -118,30 +78,28 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero */}
         <section className="relative overflow-hidden">
-          {/* Background gradients */}
-          <div className="gradient-hero-bg absolute inset-0 -z-10" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-primary/5 blur-3xl -z-10 animate-glow-pulse" />
+          {/* Background — stronger gradients */}
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.52_0.24_265_/_0.15),transparent),radial-gradient(ellipse_60%_40%_at_80%_0%,oklch(0.68_0.16_165_/_0.10),transparent),radial-gradient(ellipse_50%_50%_at_20%_10%,oklch(0.62_0.20_300_/_0.08),transparent)]" />
 
-          <div className="mx-auto max-w-6xl px-4 pt-24 pb-20 text-center md:pt-32 md:pb-28">
+          <div className="mx-auto max-w-5xl px-4 pt-24 pb-16 text-center md:pt-32 md:pb-24">
             <div className="animate-fade-up">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-3">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-4 py-1.5 text-xs font-semibold text-primary shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-3.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
                 </svg>
                 AI-powered video creation
               </span>
             </div>
 
-            <h1 className="mt-6 text-5xl font-bold tracking-tight text-foreground md:text-6xl lg:text-7xl animate-fade-up-delay-1">
+            <h1 className="mt-8 text-5xl font-extrabold tracking-tight text-foreground md:text-6xl lg:text-7xl animate-fade-up-delay-1 leading-[1.1]">
               Turn any talk into a
               <br />
               <span className="gradient-text">presentation video</span>
             </h1>
 
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl animate-fade-up-delay-2">
-              Upload a video or audio recording. AI transcribes your speech,
-              generates themed slides, and renders a synced presentation — in
-              minutes.
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground animate-fade-up-delay-2">
+              Upload a recording, get AI-generated slides synced to your speech
+              with a talking-head overlay — in minutes.
             </p>
 
             <div className="mt-10 flex items-center justify-center gap-4 animate-fade-up-delay-3">
@@ -171,46 +129,44 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Product mock — shows what a Presto output looks like */}
+            {/* Product mock */}
             <div className="mx-auto mt-16 max-w-4xl animate-fade-up-delay-3">
-              <div className="relative rounded-2xl border border-border/60 bg-gradient-to-b from-card to-muted/50 p-1.5 shadow-2xl shadow-primary/10">
-                <div className="aspect-video w-full rounded-xl bg-[#0c0c1a] overflow-hidden relative">
-                  {/* Mock slide content */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
-                    <div className="w-full max-w-md space-y-4 text-center">
-                      <div className="mx-auto h-1 w-16 rounded-full bg-primary/60" />
-                      <div className="text-xl font-bold text-white/90 md:text-2xl">Quarterly Revenue Report</div>
-                      <div className="mx-auto grid max-w-sm grid-cols-3 gap-3">
-                        <div className="rounded-lg bg-white/5 p-3">
-                          <div className="text-lg font-bold text-primary">$2.4M</div>
-                          <div className="text-[10px] text-white/40">Revenue</div>
+              <div className="relative rounded-2xl border border-border/50 bg-gradient-to-b from-card to-muted/40 p-1.5 shadow-2xl shadow-primary/8">
+                <div className="aspect-video w-full rounded-xl bg-[#0a0a1a] overflow-hidden relative">
+                  {/* Mock slide */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 md:p-10">
+                    <div className="w-full max-w-lg space-y-5 text-center">
+                      <div className="mx-auto h-1 w-12 rounded-full bg-primary/50" />
+                      <div className="text-xl font-bold text-white/90 md:text-3xl tracking-tight">Quarterly Revenue Report</div>
+                      <div className="mx-auto grid max-w-md grid-cols-3 gap-3 md:gap-4">
+                        <div className="rounded-xl bg-white/[0.06] p-3 md:p-4 backdrop-blur-sm">
+                          <div className="text-lg md:text-2xl font-bold text-primary">$2.4M</div>
+                          <div className="text-[10px] md:text-xs text-white/40 mt-0.5">Revenue</div>
                         </div>
-                        <div className="rounded-lg bg-white/5 p-3">
-                          <div className="text-lg font-bold text-accent">+18%</div>
-                          <div className="text-[10px] text-white/40">Growth</div>
+                        <div className="rounded-xl bg-white/[0.06] p-3 md:p-4 backdrop-blur-sm">
+                          <div className="text-lg md:text-2xl font-bold text-accent">+18%</div>
+                          <div className="text-[10px] md:text-xs text-white/40 mt-0.5">Growth</div>
                         </div>
-                        <div className="rounded-lg bg-white/5 p-3">
-                          <div className="text-lg font-bold text-chart-3">847</div>
-                          <div className="text-[10px] text-white/40">Clients</div>
+                        <div className="rounded-xl bg-white/[0.06] p-3 md:p-4 backdrop-blur-sm">
+                          <div className="text-lg md:text-2xl font-bold text-chart-3">847</div>
+                          <div className="text-[10px] md:text-xs text-white/40 mt-0.5">Clients</div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  {/* Talking head overlay */}
-                  <div className="absolute bottom-4 right-4 size-16 rounded-full border-2 border-primary/40 bg-gradient-to-br from-primary/30 to-accent/20 shadow-lg md:size-20">
+                  {/* Talking head */}
+                  <div className="absolute bottom-3 right-3 size-14 md:bottom-5 md:right-5 md:size-20 rounded-full border-2 border-primary/30 bg-gradient-to-br from-primary/25 to-accent/15 shadow-xl">
                     <div className="flex size-full items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="size-8 text-white/30">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="size-7 md:size-9 text-white/25">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                       </svg>
                     </div>
                   </div>
-                  {/* Slide nav dots */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
-                    <div className="size-1.5 rounded-full bg-primary" />
-                    <div className="size-1.5 rounded-full bg-white/20" />
-                    <div className="size-1.5 rounded-full bg-white/20" />
-                    <div className="size-1.5 rounded-full bg-white/20" />
-                    <div className="size-1.5 rounded-full bg-white/20" />
+                  {/* Slide dots */}
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 md:bottom-5">
+                    {[true, false, false, false, false].map((active, i) => (
+                      <div key={i} className={cn("size-1.5 rounded-full", active ? "bg-primary" : "bg-white/20")} />
+                    ))}
                   </div>
                 </div>
               </div>
@@ -218,77 +174,71 @@ export default function Home() {
           </div>
         </section>
 
-        {/* How it works */}
-        <section id="how-it-works" className="relative border-t border-border/60 bg-muted/30 py-20 md:py-28">
-          <div className="mx-auto max-w-6xl px-4">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-foreground md:text-4xl">
-                How it works
-              </h2>
-              <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-                Five automated steps from recording to polished presentation.
-              </p>
-            </div>
+        {/* How it works — clean horizontal pipeline */}
+        <section id="how-it-works" className="border-t border-border/50 bg-muted/30 py-20 md:py-24">
+          <div className="mx-auto max-w-5xl px-4">
+            <h2 className="text-center text-3xl font-bold text-foreground md:text-4xl">
+              How it works
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-center text-muted-foreground">
+              Five automated steps. You just upload and download.
+            </p>
 
-            <div className="relative mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-5 md:gap-4">
-              {/* Connector line (desktop) */}
-              <div className="absolute top-[26px] left-[10%] right-[10%] hidden h-px bg-gradient-to-r from-primary/10 via-primary/30 to-primary/10 md:block" />
-
-              {STEPS.map((step) => (
-                <div key={step.number} className="relative flex flex-col items-center text-center">
-                  {/* Step number with glow */}
-                  <div className="relative">
-                    <div className="absolute inset-0 rounded-full bg-primary/20 blur-md" />
-                    <div className="relative flex size-[52px] items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-primary-foreground text-base font-bold shadow-lg shadow-primary/25">
-                      {step.number}
+            {/* Pipeline — horizontal on desktop, vertical on mobile */}
+            <div className="mt-14 flex flex-col items-center gap-3 md:flex-row md:gap-0">
+              {STEPS.map((step, i) => (
+                <div key={step.title} className="flex items-center md:flex-1">
+                  {/* Step pill */}
+                  <div className="flex items-center gap-3 rounded-2xl border border-border/50 bg-card px-5 py-4 shadow-sm w-full md:w-auto">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+                      {i + 1}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-sm font-semibold text-foreground">{step.title}</div>
+                      <div className="text-xs text-muted-foreground truncate">{step.desc}</div>
                     </div>
                   </div>
-                  {/* Icon */}
-                  <div className="mt-4 flex size-10 items-center justify-center rounded-lg bg-primary/8 text-primary">
-                    {step.icon}
-                  </div>
-                  <h3 className="mt-3 text-sm font-semibold text-foreground">
-                    {step.title}
-                  </h3>
-                  <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground max-w-[200px]">
-                    {step.description}
-                  </p>
+                  {/* Connector arrow */}
+                  {i < STEPS.length - 1 && (
+                    <div className="hidden md:flex shrink-0 px-2 text-border">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                      </svg>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Features */}
-        <section className="py-20 md:py-28">
-          <div className="mx-auto max-w-6xl px-4">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-foreground md:text-4xl">
-                Everything you need
-              </h2>
-              <p className="mx-auto mt-3 max-w-md text-muted-foreground">
-                Powerful features that handle the heavy lifting for you.
-              </p>
-            </div>
+        {/* Features — 2-col with bigger icon containers */}
+        <section className="py-20 md:py-24">
+          <div className="mx-auto max-w-5xl px-4">
+            <h2 className="text-center text-3xl font-bold text-foreground md:text-4xl">
+              Everything you need
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-center text-muted-foreground">
+              Powerful features that handle the heavy lifting for you.
+            </p>
 
-            <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {FEATURES.map((feature) => (
+            <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {FEATURES.map((f) => (
                 <div
-                  key={feature.title}
-                  className="group rounded-2xl border border-border/60 bg-card p-6 gradient-card-hover"
+                  key={f.title}
+                  className="group flex gap-4 rounded-2xl border border-border/50 bg-card p-5 gradient-card-hover"
                 >
-                  <div className={cn(
-                    "flex size-11 items-center justify-center rounded-xl bg-gradient-to-br text-primary",
-                    feature.gradient
-                  )}>
-                    {feature.icon}
+                  <div className={cn("flex size-12 shrink-0 items-center justify-center rounded-xl", f.bg, f.color)}>
+                    {f.icon}
                   </div>
-                  <h3 className="mt-4 text-base font-semibold text-foreground group-hover:text-primary transition-colors">
-                    {feature.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    {feature.description}
-                  </p>
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                      {f.title}
+                    </h3>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                      {f.description}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -296,17 +246,15 @@ export default function Home() {
         </section>
 
         {/* Pricing */}
-        <section id="pricing" className="relative border-t border-border/60 bg-muted/30 py-20 md:py-28">
+        <section id="pricing" className="border-t border-border/50 bg-muted/30 py-20 md:py-24">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_40%_at_50%_100%,oklch(0.52_0.24_265_/_0.04),transparent)]" />
-          <div className="mx-auto max-w-6xl px-4">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-foreground md:text-4xl">
-                Simple pricing
-              </h2>
-              <p className="mx-auto mt-3 max-w-md text-muted-foreground">
-                Start free. Upgrade when you need more.
-              </p>
-            </div>
+          <div className="mx-auto max-w-5xl px-4">
+            <h2 className="text-center text-3xl font-bold text-foreground md:text-4xl">
+              Simple pricing
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-center text-muted-foreground">
+              Start free. Upgrade when you need more.
+            </p>
             <div className="mx-auto mt-14 grid max-w-2xl grid-cols-1 gap-6 sm:grid-cols-2">
               <PricingCard
                 name="Free"
@@ -329,7 +277,7 @@ export default function Home() {
                   "Unlimited presentations",
                   "1080p video export",
                   "Priority rendering",
-                  "Chat-based video editor",
+                  "AI chat editor",
                   "All 17 themes",
                 ]}
                 cta="Upgrade to Pro"

@@ -166,43 +166,55 @@ export default function ProjectDetailPage({
         <div className="flex flex-1 flex-col overflow-hidden">
           {/* Video preview */}
           <div className="flex flex-1 items-center justify-center bg-[oklch(0.10_0.02_265)] p-6">
-            <div className="relative aspect-video w-full max-w-4xl overflow-hidden rounded-xl bg-black/80 shadow-2xl shadow-black/40 ring-1 ring-white/5">
-              {/* Mock video player controls overlay */}
+            <div className="relative aspect-video w-full max-w-4xl overflow-hidden rounded-xl bg-[#0a0a1a] shadow-2xl shadow-black/40 ring-1 ring-white/5">
+              {/* Mock slide content inside preview */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+                <div className="w-full max-w-md space-y-4 text-center">
+                  <div className="mx-auto h-1 w-12 rounded-full bg-primary/50" />
+                  <div className="text-xl font-bold text-white/90 md:text-2xl tracking-tight">Quarterly Revenue Report</div>
+                  <div className="mx-auto grid max-w-sm grid-cols-3 gap-3">
+                    <div className="rounded-xl bg-white/[0.06] p-3">
+                      <div className="text-lg font-bold text-primary">$2.4M</div>
+                      <div className="text-[10px] text-white/40">Revenue</div>
+                    </div>
+                    <div className="rounded-xl bg-white/[0.06] p-3">
+                      <div className="text-lg font-bold text-accent">+18%</div>
+                      <div className="text-[10px] text-white/40">Growth</div>
+                    </div>
+                    <div className="rounded-xl bg-white/[0.06] p-3">
+                      <div className="text-lg font-bold text-chart-3">847</div>
+                      <div className="text-[10px] text-white/40">Clients</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Talking head overlay */}
+              <div className="absolute bottom-4 right-4 size-16 rounded-full border-2 border-primary/30 bg-gradient-to-br from-primary/25 to-accent/15 shadow-xl">
+                <div className="flex size-full items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="size-7 text-white/25">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Play button overlay */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <button className="group flex size-16 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all hover:bg-white/20 hover:scale-110">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 text-white/80 group-hover:text-white ml-0.5">
+                <button className="group flex size-14 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all hover:bg-white/20 hover:scale-110">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-white/80 group-hover:text-white ml-0.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                   </svg>
                 </button>
               </div>
 
-              {/* Bottom controls bar */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 pt-8">
-                {/* Progress bar */}
-                <div className="mb-3 h-1 w-full overflow-hidden rounded-full bg-white/20">
+              {/* Bottom controls */}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 pt-8">
+                <div className="mb-2 h-1 w-full overflow-hidden rounded-full bg-white/15">
                   <div className="h-full w-1/3 rounded-full bg-primary" />
                 </div>
-                <div className="flex items-center justify-between text-xs text-white/60">
-                  <div className="flex items-center gap-3">
-                    <button className="hover:text-white transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-                      </svg>
-                    </button>
-                    <span className="font-mono">0:11 / 0:33</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <button className="hover:text-white transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424" />
-                      </svg>
-                    </button>
-                    <button className="hover:text-white transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
-                      </svg>
-                    </button>
-                  </div>
+                <div className="flex items-center justify-between text-[11px] text-white/50">
+                  <span className="font-mono">0:11 / 0:33</span>
+                  <span>1080p</span>
                 </div>
               </div>
             </div>
