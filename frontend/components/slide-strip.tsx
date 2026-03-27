@@ -14,10 +14,10 @@ interface SlideStripProps {
 }
 
 const SLIDE_COLORS: Record<string, string> = {
-  Title: "from-primary/25 to-primary/10",
-  Content: "from-accent/25 to-accent/10",
-  Chart: "from-chart-3/25 to-chart-3/10",
-  Summary: "from-primary/20 to-accent/10",
+  title: "from-primary/25 to-primary/10",
+  content: "from-accent/25 to-accent/10",
+  chart: "from-chart-3/25 to-chart-3/10",
+  summary: "from-primary/20 to-accent/10",
 };
 
 export function SlideStrip({ slides }: SlideStripProps) {
@@ -27,7 +27,9 @@ export function SlideStrip({ slides }: SlideStripProps) {
     <div className="flex items-end gap-2 overflow-x-auto pb-1 px-1">
       {slides.map((slide, i) => (
         <button
+          type="button"
           key={slide.index}
+          aria-pressed={selected === i}
           onClick={() => setSelected(i)}
           className={cn(
             "group relative flex-shrink-0 w-32 rounded-lg overflow-hidden transition-all duration-200",
@@ -38,7 +40,7 @@ export function SlideStrip({ slides }: SlideStripProps) {
         >
           <div className={cn(
             "flex flex-col items-center justify-center bg-gradient-to-br h-[72px]",
-            SLIDE_COLORS[slide.type] ?? "from-muted to-muted/60"
+            SLIDE_COLORS[slide.type.toLowerCase()] ?? "from-muted to-muted/60"
           )}>
             <span className={cn(
               "text-xs font-semibold",

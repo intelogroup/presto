@@ -21,6 +21,7 @@ const MOCK_USER = {
 
 export default function SettingsPage() {
   const [name, setName] = useState(MOCK_USER.name);
+  const [lastSavedName, setLastSavedName] = useState(MOCK_USER.name);
   const [saved, setSaved] = useState(false);
   const savedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -33,6 +34,7 @@ export default function SettingsPage() {
   }, []);
 
   function handleSave() {
+    setLastSavedName(name);
     setSaved(true);
     if (savedTimerRef.current) {
       clearTimeout(savedTimerRef.current);
@@ -60,7 +62,7 @@ export default function SettingsPage() {
         </TabsList>
 
         {/* ─── Profile Tab ─── */}
-        <TabsContent value="profile" className="space-y-8">
+        <TabsContent value="profile" forceMount className="space-y-8">
           {/* Avatar + name */}
           <section className="rounded-2xl border border-border/60 bg-card/50 p-6 space-y-6">
             <div className="flex items-center gap-4">
@@ -68,7 +70,7 @@ export default function SettingsPage() {
                 {MOCK_USER.initials}
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-foreground">{MOCK_USER.name}</p>
+                <p className="font-semibold text-foreground">{lastSavedName}</p>
                 <p className="text-sm text-muted-foreground">{MOCK_USER.email}</p>
               </div>
               <Button variant="outline" size="sm" className="rounded-lg" disabled>
@@ -106,7 +108,7 @@ export default function SettingsPage() {
               <Button
                 className="rounded-xl shadow-sm shadow-primary/20"
                 onClick={handleSave}
-                disabled={name === MOCK_USER.name}
+                disabled={name === lastSavedName}
               >
                 {saved ? (
                   <>
@@ -119,11 +121,11 @@ export default function SettingsPage() {
                   "Save changes"
                 )}
               </Button>
-              {name !== MOCK_USER.name && (
+              {name !== lastSavedName && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setName(MOCK_USER.name)}
+                  onClick={() => setName(lastSavedName)}
                 >
                   Cancel
                 </Button>
@@ -166,7 +168,7 @@ export default function SettingsPage() {
         </TabsContent>
 
         {/* ─── Plan & Billing Tab ─── */}
-        <TabsContent value="billing" className="space-y-8">
+        <TabsContent value="billing" forceMount className="space-y-8">
           {/* Current plan */}
           <section className="rounded-2xl border border-border/60 bg-card/50 p-6 space-y-6">
             <div className="flex items-center justify-between">
