@@ -75,7 +75,11 @@ app.use((req, res, next) => {
   }
   const apiKey = req.headers["x-api-key"];
   const uploadToken = req.headers["x-upload-token"];
-  if (apiKey === API_SECRET) return next();
+  if (apiKey && apiKey.length === API_SECRET.length) {
+    try {
+      if (timingSafeEqual(Buffer.from(apiKey), Buffer.from(API_SECRET))) return next();
+    } catch { /* length mismatch or encoding error — fall through to 401 */ }
+  }
   if (validateUploadToken(uploadToken, API_SECRET)) return next();
   return res.status(401).json({ error: "Unauthorized" });
 });
