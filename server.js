@@ -317,11 +317,11 @@ app.post("/render", (req, res) => {
     { cwd: __dirname, timeout: 30 * 60 * 1000 },
     (err, _stdout, stderr) => {
       if (err) {
-        console.error("[render] Failed:", stderr);
-        return res.status(500).json({ error: "Render failed", details: stderr });
+        console.error("[render] Failed:", stderr); // log internally, never send to client
+        return res.status(500).json({ error: "Render failed" });
       }
       console.log("[render] Done:", outputPath);
-      res.json({ success: true, file: safeFilename, path: outputPath });
+      res.json({ success: true, file: safeFilename }); // path removed — internal detail
     }
   );
 });
