@@ -15,12 +15,22 @@ const { preprocessVideo } = require("./pipeline/preprocess");
 const app = express(); // nosemgrep
 app.use(express.json());
 
-// CORS: allow browser direct uploads from Vercel frontend
-// Hardcoded literal — never reflect user-supplied Origin header (CWE-346)
-const VERCEL_ORIGIN = "https://presto-lake.vercel.app";
+// CORS: allow browser direct uploads from Vercel frontend and local dev
+// Explicit literals only — never reflect user-supplied Origin header (CWE-346)
 app.use((req, res, next) => {
-  if (req.headers.origin === VERCEL_ORIGIN) {
-    res.setHeader("Access-Control-Allow-Origin", VERCEL_ORIGIN);
+  const o = req.headers.origin;
+  if (o === "https://presto-lake.vercel.app") {
+    res.setHeader("Access-Control-Allow-Origin", "https://presto-lake.vercel.app");
+  } else if (o === "http://localhost:3000") {
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  } else if (o === "http://localhost:3001") {
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001");
+  } else if (o === "http://localhost:3002") {
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3002");
+  } else if (o === "http://localhost:3003") {
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3003");
+  }
+  if (res.getHeader("Access-Control-Allow-Origin")) {
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "x-api-key, x-upload-token, content-type");
   }
