@@ -10,18 +10,26 @@ interface EmptyStateProps {
     label: string;
     href: string;
   };
+  /** Optional hint text below description */
+  hint?: string;
 }
 
-export function EmptyState({ icon, title, description, action }: EmptyStateProps) {
+export function EmptyState({ icon, title, description, action, hint }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center">
-      <div className="mb-5 flex size-16 items-center justify-center rounded-2xl bg-primary/8 text-primary [&>svg]:size-8">
+    <div className="relative flex flex-col items-center justify-center py-24 text-center">
+      {/* Ambient glow behind icon */}
+      <div className="pointer-events-none absolute top-12 left-1/2 -translate-x-1/2 h-40 w-64 rounded-full bg-primary/6 blur-[80px]" />
+
+      <div className="relative mb-5 flex size-20 items-center justify-center rounded-3xl bg-primary/8 ring-1 ring-primary/15 text-primary [&>svg]:size-9">
         {icon}
       </div>
       <h2 className="text-xl font-bold text-foreground">{title}</h2>
       <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
         {description}
       </p>
+      {hint && (
+        <p className="mt-1.5 text-xs text-muted-foreground/50">{hint}</p>
+      )}
       {action && (
         <Link
           href={action.href}
