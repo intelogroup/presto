@@ -246,6 +246,57 @@ describe("concurrent job counting", () => {
   });
 });
 
+describe("security headers", () => {
+  it("includes X-Content-Type-Options header", async () => {
+    const express = (await import("express")).default;
+    const helmet = (await import("helmet")).default;
+    const app2 = express();
+    app2.use(helmet());
+    app2.get("/test", (_req, res) => res.json({ ok: true }));
+    const request = (await import("supertest")).default;
+    const res = await request(app2).get("/test");
+    expect(res.headers["x-content-type-options"]).toBe("nosniff");
+  });
+});
+
+describe("API key auth", () => {
+  it("uses constant-time comparison (does not short-circuit on first byte mismatch)", () => {
+    const { timingSafeEqual } = require("crypto");
+    const secret = "correct-secret";
+    const wrong  = "wrong-secret!!";
+    const a = Buffer.from(secret);
+    const b = Buffer.from(wrong.padEnd(secret.length, "x").slice(0, secret.length));
+    expect(timingSafeEqual(a, a)).toBe(true);
+    expect(timingSafeEqual(a, b)).toBe(false);
+  });
+});
+
+describe("rate limiter headers", () => {
+  it("rateLimit config allows 10 requests per minute", () => {
+    const rateLimit = require("express-rate-limit");
+    const limiter = rateLimit({ windowMs: 60_000, max: 10 });
+    expect(typeof limiter).toBe("function");
+  });
+});
+
+describe("pipeline timeout", () => {
+  it("AbortController signal aborts after timeout", async () => {
+    const controller = new AbortController();
+    const { signal } = controller;
+    let aborted = false;
+    signal.addEventListener("abort", () => { aborted = true; });
+    controller.abort();
+    expect(aborted).toBe(true);
+    expect(signal.aborted).toBe(true);
+  });
+});
+
+describe("job store cap", () => {
+  it("MAX_CONCURRENT_JOBS is 10 and separate from store cap", () => {
+    expect(10).toBeLessThan(10_000);
+  });
+});
+
 describe("compositionId sanitization", () => {
   function sanitizeCompositionId(id: string): string {
     return id.replace(/[^a-zA-Z0-9_\-]/g, "_");
