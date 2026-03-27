@@ -27,6 +27,10 @@ export default function NewProjectPage() {
   const isAudio = file ? AUDIO_TYPES.includes(file.type) : false;
 
   function pickFile(f: File) {
+    if (!ACCEPTED.includes(f.type)) {
+      setError("Unsupported file type. Use MP4, MOV, WebM, MP3, or M4A.");
+      return;
+    }
     if (f.size > MAX_SIZE_BYTES) {
       setError("File too large — maximum size is 500 MB");
       return;

@@ -38,9 +38,13 @@ export default function ProjectDetailPage({
     async function poll() {
       try {
         const res = await fetch(`/api/status/${jobId}`);
-        const data: JobStatus = await res.json();
-        setJob(data);
-        if (data.status !== "done" && data.status !== "error") {
+        const data = (await res.json()) as Partial<JobStatus> & { error?: string };
+        if (!res.ok) throw new Error(data.error ?? "Status check failed");
+        const status = data.status === "ready" ? "done" : data.status === "failed" ? "error" : data.status;
+        if (!status) throw new Error("Malformed status response");
+        setJob({ ...(data as JobStatus), status });
+        setFetchError(null);
+        if (status !== "done" && status !== "error") {
           timeout = setTimeout(poll, 2000);
         }
       } catch {

@@ -12,7 +12,7 @@ export default function LoginPage() {
         <div className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-4">
           <h1 className="text-lg font-semibold text-foreground">Welcome back</h1>
 
-          <Button variant="outline" className="w-full gap-2">
+          <Button variant="outline" className="w-full gap-2" disabled aria-disabled="true">
             <svg className="size-4" viewBox="0 0 24 24">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
@@ -34,16 +34,16 @@ export default function LoginPage() {
             Continue with Google
           </Button>
 
-          <Button className="w-full">Continue with email</Button>
+          <Button className="w-full" disabled aria-disabled="true">Continue with email</Button>
         </div>
 
         <p className="text-xs text-muted-foreground">
           By continuing you agree to our{" "}
-          <Link href="#" className="underline hover:text-foreground">
+          <Link href="/terms" className="underline hover:text-foreground">
             Terms
           </Link>{" "}
           and{" "}
-          <Link href="#" className="underline hover:text-foreground">
+          <Link href="/privacy" className="underline hover:text-foreground">
             Privacy Policy
           </Link>
           .

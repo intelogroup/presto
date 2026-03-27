@@ -1,5 +1,8 @@
+"use client";
+
+import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 interface PricingCardProps {
   name: string;
@@ -60,14 +63,12 @@ export function PricingCard({
         ))}
       </ul>
 
-      <a href={href} className="mt-6">
-        <Button
-          className="w-full"
-          variant={highlighted ? "default" : "outline"}
-        >
-          {cta}
-        </Button>
-      </a>
+      <Link
+        href={href}
+        className={cn(buttonVariants({ variant: highlighted ? "default" : "outline" }), "mt-6 w-full")}
+      >
+        {cta}
+      </Link>
     </div>
   );
 }

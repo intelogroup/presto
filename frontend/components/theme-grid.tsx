@@ -39,6 +39,8 @@ export function ThemeGrid({ value, onChange }: ThemeGridProps) {
             key={theme.id || "auto"}
             type="button"
             onClick={() => onChange(theme.id)}
+            aria-pressed={isSelected}
+            aria-label={theme.label}
             className={cn(
               "group flex flex-col items-center gap-2 rounded-lg border-2 p-3 transition-all",
               isSelected

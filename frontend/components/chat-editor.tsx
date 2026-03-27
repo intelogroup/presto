@@ -57,7 +57,8 @@ export function ChatEditor({ jobId }: ChatEditorProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text.trim(), preview: true }),
       });
-      const data = await res.json();
+      const data = (await res.json().catch(() => ({}))) as { reply?: string; error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Couldn't apply that change. Try rephrasing?");
 
       setMessages((prev) =>
         prev.map((m) =>
