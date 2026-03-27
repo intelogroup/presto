@@ -221,8 +221,16 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
 
 // --- Routes ---
 
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 1000,   // 1 minute window
+  max: 10,               // 10 uploads per IP per minute
+  standardHeaders: true, // return RateLimit-* headers
+  legacyHeaders: false,
+  message: { error: "Too many upload requests, please try again in a minute" },
+});
+
 // POST /pipeline/start — upload video, start async pipeline
-app.post("/pipeline/start", upload.single("video"), (req, res) => {
+app.post("/pipeline/start", uploadLimiter, upload.single("video"), (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No video file uploaded" });
 
   // MIME type validation
