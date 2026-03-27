@@ -9,10 +9,19 @@ const { transcribe } = require("./pipeline/transcribe");
 const { generateSlides } = require("./pipeline/generateSlides");
 const { syncTalkingHead } = require("./pipeline/syncTalkingHead");
 const { preprocessVideo } = require("./pipeline/preprocess");
+const helmet = require("helmet");
+const morgan = require("morgan");
+const rateLimit = require("express-rate-limit");
+const { createWatchdog } = require("./pipeline/watchdog");
 
 // nosemgrep: javascript.express.security.audit.express-check-csurf-middleware-usage.express-check-csurf-middleware-usage
 // CSRF not applicable: stateless JSON API authenticated via X-API-Key header, not cookies/sessions
 const app = express(); // nosemgrep
+app.use(helmet());
+// Request logging — skip /health to avoid noise
+app.use(morgan("combined", {
+  skip: (req) => req.path === "/health",
+}));
 app.use(express.json());
 
 // CORS: allow browser direct uploads from Vercel frontend and local dev
@@ -61,12 +70,20 @@ function validateUploadToken(header, secret) {
 app.use((req, res, next) => {
   if (req.path === "/health") return next();
   if (!API_SECRET) {
-    console.warn("WARNING: RENDER_API_SECRET not set — server is unprotected");
+    if (process.env.NODE_ENV === "production") {
+      console.error("FATAL: RENDER_API_SECRET is not set in production — refusing to start");
+      process.exit(1);
+    }
+    console.warn("WARNING: RENDER_API_SECRET not set — server is unprotected (dev mode)");
     return next();
   }
   const apiKey = req.headers["x-api-key"];
   const uploadToken = req.headers["x-upload-token"];
-  if (apiKey === API_SECRET) return next();
+  if (apiKey && apiKey.length === API_SECRET.length) {
+    try {
+      if (timingSafeEqual(Buffer.from(apiKey), Buffer.from(API_SECRET))) return next();
+    } catch { /* length mismatch or encoding error — fall through to 401 */ }
+  }
   if (validateUploadToken(uploadToken, API_SECRET)) return next();
   return res.status(401).json({ error: "Unauthorized" });
 });
@@ -91,6 +108,7 @@ const upload = multer({
 // --- In-memory job store ---
 // jobId → { status, step, createdAt, videoPath, wavPath, transcriptPath, outputPath, talkingHeadPublicPath, error, originalName, mimeType }
 const jobs = new Map();
+const watchdog = createWatchdog(jobs, { stallMs: 30 * 60 * 1000 });
 
 const MAX_CONCURRENT_JOBS = 10;
 
@@ -142,10 +160,15 @@ function renderVideo(compositionId, inputProps) {
 }
 
 // --- Pipeline orchestrator ---
+const PIPELINE_TIMEOUT_MS = 60 * 60 * 1000; // 60 minutes
+
 async function runPipeline(jobId, videoPath, themeOverride = null) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), PIPELINE_TIMEOUT_MS);
+
   try {
     // Step 1: Preprocess — validate, trim silences (>4s → 2s), compress if needed
-    jobs.set(jobId, { ...jobs.get(jobId), status: "preprocessing", step: "preprocessing" });
+    jobs.set(jobId, { ...jobs.get(jobId), status: "preprocessing", step: "preprocessing", lastProgressAt: Date.now() });
     console.log(`[${jobId}] preprocessing...`);
     const preprocessResult = await preprocessVideo(videoPath, "/tmp");
     const effectiveVideoPath = preprocessResult.outputPath;
@@ -155,7 +178,7 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
     }
 
     // Step 2: Transcribe the (trimmed) video
-    jobs.set(jobId, { ...jobs.get(jobId), status: "transcribing", step: "transcribing" });
+    jobs.set(jobId, { ...jobs.get(jobId), status: "transcribing", step: "transcribing", lastProgressAt: Date.now() });
     console.log(`[${jobId}] transcribing...`);
     const transcript = await transcribe(effectiveVideoPath, jobId);
 
@@ -166,12 +189,13 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
       step: "generating_slides",
       mp3Path: transcript._mp3Path,
       transcriptPath: transcript._transcriptPath,
+      lastProgressAt: Date.now(),
     });
     console.log(`[${jobId}] generating slides (theme selection + content)...`);
     const { compositionId, themeId, slides, transitionFrames } = await generateSlides(transcript, themeOverride);
 
     // Step 4: Sync talking head + face tracking
-    jobs.set(jobId, { ...jobs.get(jobId), status: "syncing", step: "syncing" });
+    jobs.set(jobId, { ...jobs.get(jobId), status: "syncing", step: "syncing", lastProgressAt: Date.now() });
     console.log(`[${jobId}] syncing talking head (themeId=${themeId}, compositionId=${compositionId}, transitionFrames=${transitionFrames})...`);
     const { inputProps, talkingHeadPublicPath } = await syncTalkingHead({
       slides,
@@ -183,15 +207,18 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
     jobs.set(jobId, { ...jobs.get(jobId), talkingHeadPublicPath });
 
     // Step 5: Render with Remotion
-    jobs.set(jobId, { ...jobs.get(jobId), status: "rendering", step: "rendering" });
+    jobs.set(jobId, { ...jobs.get(jobId), status: "rendering", step: "rendering", lastProgressAt: Date.now() });
     console.log(`[${jobId}] rendering with Remotion (${compositionId})...`);
     const outputPath = await renderVideo(compositionId, inputProps);
 
+    clearTimeout(timeoutId);
     jobs.set(jobId, { ...jobs.get(jobId), status: "done", step: "done", outputFilename: outputPath });
     console.log("[pipeline done]", "jobId=" + jobId);
   } catch (e) {
-    console.error("[pipeline error]", "jobId=" + jobId, e.message);
-    jobs.set(jobId, { ...jobs.get(jobId), status: "error", error: e.message });
+    clearTimeout(timeoutId);
+    const reason = controller.signal.aborted ? "Pipeline timed out after 60 minutes" : e.message;
+    console.error("[pipeline error]", "jobId=" + jobId, reason);
+    jobs.set(jobId, { ...jobs.get(jobId), status: "error", error: reason });
 
     // Clean up temp files on failure
     const job = jobs.get(jobId);
@@ -208,8 +235,16 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
 
 // --- Routes ---
 
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 1000,   // 1 minute window
+  max: 10,               // 10 uploads per IP per minute
+  standardHeaders: true, // return RateLimit-* headers
+  legacyHeaders: false,
+  message: { error: "Too many upload requests, please try again in a minute" },
+});
+
 // POST /pipeline/start — upload video, start async pipeline
-app.post("/pipeline/start", upload.single("video"), (req, res) => {
+app.post("/pipeline/start", uploadLimiter, upload.single("video"), (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No video file uploaded" });
 
   // MIME type validation
@@ -228,6 +263,12 @@ app.post("/pipeline/start", upload.single("video"), (req, res) => {
   if (activeCount >= MAX_CONCURRENT_JOBS) {
     fs.unlink(req.file.path, () => {});
     return res.status(429).json({ error: "Too many concurrent jobs, try again later" });
+  }
+
+  // Hard cap on total tracked jobs to prevent unbounded memory growth
+  if (jobs.size >= 10_000) {
+    fs.unlink(req.file.path, () => {});
+    return res.status(503).json({ error: "Server at capacity, try again later" });
   }
 
   // Disk space check
@@ -304,11 +345,11 @@ app.post("/render", (req, res) => {
     { cwd: __dirname, timeout: 30 * 60 * 1000 },
     (err, _stdout, stderr) => {
       if (err) {
-        console.error("[render] Failed:", stderr);
-        return res.status(500).json({ error: "Render failed", details: stderr });
+        console.error("[render] Failed:", stderr); // log internally, never send to client
+        return res.status(500).json({ error: "Render failed" });
       }
       console.log("[render] Done:", outputPath);
-      res.json({ success: true, file: safeFilename, path: outputPath });
+      res.json({ success: true, file: safeFilename }); // path removed — internal detail
     }
   );
 });
@@ -367,5 +408,26 @@ setInterval(() => {
   if (swept > 0) console.log(`[sweep] Cleaned up ${swept} stale jobs/files`);
 }, SWEEP_INTERVAL);
 
+// Dead job watchdog: every 5 minutes, mark stalled jobs as error
+watchdog.start(5 * 60 * 1000);
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Remotion render server listening on :${PORT}`));
+const server = app.listen(PORT, () => console.log(`Remotion render server listening on :${PORT}`));
+
+// Graceful shutdown: stop accepting new requests, wait up to 30s for in-flight to finish
+const SHUTDOWN_TIMEOUT_MS = 30_000;
+
+function gracefulShutdown(signal) {
+  console.log(`[shutdown] Received ${signal} — stopping server`);
+  server.close(() => {
+    console.log("[shutdown] HTTP server closed. Exiting.");
+    process.exit(0);
+  });
+  setTimeout(() => {
+    console.error("[shutdown] Timeout — forcing exit");
+    process.exit(1);
+  }, SHUTDOWN_TIMEOUT_MS).unref();
+}
+
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+process.on("SIGINT",  () => gracefulShutdown("SIGINT"));
