@@ -1,166 +1,221 @@
-# Feedeo — Full Pipeline Scope
+# Presto — Full Pipeline Scope
 
-**Goal:** User uploads a talking head video → system fully auto-generates a synced presentation video with slides derived from the speech.
+**Goal:** User uploads a talking head video (or audio-only with optional headshot) → system fully auto-generates a synced presentation video with slides derived from the speech.
 
 ---
 
-## What's Already Built (Do Not Rebuild)
+## What's Already Built
 
 | Component | Status | Notes |
 |---|---|---|
-| 17 Remotion presentation themes | ✅ Done | P1–P17, all in `src/` |
-| Talking head overlay | ✅ Done | `OffthreadVideo` circle, bottom-right |
-| Express render server | ✅ Done | `server.js`, `POST /render`, `GET /download/:filename` |
-| Zod prop schemas | ✅ Done | `src/schema.ts` — all 17 themes |
-| Default props | ✅ Done | `src/defaultProps.ts` |
+| 17 Remotion presentation themes | Done | P1-P17, all in `src/` with Zod schemas |
+| Talking head overlay | Done | `OffthreadVideo` circle with face tracking (`TalkingHead.tsx`) |
+| Express backend + job orchestrator | Done | `server.js` on Render.com — upload, pipeline, status, download |
+| Pipeline: preprocessing | Done | `pipeline/preprocess.js` — silence detection, trimming, compression |
+| Pipeline: transcription | Done | `pipeline/transcribe.js` — Whisper API with word-level timestamps |
+| Pipeline: slide generation | Done | `pipeline/generateSlides.js` — GPT-4o theme selection + content |
+| Pipeline: sync + face tracking | Done | `pipeline/syncTalkingHead.js` + `pipeline/faceTrack.js` (BlazeFace) |
+| Zod prop schemas | Done | `src/schema.ts` — all 17 themes validated |
+| Default props | Done | `src/defaultProps.ts` — demo data for all themes |
+| Frontend: upload UI | Done | Drag-drop with theme override (P1, P3, P17) |
+| Frontend: status polling | Done | Step progress bar, 2s polling, error display |
+| Frontend: download | Done | Direct MP4 download link on completion |
+| HMAC upload tokens | Done | Browser → Render direct upload (bypasses Vercel 4.5MB limit) |
+| CORS + API key auth | Done | Hardcoded Vercel origin, `X-API-Key` header |
+| Temp file cleanup | Done | 24h TTL sweep + per-poll cleanup |
+| Playwright E2E tests | Done | 26 specs (home, upload, status, responsive, a11y) |
+| Preprocess unit tests | Done | 44 tests for `buildKeepSegments` logic |
 
 ---
 
-## What Needs to Be Built
+## What Needs to Be Built / Fixed
 
-### Module 1 — Video Upload
-**File:** `server.js` (new route)
+### Critical (Blocks Reliability)
 
-- `POST /upload` — accepts `multipart/form-data` with a video file
-- Saves to `/tmp/uploads/<jobId>.<ext>`
-- Returns `{ jobId, videoPath }`
-- Validates: video only (mp4/mov/webm), max 500MB
-- Library: `multer`
+| # | Gap | Details |
+|---|-----|---------|
+| 1 | **Error boundaries** | No `error.tsx` in frontend, no React ErrorBoundary in Remotion slides. Unhandled errors crash entire app/render. |
+| 2 | **Timing-safe API key comparison** | `server.js:59` uses `===` — vulnerable to timing attacks. Use `crypto.timingSafeEqual`. |
+| 3 | **Graceful shutdown** | No `SIGTERM`/`SIGINT` handlers. Deploy/crash orphans ffmpeg/Remotion child processes, loses all jobs. |
+| 4 | **Job persistence** | In-memory `Map` — all state lost on restart. Need SQLite or DynamoDB. |
+| 5 | **Pipeline cancellation** | No way to stop in-flight jobs. Long ffmpeg/Remotion runs continue even if client disconnects. |
 
----
+### High (Affects User Experience)
 
-### Module 2 — Transcription (Whisper)
-**File:** `server.js` (new route) + `pipeline/transcribe.js`
+| # | Gap | Area | Details |
+|---|-----|------|---------|
+| 6 | MIME validation on drag-drop | Frontend | `accept` attr only filters OS picker, not dropped files |
+| 7 | Polling retry limit | Frontend | Polls forever on error — no max retry cap |
+| 8 | 404 handling for invalid jobIds | Frontend | Non-OK responses treated as valid data, polls forever |
+| 9 | Upload token rate limiting | Frontend | `/api/upload-token` has no rate limit |
+| 10 | jobId sanitization | Frontend | Path traversal possible via URL interpolation |
+| 11 | Per-IP rate limiting | Backend | Only 10-job cap, no per-IP throttle |
+| 12 | Request logging | Backend | No morgan/pino — no audit trail |
+| 13 | Memory leak in job Map | Backend | Grows unbounded for 24h under load |
+| 14 | `/render` leaks stderr + file paths | Backend | Internal errors exposed to client |
+| 15 | Intermediate file cleanup | Backend | Trimmed files not deleted on success; original upload kept until 24h sweep |
+| 16 | Inter-stage validation | Backend | No checks that stage output exists/is valid before next stage |
+| 17 | `transcript._mp3Path` undefined | Backend | Field name mismatch — MP3 never cleaned up |
+| 18 | iconName validation inconsistent | Remotion | P6/P7/P8 use `z.string()` instead of `IconNameSchema` |
+| 19 | HMAC token replay | Backend | No nonce tracking — valid tokens replayable within TTL |
 
-- Extracts audio from video using `ffmpeg` (already required by Remotion)
-- Sends audio to **OpenAI Whisper API** (`whisper-1` model)
-- Returns word-level timestamps: `[{ word, start, end }, ...]`
-- Stores result as `/tmp/uploads/<jobId>.transcript.json`
+### Medium (Polish & Hardening)
 
-**Key output shape:**
-```json
-{
-  "text": "full transcript...",
-  "words": [
-    { "word": "Hello", "start": 0.0, "end": 0.4 },
-    { "word": "everyone", "start": 0.5, "end": 1.1 }
-  ]
-}
-```
+| # | Gap | Area |
+|---|-----|------|
+| 20 | No upload progress bar | Frontend |
+| 21 | No cancel upload button | Frontend |
+| 22 | No tab visibility handling for polling | Frontend |
+| 23 | Stale `fetchError` never cleared | Frontend |
+| 24 | Placeholder SEO metadata ("Create Next App") | Frontend |
+| 25 | No favicon or public/ assets | Frontend |
+| 26 | No toast/notification system | Frontend |
+| 27 | `content-length` not forwarded on download | Frontend |
+| 28 | Dead `/api/start` route (replaced by HMAC flow) | Frontend |
+| 29 | CORS origin hardcoded (no staging/dev) | Backend |
+| 30 | No Helmet.js security headers | Backend |
+| 31 | No overall pipeline timeout | Backend |
+| 32 | No disk space monitoring during pipeline | Backend |
+| 33 | No dead job detection watchdog | Backend |
+| 34 | No idempotency on job submission | Backend |
+| 35 | P8 excluded from auto theme selection | Backend |
+| 36 | P8 schema missing `faceTrack` field | Remotion |
+| 37 | P8 bypasses shared TalkingHead component | Remotion |
+| 38 | No fallback for empty slides arrays | Remotion |
+| 39 | `calcDuration` can return 0 or negative | Remotion |
+| 40 | 13 compositions duplicate inline duration calc | Remotion |
+| 41 | TalkingHead has no loading/error state | Remotion |
 
-> Whisper returns `verbose_json` with word timestamps via `timestamp_granularities[]=word`
+### Low (Nice-to-Have)
 
----
-
-### Module 3 — Slide Generation (GPT-4o)
-**File:** `pipeline/generateSlides.js`
-
-- Sends full transcript to **GPT-4o** with a structured system prompt
-- GPT picks the best Remotion theme (P1–P17) based on topic/tone
-- GPT generates slide content that matches the chosen theme's Zod schema
-- Maps each slide to a time window using transcript word timestamps
-- Returns valid `inputProps` JSON ready to pass to Remotion
-
-**GPT output shape:**
-```json
-{
-  "compositionId": "Presentation8Demo",
-  "slides": [
-    {
-      "type": "titleSlide",
-      "title": "...",
-      "subtitle": "...",
-      "durationInFrames": 90,
-      "talkingHeadStartFrom": 0
-    },
-    ...
-  ],
-  "talkingHeadSrc": "<jobId>.mp4"
-}
-```
-
-**Theme selection rules (in system prompt):**
-- Corporate/finance → P6, P17
-- Tech/SaaS → P1, P3, P8
-- Bold/marketing → P4, P12, P16
-- Data-heavy → P3, P11
-- Creative/brand → P9, P10, P13
-- Academic → P17
-- Terminal/eng → P15
-
----
-
-### Module 4 — Sync Logic
-**File:** `pipeline/syncTalkingHead.js`
-
-- Total Remotion duration = talking head video duration (in frames at 30fps)
-- Each slide's `durationInFrames` derived from its transcript time window: `(end_ms - start_ms) / 1000 * 30`
-- `talkingHeadStartFrom` per slide = `start_ms / 1000 * 30`
-- The `OffthreadVideo` for talking head runs across all slides inside `AbsoluteFill` (not inside `TransitionSeries`) — single continuous source, no re-seeking
-
-**Sync formula:**
-```js
-durationInFrames = Math.round((segment.end - segment.start) * 30)
-talkingHeadStartFrom = Math.round(segment.start * 30)
-```
+| # | Gap | Area |
+|---|-----|------|
+| 42 | No file clear/remove button | Frontend |
+| 43 | No ETA on status page | Frontend |
+| 44 | No share/copy-link button | Frontend |
+| 45 | No video preview before download | Frontend |
+| 46 | No custom 404 page | Frontend |
+| 47 | No loading.tsx skeleton | Frontend |
+| 48 | Dark mode CSS defined but no toggle | Frontend |
+| 49 | Hardcoded `bg-gray-50` instead of theme tokens | Frontend |
+| 50 | No back navigation from status page | Frontend |
+| 51 | StatusTracker `step` prop loosely typed | Frontend |
+| 52 | Output never cleaned (filename vs path mismatch) | Backend |
+| 53 | Sweep misses `mp3Path` | Backend |
+| 54 | `generateSlides` retry has no backoff | Backend |
+| 55 | Dead code in `validateSegmentCoverage` ternary | Backend |
+| 56 | `fluent-ffmpeg` dependency unused | Backend |
+| 57 | P17 uses wrong border color (P1 blue) | Remotion |
+| 58 | No shared theme interface across themes | Remotion |
+| 59 | Hardcoded 1920x1080 in clockWipe transitions | Remotion |
+| 60 | TalkingHead fixed bottom-right, no position prop | Remotion |
 
 ---
 
-### Module 5 — Job Orchestrator
-**File:** `server.js` (new routes)
+## Architecture
 
-New endpoints added to existing Express server:
+### Current (Development — Render.com)
 
-| Method | Route | Description |
-|---|---|---|
-| `POST` | `/pipeline/start` | Upload + kick off full pipeline, returns `{ jobId }` |
-| `GET` | `/pipeline/:jobId/status` | Poll job progress `{ status, step, progress }` |
-| `GET` | `/pipeline/:jobId/download` | Download final MP4 when done |
+```text
+Browser (Vercel)
+  ├─ GET /api/upload-token → Next.js generates HMAC token
+  ├─ PUT directly to Render (video upload with x-upload-token)
+  ├─ POST /pipeline/start → Express creates job, runs pipeline async
+  ├─ GET /pipeline/:jobId/status → poll every 2s
+  └─ GET /pipeline/:jobId/download → stream MP4
 
-**Job states:** `uploading` → `transcribing` → `generating_slides` → `rendering` → `done` → `error`
-
-In-memory job store (simple, no Redis):
-```js
-const jobs = new Map() // jobId → { status, step, videoPath, outputPath, error }
+Pipeline on Render:
+  preprocess → transcribe (Whisper) → generateSlides (GPT-4o)
+  → faceTrack (BlazeFace) → syncTalkingHead → Remotion render
 ```
 
-Pipeline runs async in background (`process.nextTick` / `async IIFE`), job map updated at each step.
+### Planned (Production — AWS)
 
----
+```text
+Browser
+  ├─ WorkOS login → JWT
+  ├─ GET /api/upload-url → Lambda returns S3 pre-signed URL
+  ├─ PUT to S3 (direct upload)
+  ├─ POST /api/start → Lambda creates DynamoDB job record
+  │   └─ Triggers pipeline (Lambda or ECS Fargate for renders)
+  ├─ GET /api/status/:jobId → Lambda reads DynamoDB
+  └─ GET /api/download/:jobId → Lambda returns S3 pre-signed download URL
 
-## Full Flow
-
-```
-POST /pipeline/start (multipart video)
-  │
-  ├─ 1. Save video → /tmp/uploads/<jobId>.mp4
-  ├─ 2. ffmpeg extract audio → /tmp/uploads/<jobId>.wav
-  ├─ 3. Whisper API → word timestamps → <jobId>.transcript.json
-  ├─ 4. GPT-4o → theme selection + slide JSON → <jobId>.props.json
-  ├─ 5. Sync calc → finalize inputProps (durationInFrames, talkingHeadStartFrom per slide)
-  └─ 6. Remotion render → /tmp/renders/<jobId>.mp4
-
-GET /pipeline/<jobId>/status  → poll until status = "done"
-GET /pipeline/<jobId>/download → serve /tmp/renders/<jobId>.mp4
-```
-
----
-
-## Environment Variables (add to `.env.local`)
-
-```
-OPENAI_API_KEY=sk-...          # Used for both Whisper and GPT-4o
-RENDER_API_SECRET=...          # Already exists
+Storage: S3 (videos) + DynamoDB (job metadata)
+Auth: WorkOS
+Compute: Lambda (API + light pipeline) + ECS Fargate (Remotion renders)
 ```
 
 ---
 
-## Out of Scope (Phase 1)
+## Headshot Modes
 
-- User auth / accounts
-- Cloud storage (S3/Supabase) — local `/tmp` only
+### Mode 1: Video Upload (Talking Head)
+User uploads a video with face visible → animated `TalkingHead` overlay with face tracking.
+
+### Mode 2: Audio-Only Upload (Static Headshot)
+User uploads audio only (MP3, M4A, WAV) → static headshot in the same circular frame, no animation.
+
+**Headshot fallback chain:**
+```text
+1. User uploads a photo alongside audio  → use uploaded photo
+2. No photo uploaded                      → pull WorkOS profile avatar
+3. No WorkOS avatar                       → themed generic silhouette placeholder
+```
+
+The generic placeholder is a neutral head+shoulders silhouette (no face details) — tinted to match the active theme's palette. No animation on static headshots.
+
+**Pipeline branch:**
+```text
+Has video stream?
+  ├─ Yes → TalkingHead.tsx (OffthreadVideo + face tracking)
+  └─ No (audio-only) →
+       ├─ User uploaded photo? → StaticHeadshot.tsx (still image)
+       ├─ WorkOS profile avatar? → StaticHeadshot.tsx (fetched image)
+       └─ Neither → StaticHeadshot.tsx (themed placeholder)
+```
+
+**Components needed:**
+- `src/StaticHeadshot.tsx` — same circular frame as TalkingHead, renders `<Img>` instead of `<OffthreadVideo>`, no face tracking, no animation
+- `frontend/components/upload-form.tsx` — optional photo upload field (shown when audio file selected)
+- Generic placeholder SVGs/PNGs per theme palette
+
+---
+
+## Talking Head Theme Support
+
+| Theme | talkingHeadSrc | faceTrack | Uses shared TalkingHead.tsx |
+|-------|---------------|-----------|---------------------------|
+| P1 Dark Tech | Yes | Yes | Yes |
+| P3 Dashboard/KPI | Yes | Yes | Yes |
+| P8 Minimal/SaaS | Yes | **No (gap)** | **No — inlines own (gap)** |
+| P17 Academic | Yes | Yes | Yes |
+| All others | No | No | N/A |
+
+---
+
+## Theme Auto-Selection Rules
+
+| Topic/Tone | Themes |
+|------------|--------|
+| Corporate/finance | P6, P17 |
+| Tech/SaaS | P1, P3, P8 |
+| Bold/marketing | P4, P12, P16 |
+| Data-heavy | P3, P11 |
+| Creative/brand | P9, P10, P13 |
+| Academic | P17 |
+| Terminal/engineering | P15 |
+
+**Note:** P8 is defined in `THEME_CONFIGS` but excluded from auto-selection prompt. Only available via `themeOverride`.
+
+---
+
+## Out of Scope (Deferred)
+
+- Payment integration (deferred until core logic fully tested)
+- User auth / accounts (WorkOS planned)
+- Cloud storage migration (S3/DynamoDB planned for production)
 - PPTX import
 - Custom font uploads
 - Background music mixing
-- Redis / persistent job queue
-- Frontend UI (API-only)
+- SSE progress streaming (polling is adequate for now)

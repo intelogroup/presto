@@ -11,3 +11,7 @@ output/
 *.DS_Store
 .superpowers/
 docs/
+
+# Playwright
+frontend/test-results/
+frontend/playwright-report/
