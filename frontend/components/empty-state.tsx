@@ -14,22 +14,28 @@ interface EmptyStateProps {
 
 export function EmptyState({ icon, title, description, action }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="mb-4 text-muted-foreground [&>svg]:size-12">{icon}</div>
-      <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-      <p className="mt-1 max-w-sm text-sm text-muted-foreground">
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      <div className="mb-5 flex size-16 items-center justify-center rounded-2xl bg-primary/8 text-primary [&>svg]:size-8">
+        {icon}
+      </div>
+      <h2 className="text-xl font-bold text-foreground">{title}</h2>
+      <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
         {description}
       </p>
       {action && (
         <Link
           href={action.href}
           className={cn(
-            "mt-6 inline-flex shrink-0 items-center justify-center rounded-lg text-sm font-medium transition-all",
-            "bg-primary text-primary-foreground",
-            "h-8 px-2.5"
+            "mt-8 inline-flex items-center justify-center rounded-xl text-sm font-semibold transition-all",
+            "bg-primary text-primary-foreground shadow-md shadow-primary/25",
+            "hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5",
+            "h-11 px-6"
           )}
         >
           {action.label}
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="ml-2 size-4">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
         </Link>
       )}
     </div>

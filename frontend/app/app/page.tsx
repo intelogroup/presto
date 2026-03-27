@@ -65,9 +65,14 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12">
-      <h1 className="text-xl font-semibold text-foreground">Projects</h1>
-      <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="mx-auto max-w-6xl px-4 py-10">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Projects</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{projects.length} total</p>
+        </div>
+      </div>
+      <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((p) => (
           <ProjectCard key={p.jobId} {...p} />
         ))}
