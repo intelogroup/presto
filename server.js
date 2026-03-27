@@ -155,10 +155,15 @@ function renderVideo(compositionId, inputProps) {
 }
 
 // --- Pipeline orchestrator ---
+const PIPELINE_TIMEOUT_MS = 60 * 60 * 1000; // 60 minutes
+
 async function runPipeline(jobId, videoPath, themeOverride = null) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), PIPELINE_TIMEOUT_MS);
+
   try {
     // Step 1: Preprocess — validate, trim silences (>4s → 2s), compress if needed
-    jobs.set(jobId, { ...jobs.get(jobId), status: "preprocessing", step: "preprocessing" });
+    jobs.set(jobId, { ...jobs.get(jobId), status: "preprocessing", step: "preprocessing", lastProgressAt: Date.now() });
     console.log(`[${jobId}] preprocessing...`);
     const preprocessResult = await preprocessVideo(videoPath, "/tmp");
     const effectiveVideoPath = preprocessResult.outputPath;
@@ -168,7 +173,7 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
     }
 
     // Step 2: Transcribe the (trimmed) video
-    jobs.set(jobId, { ...jobs.get(jobId), status: "transcribing", step: "transcribing" });
+    jobs.set(jobId, { ...jobs.get(jobId), status: "transcribing", step: "transcribing", lastProgressAt: Date.now() });
     console.log(`[${jobId}] transcribing...`);
     const transcript = await transcribe(effectiveVideoPath, jobId);
 
@@ -179,12 +184,13 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
       step: "generating_slides",
       mp3Path: transcript._mp3Path,
       transcriptPath: transcript._transcriptPath,
+      lastProgressAt: Date.now(),
     });
     console.log(`[${jobId}] generating slides (theme selection + content)...`);
     const { compositionId, themeId, slides, transitionFrames } = await generateSlides(transcript, themeOverride);
 
     // Step 4: Sync talking head + face tracking
-    jobs.set(jobId, { ...jobs.get(jobId), status: "syncing", step: "syncing" });
+    jobs.set(jobId, { ...jobs.get(jobId), status: "syncing", step: "syncing", lastProgressAt: Date.now() });
     console.log(`[${jobId}] syncing talking head (themeId=${themeId}, compositionId=${compositionId}, transitionFrames=${transitionFrames})...`);
     const { inputProps, talkingHeadPublicPath } = await syncTalkingHead({
       slides,
@@ -196,15 +202,18 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
     jobs.set(jobId, { ...jobs.get(jobId), talkingHeadPublicPath });
 
     // Step 5: Render with Remotion
-    jobs.set(jobId, { ...jobs.get(jobId), status: "rendering", step: "rendering" });
+    jobs.set(jobId, { ...jobs.get(jobId), status: "rendering", step: "rendering", lastProgressAt: Date.now() });
     console.log(`[${jobId}] rendering with Remotion (${compositionId})...`);
     const outputPath = await renderVideo(compositionId, inputProps);
 
+    clearTimeout(timeoutId);
     jobs.set(jobId, { ...jobs.get(jobId), status: "done", step: "done", outputFilename: outputPath });
     console.log("[pipeline done]", "jobId=" + jobId);
   } catch (e) {
-    console.error("[pipeline error]", "jobId=" + jobId, e.message);
-    jobs.set(jobId, { ...jobs.get(jobId), status: "error", error: e.message });
+    clearTimeout(timeoutId);
+    const reason = controller.signal.aborted ? "Pipeline timed out after 60 minutes" : e.message;
+    console.error("[pipeline error]", "jobId=" + jobId, reason);
+    jobs.set(jobId, { ...jobs.get(jobId), status: "error", error: reason });
 
     // Clean up temp files on failure
     const job = jobs.get(jobId);
