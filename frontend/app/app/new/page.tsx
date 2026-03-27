@@ -166,7 +166,7 @@ export default function NewProjectPage() {
                 Drop a photo here (JPEG/PNG, max 5 MB)
               </p>
               <p className="mt-1 text-xs text-muted-foreground/70">
-                If skipped, we'll use your profile photo or a placeholder.
+                If skipped, we&apos;ll use your profile photo or a placeholder.
               </p>
             </div>
           </section>
