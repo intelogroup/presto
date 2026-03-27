@@ -33,7 +33,7 @@ export function SlideStrip({ slides }: SlideStripProps) {
             "group relative flex-shrink-0 w-32 rounded-lg overflow-hidden transition-all duration-200",
             selected === i
               ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-105"
-              : "ring-1 ring-white/10 hover:ring-white/20"
+              : "ring-1 ring-border hover:ring-border/50"
           )}
         >
           <div className={cn(
@@ -50,15 +50,15 @@ export function SlideStrip({ slides }: SlideStripProps) {
               Slide {slide.index}
             </span>
           </div>
-          <div className="absolute bottom-0 right-0 rounded-tl-md bg-black/60 backdrop-blur-sm px-1.5 py-0.5">
-            <span className="text-[10px] font-medium text-white/70">{slide.durationSec}s</span>
+          <div className="absolute bottom-0 right-0 rounded-tl-md bg-background/60 backdrop-blur-sm px-1.5 py-0.5">
+            <span className="text-[10px] font-medium text-muted-foreground">{slide.durationSec}s</span>
           </div>
         </button>
       ))}
 
       {/* Add slide */}
-      <button disabled aria-disabled="true" className="flex-shrink-0 flex items-center justify-center w-16 h-[72px] rounded-lg border border-dashed border-white/10 text-white/20 cursor-not-allowed opacity-50">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+      <button disabled aria-disabled="true" aria-label="Add slide" className="flex-shrink-0 flex items-center justify-center w-16 h-[72px] rounded-lg border border-dashed border-border text-muted-foreground cursor-not-allowed opacity-50">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>
       </button>

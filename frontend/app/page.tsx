@@ -79,12 +79,12 @@ export default function Home() {
         {/* Hero */}
         <section className="relative overflow-hidden">
           {/* Background — stronger gradients */}
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_90%_70%_at_50%_0%,oklch(0.52_0.24_265_/_0.18),transparent_70%),radial-gradient(ellipse_70%_60%_at_90%_10%,oklch(0.68_0.16_165_/_0.12),transparent_70%),radial-gradient(ellipse_60%_60%_at_10%_20%,oklch(0.62_0.20_300_/_0.10),transparent_70%)]" />
+          <div className="absolute inset-0 -z-10 gradient-hero-bg" />
 
           <div className="mx-auto max-w-5xl px-4 pt-24 pb-16 text-center md:pt-32 md:pb-24">
             <div className="animate-fade-up">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-4 py-1.5 text-xs font-semibold text-primary shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-3.5">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-3.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
                 </svg>
                 AI-powered video creation
@@ -113,7 +113,7 @@ export default function Home() {
                 )}
               >
                 Get Started Free
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="ml-2 size-4">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="ml-2 size-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                 </svg>
               </Link>
@@ -132,7 +132,7 @@ export default function Home() {
             {/* Product mock */}
             <div className="mx-auto mt-16 max-w-4xl animate-fade-up-delay-3">
               <div className="relative rounded-2xl border border-border/50 bg-gradient-to-b from-card to-muted/40 p-1.5 shadow-2xl shadow-primary/8">
-                <div className="aspect-video w-full rounded-xl bg-[#0a0a1a] overflow-hidden relative">
+                <div className="aspect-video w-full rounded-xl bg-[oklch(0.08_0.02_265)] overflow-hidden relative">
                   {/* Mock slide */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-6 md:p-10">
                     <div className="w-full max-w-lg space-y-5 text-center">
@@ -157,7 +157,7 @@ export default function Home() {
                   {/* Talking head */}
                   <div className="absolute bottom-3 right-3 size-14 md:bottom-5 md:right-5 md:size-20 rounded-full border-2 border-primary/30 bg-gradient-to-br from-primary/25 to-accent/15 shadow-xl">
                     <div className="flex size-full items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="size-7 md:size-9 text-white/25">
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="size-7 md:size-9 text-white/25">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                       </svg>
                     </div>
@@ -201,7 +201,7 @@ export default function Home() {
                   {/* Connector arrow */}
                   {i < STEPS.length - 1 && (
                     <div className="hidden md:flex shrink-0 px-2 text-border">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                       </svg>
                     </div>
@@ -247,7 +247,7 @@ export default function Home() {
 
         {/* Pricing */}
         <section id="pricing" className="relative border-t border-border/50 bg-muted/30 py-20 md:py-24">
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_40%_at_50%_100%,oklch(0.52_0.24_265_/_0.04),transparent)]" />
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_40%_at_50%_100%,oklch(from_var(--primary)_l_c_h_/_0.04),transparent)]" />
           <div className="mx-auto max-w-5xl px-4">
             <h2 className="text-center text-3xl font-bold text-foreground md:text-4xl">
               Simple pricing

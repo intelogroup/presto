@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,10 +22,22 @@ const MOCK_USER = {
 export default function SettingsPage() {
   const [name, setName] = useState(MOCK_USER.name);
   const [saved, setSaved] = useState(false);
+  const savedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (savedTimerRef.current) {
+        clearTimeout(savedTimerRef.current);
+      }
+    };
+  }, []);
 
   function handleSave() {
     setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    if (savedTimerRef.current) {
+      clearTimeout(savedTimerRef.current);
+    }
+    savedTimerRef.current = setTimeout(() => setSaved(false), 2000);
   }
 
   const usagePercent = Math.round(
@@ -98,7 +110,7 @@ export default function SettingsPage() {
               >
                 {saved ? (
                   <>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="mr-1.5 size-3.5">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="mr-1.5 size-3.5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                     </svg>
                     Saved
@@ -226,7 +238,7 @@ export default function SettingsPage() {
             <h2 className="text-sm font-semibold text-foreground">Invoice history</h2>
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <div className="flex size-12 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground mb-3">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                 </svg>
               </div>
@@ -315,7 +327,7 @@ function PlanColumn({
       <ul className="space-y-2">
         {features.map((f) => (
           <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3.5 shrink-0 mt-0.5 text-accent">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3.5 shrink-0 mt-0.5 text-accent">
               <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
             </svg>
             {f}
