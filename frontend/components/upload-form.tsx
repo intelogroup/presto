@@ -13,7 +13,11 @@ import {
 
 const THEMES = [
   { id: "P1", label: "Dark Tech" },
+  { id: "P2", label: "Gradient" },
   { id: "P3", label: "Dashboard / KPI" },
+  { id: "P5", label: "Bold Color" },
+  { id: "P7", label: "Neon" },
+  { id: "P16", label: "Glassmorphism" },
   { id: "P17", label: "Academic" },
 ];
 

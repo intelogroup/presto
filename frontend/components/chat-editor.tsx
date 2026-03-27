@@ -17,7 +17,7 @@ const EXAMPLE_CHIPS = [
   "Make intro slide longer",
   "Remove the last slide",
   "Add a key takeaways slide",
-  "Change background color",
+  "Make the talking head smaller",
 ];
 
 interface ChatEditorProps {

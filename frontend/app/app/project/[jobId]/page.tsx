@@ -144,12 +144,9 @@ export default function ProjectDetailPage({
           </Link>
           <div className="h-5 w-px bg-border/40" />
           <h2 className="text-sm font-semibold text-foreground">Project Editor</h2>
-          <span className="rounded-md bg-accent/15 px-2 py-0.5 text-xs font-medium text-accent">Dark Tech</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground">Duration: 33s</span>
-          <span className="text-xs text-muted-foreground/40">|</span>
-          <span className="text-xs text-muted-foreground">5 slides</span>
+          <span className="text-xs text-muted-foreground">{MOCK_SLIDES.length} slides</span>
           <div className="ml-3 flex items-center gap-2">
             <a href={`/api/download/${jobId}`} download>
               <Button size="sm" className="rounded-lg shadow-sm shadow-primary/20">

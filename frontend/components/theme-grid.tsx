@@ -3,24 +3,24 @@
 import { cn } from "@/lib/utils";
 
 const THEMES = [
-  { id: "", label: "Auto-select", color: "bg-muted" },
-  { id: "P1", label: "Dark Tech", color: "bg-gray-900" },
-  { id: "P2", label: "Gradient", color: "bg-gradient-to-br from-indigo-500 to-purple-600" },
-  { id: "P3", label: "Dashboard / KPI", color: "bg-emerald-700" },
-  { id: "P4", label: "Minimal Light", color: "bg-gray-100" },
-  { id: "P5", label: "Bold Color", color: "bg-orange-500" },
-  { id: "P6", label: "Corporate", color: "bg-blue-900" },
-  { id: "P7", label: "Neon", color: "bg-fuchsia-600" },
-  { id: "P8", label: "Infographic", color: "bg-sky-500" },
-  { id: "P9", label: "Retro", color: "bg-amber-600" },
-  { id: "P10", label: "Nature", color: "bg-green-700" },
-  { id: "P11", label: "Monochrome", color: "bg-neutral-600" },
-  { id: "P12", label: "Pastel", color: "bg-pink-300" },
-  { id: "P13", label: "Geometric", color: "bg-violet-600" },
-  { id: "P14", label: "Timeline", color: "bg-cyan-700" },
-  { id: "P15", label: "Magazine", color: "bg-rose-600" },
-  { id: "P16", label: "Glassmorphism", color: "bg-slate-400/80" },
-  { id: "P17", label: "Academic", color: "bg-stone-700" },
+  { id: "", label: "Auto-select", color: "bg-muted", hasTalkingHead: false },
+  { id: "P1", label: "Dark Tech", color: "bg-gray-900", hasTalkingHead: true },
+  { id: "P2", label: "Gradient", color: "bg-gradient-to-br from-indigo-500 to-purple-600", hasTalkingHead: false },
+  { id: "P3", label: "Dashboard / KPI", color: "bg-emerald-700", hasTalkingHead: true },
+  { id: "P4", label: "Minimal Light", color: "bg-gray-200", hasTalkingHead: false },
+  { id: "P5", label: "Bold Color", color: "bg-orange-500", hasTalkingHead: false },
+  { id: "P6", label: "Corporate", color: "bg-blue-900", hasTalkingHead: false },
+  { id: "P7", label: "Neon", color: "bg-fuchsia-600", hasTalkingHead: false },
+  { id: "P8", label: "Infographic", color: "bg-sky-500", hasTalkingHead: false },
+  { id: "P9", label: "Retro", color: "bg-amber-600", hasTalkingHead: false },
+  { id: "P10", label: "Nature", color: "bg-green-700", hasTalkingHead: false },
+  { id: "P11", label: "Monochrome", color: "bg-neutral-600", hasTalkingHead: false },
+  { id: "P12", label: "Pastel", color: "bg-pink-300", hasTalkingHead: false },
+  { id: "P13", label: "Geometric", color: "bg-violet-600", hasTalkingHead: false },
+  { id: "P14", label: "Timeline", color: "bg-cyan-700", hasTalkingHead: false },
+  { id: "P15", label: "Magazine", color: "bg-rose-600", hasTalkingHead: false },
+  { id: "P16", label: "Glassmorphism", color: "bg-slate-500/80", hasTalkingHead: false },
+  { id: "P17", label: "Academic", color: "bg-stone-700", hasTalkingHead: true },
 ];
 
 interface ThemeGridProps {
@@ -42,16 +42,27 @@ export function ThemeGrid({ value, onChange }: ThemeGridProps) {
             aria-pressed={isSelected}
             aria-label={theme.label}
             className={cn(
-              "group flex flex-col items-center gap-2 rounded-lg border-2 p-3 transition-all",
+              "group relative flex flex-col items-center gap-2 rounded-xl border-2 p-3 transition-all duration-200",
               isSelected
-                ? "border-primary bg-primary/5"
-                : "border-border hover:border-muted-foreground"
+                ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
+                : "border-border/60 hover:border-primary/30 hover:bg-primary/[0.02]"
             )}
           >
+            {/* Talking head badge */}
+            {theme.hasTalkingHead && (
+              <div className="absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-sm" title="Supports talking head overlay">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
+              </div>
+            )}
+
             <div
               className={cn(
-                "aspect-video w-full rounded-md flex items-center justify-center",
-                theme.color
+                "aspect-video w-full rounded-lg flex items-center justify-center border",
+                theme.color,
+                /* Ensure light-colored themes have visible borders in dark mode */
+                ["P4", "P12", "P16"].includes(theme.id) ? "border-border" : "border-transparent"
               )}
             >
               {isAuto && (
@@ -73,8 +84,8 @@ export function ThemeGrid({ value, onChange }: ThemeGridProps) {
             </div>
             <span
               className={cn(
-                "text-xs font-medium",
-                isSelected ? "text-primary" : "text-muted-foreground"
+                "text-xs font-medium transition-colors",
+                isSelected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
               )}
             >
               {theme.label}

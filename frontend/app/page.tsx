@@ -8,29 +8,49 @@ const STEPS = [
   {
     number: 1,
     title: "Upload",
-    description: "Drop a video or audio file — MP4, MOV, WebM, MP3, or M4A.",
+    description: "Drop a video or audio file — we handle the rest.",
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
       </svg>
     ),
   },
   {
     number: 2,
-    title: "AI generates slides",
-    description: "Speech is transcribed and themed slides are created automatically.",
+    title: "Transcribe",
+    description: "Whisper converts your speech to text with precise timestamps.",
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z" />
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
       </svg>
     ),
   },
   {
     number: 3,
-    title: "Download video",
-    description: "Get a synced presentation video with your talking head overlaid.",
+    title: "Generate slides",
+    description: "GPT-4o creates themed slides matched to your content.",
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+      </svg>
+    ),
+  },
+  {
+    number: 4,
+    title: "Track & sync",
+    description: "BlazeFace detects your face and overlays the talking head.",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+      </svg>
+    ),
+  },
+  {
+    number: 5,
+    title: "Download",
+    description: "Get your finished presentation video, ready to share.",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
       </svg>
     ),
@@ -75,6 +95,16 @@ const FEATURES = [
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+      </svg>
+    ),
+  },
+  {
+    title: "AI chat editor",
+    description: "Refine slides, timing, and themes with natural language.",
+    gradient: "from-chart-3/10 to-primary/5",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
       </svg>
     ),
   },
@@ -141,17 +171,46 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Product screenshot placeholder */}
+            {/* Product mock — shows what a Presto output looks like */}
             <div className="mx-auto mt-16 max-w-4xl animate-fade-up-delay-3">
               <div className="relative rounded-2xl border border-border/60 bg-gradient-to-b from-card to-muted/50 p-1.5 shadow-2xl shadow-primary/10">
-                <div className="aspect-video w-full rounded-xl bg-muted/80 flex items-center justify-center overflow-hidden">
-                  <div className="flex flex-col items-center gap-3 text-muted-foreground/40">
-                    <div className="flex size-16 items-center justify-center rounded-2xl bg-primary/10">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-8 text-primary/60">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                <div className="aspect-video w-full rounded-xl bg-[#0c0c1a] overflow-hidden relative">
+                  {/* Mock slide content */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+                    <div className="w-full max-w-md space-y-4 text-center">
+                      <div className="mx-auto h-1 w-16 rounded-full bg-primary/60" />
+                      <div className="text-xl font-bold text-white/90 md:text-2xl">Quarterly Revenue Report</div>
+                      <div className="mx-auto grid max-w-sm grid-cols-3 gap-3">
+                        <div className="rounded-lg bg-white/5 p-3">
+                          <div className="text-lg font-bold text-primary">$2.4M</div>
+                          <div className="text-[10px] text-white/40">Revenue</div>
+                        </div>
+                        <div className="rounded-lg bg-white/5 p-3">
+                          <div className="text-lg font-bold text-accent">+18%</div>
+                          <div className="text-[10px] text-white/40">Growth</div>
+                        </div>
+                        <div className="rounded-lg bg-white/5 p-3">
+                          <div className="text-lg font-bold text-chart-3">847</div>
+                          <div className="text-[10px] text-white/40">Clients</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Talking head overlay */}
+                  <div className="absolute bottom-4 right-4 size-16 rounded-full border-2 border-primary/40 bg-gradient-to-br from-primary/30 to-accent/20 shadow-lg md:size-20">
+                    <div className="flex size-full items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="size-8 text-white/30">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                       </svg>
                     </div>
-                    <span className="text-sm font-medium text-muted-foreground/50">Preview coming soon</span>
+                  </div>
+                  {/* Slide nav dots */}
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+                    <div className="size-1.5 rounded-full bg-primary" />
+                    <div className="size-1.5 rounded-full bg-white/20" />
+                    <div className="size-1.5 rounded-full bg-white/20" />
+                    <div className="size-1.5 rounded-full bg-white/20" />
+                    <div className="size-1.5 rounded-full bg-white/20" />
                   </div>
                 </div>
               </div>
@@ -166,32 +225,32 @@ export default function Home() {
               <h2 className="text-3xl font-bold text-foreground md:text-4xl">
                 How it works
               </h2>
-              <p className="mx-auto mt-3 max-w-md text-muted-foreground">
-                Three simple steps from recording to polished presentation.
+              <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
+                Five automated steps from recording to polished presentation.
               </p>
             </div>
 
-            <div className="relative mt-16 grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-6">
+            <div className="relative mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-5 md:gap-4">
               {/* Connector line (desktop) */}
-              <div className="absolute top-12 left-[16.6%] right-[16.6%] hidden h-px bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 md:block" />
+              <div className="absolute top-[26px] left-[10%] right-[10%] hidden h-px bg-gradient-to-r from-primary/10 via-primary/30 to-primary/10 md:block" />
 
-              {STEPS.map((step, i) => (
+              {STEPS.map((step) => (
                 <div key={step.number} className="relative flex flex-col items-center text-center">
                   {/* Step number with glow */}
                   <div className="relative">
-                    <div className="absolute inset-0 rounded-full bg-primary/20 blur-lg" />
-                    <div className="relative flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-primary-foreground text-lg font-bold shadow-lg shadow-primary/25">
+                    <div className="absolute inset-0 rounded-full bg-primary/20 blur-md" />
+                    <div className="relative flex size-[52px] items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-primary-foreground text-base font-bold shadow-lg shadow-primary/25">
                       {step.number}
                     </div>
                   </div>
                   {/* Icon */}
-                  <div className="mt-5 flex size-12 items-center justify-center rounded-xl bg-primary/8 text-primary">
+                  <div className="mt-4 flex size-10 items-center justify-center rounded-lg bg-primary/8 text-primary">
                     {step.icon}
                   </div>
-                  <h3 className="mt-4 text-lg font-semibold text-foreground">
+                  <h3 className="mt-3 text-sm font-semibold text-foreground">
                     {step.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground max-w-[260px]">
+                  <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground max-w-[200px]">
                     {step.description}
                   </p>
                 </div>
@@ -212,7 +271,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {FEATURES.map((feature) => (
                 <div
                   key={feature.title}
