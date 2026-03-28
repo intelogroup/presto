@@ -81,16 +81,20 @@ function TabsTrigger({
 function TabsContent({
   className,
   value,
+  forceMount,
   ...props
-}: React.ComponentProps<"div"> & { value: string }) {
+}: React.ComponentProps<"div"> & { value: string; forceMount?: boolean }) {
   const ctx = React.useContext(TabsContext)
-  if (ctx.value !== value) return null
+  const isActive = ctx.value === value
+
+  if (!isActive && !forceMount) return null
 
   return (
     <div
       data-slot="tabs-content"
       role="tabpanel"
-      className={cn("mt-4 outline-none", className)}
+      data-state={isActive ? "active" : "inactive"}
+      className={cn("mt-4 outline-none", !isActive && "hidden", className)}
       {...props}
     />
   )
