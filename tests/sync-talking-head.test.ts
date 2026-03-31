@@ -103,6 +103,27 @@ describe("drift absorption", () => {
     result.forEach((s) => expect(s.duration).toBeGreaterThanOrEqual(60));
   });
 
+  it("P18: drift with transitionFrames=12", () => {
+    const slides = [{ duration: 200 }, { duration: 200 }, { duration: 200 }];
+    // effective = 500 + 2*12 = 524, sum = 600, drift = -76
+    const result = absorbDrift(slides, 500, 12);
+    expect(result[2].duration).toBe(200 - 76);
+  });
+
+  it("P19: drift with transitionFrames=10", () => {
+    const slides = [{ duration: 150 }, { duration: 150 }];
+    // effective = 280 + 1*10 = 290, sum = 300, drift = -10
+    const result = absorbDrift(slides, 280, 10);
+    expect(result[1].duration).toBe(140);
+  });
+
+  it("P20: drift with transitionFrames=5 (near hard-cut)", () => {
+    const slides = [{ duration: 100 }, { duration: 100 }];
+    // effective = 190 + 1*5 = 195, sum = 200, drift = -5
+    const result = absorbDrift(slides, 190, 5);
+    expect(result[1].duration).toBe(95);
+  });
+
   it("uses different transition frame values", () => {
     const slides = [{ duration: 300 }, { duration: 300 }];
 
@@ -160,7 +181,7 @@ describe("internal field stripping", () => {
 // =========================================================================
 describe("jobId sanitization", () => {
   function sanitizeJobId(jobId: string): string {
-    return jobId.replace(/[^a-zA-Z0-9\-]/g, "_");
+    return jobId.replace(/[^a-zA-Z0-9\-]/g, "_").slice(0, 200);
   }
 
   it("preserves UUID-like jobIds", () => {
@@ -177,6 +198,26 @@ describe("jobId sanitization", () => {
   it("strips spaces and special chars", () => {
     expect(sanitizeJobId("test job")).toBe("test_job");
     expect(sanitizeJobId("test;rm -rf")).toBe("test_rm_-rf");
+  });
+
+  it("truncates to 200 characters to stay within filesystem limits", () => {
+    const longId = "a".repeat(300);
+    const result = sanitizeJobId(longId);
+    expect(result.length).toBe(200);
+  });
+
+  it("truncates after sanitization, not before", () => {
+    const longSpecial = "@".repeat(300);
+    const result = sanitizeJobId(longSpecial);
+    expect(result.length).toBe(200);
+    expect(result).toBe("_".repeat(200));
+  });
+
+  it("resulting filename fits within 255-char filesystem limit", () => {
+    const longId = "x".repeat(300);
+    const safe = sanitizeJobId(longId);
+    const filename = `${safe}_talkinghead.mp4`;
+    expect(filename.length).toBeLessThanOrEqual(255);
   });
 });
 

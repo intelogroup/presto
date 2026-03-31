@@ -65,6 +65,31 @@ const P17SlideSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("cta17"), headline: z.string(), instruction: z.string() }),
 ]);
 
+const P18SlideSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("grungeHero"), title: z.string(), subtitle: z.string(), tag: z.string() }),
+  z.object({ type: z.literal("grungeStat"), value: z.string(), label: z.string(), context: z.string() }),
+  z.object({ type: z.literal("grungeList"), title: z.string(), items: z.array(z.string()) }),
+  z.object({ type: z.literal("grungeQuote"), quote: z.string(), author: z.string(), role: z.string().optional() }),
+  z.object({ type: z.literal("grungeClosing"), word: z.string(), tagline: z.string() }),
+]);
+
+const KineticAccentSchema = z.enum(["pink", "cyan", "yellow", "white"]);
+
+const P19SlideSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("dataHero"), title: z.string(), subtitle: z.string(), badge: z.string() }),
+  z.object({ type: z.literal("dataCounter"), value: z.number(), suffix: z.string(), label: z.string(), sublabel: z.string().optional() }),
+  z.object({ type: z.literal("dataBar"), title: z.string(), bars: z.array(z.object({ label: z.string(), value: z.number(), max: z.number() })) }),
+  z.object({ type: z.literal("dataDonut"), title: z.string(), segments: z.array(z.object({ label: z.string(), value: z.number(), color: z.string() })), centerValue: z.string(), centerLabel: z.string() }),
+  z.object({ type: z.literal("dataClosing"), headline: z.string(), tagline: z.string() }),
+]);
+
+const P20SlideSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("kineticSplash"), word: z.string(), accent: KineticAccentSchema }),
+  z.object({ type: z.literal("kineticReveal"), words: z.array(z.string()).min(1).max(6), accent: KineticAccentSchema }),
+  z.object({ type: z.literal("kineticQuote20"), quote: z.string(), author: z.string() }),
+  z.object({ type: z.literal("kineticClosing20"), line1: z.string(), line2: z.string() }),
+]);
+
 const P8SlideSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("minimalHero"), title: z.string(), subtitle: z.string(), tag: z.string() }),
   z.object({
@@ -160,6 +185,44 @@ const THEME_CONFIGS = {
 - minimalClosing: { headline: string, tagline: string } — closing call-to-action`,
     schema: P8SlideSchema,
   },
+  P18: {
+    compositionId: "Presentation18",
+    name: "Grunge / Textured Raw",
+    vibe: "edgy brands, streetwear, music, raw storytelling — dark charcoal, rust/mustard accents, stamp animations, film grain",
+    transitionFrames: 12,
+    slideTypes: `
+- grungeHero: { title: string, subtitle: string, tag: string } — stamp-in title with tape mark tag
+- grungeStat: { value: string, label: string, context: string } — big stamped number with rough underline
+- grungeList: { title: string, items: string[] } — staggered list items with alternating rotation
+- grungeQuote: { quote: string, author: string, role?: string } — big quote mark with chalk text
+- grungeClosing: { word: string, tagline: string } — word stamp-in with rough underline reveal`,
+    schema: P18SlideSchema,
+  },
+  P19: {
+    compositionId: "Presentation19",
+    name: "Data Infographic",
+    vibe: "analytics, reports, dashboards, data stories — deep navy, teal/indigo/amber accents, animated counters, charts, scan lines",
+    transitionFrames: 10,
+    slideTypes: `
+- dataHero: { title: string, subtitle: string, badge: string } — scan line animation with badge pop
+- dataCounter: { value: number, suffix: string, label: string, sublabel?: string } — animated number counter (0→target)
+- dataBar: { title: string, bars: [{label: string, value: number, max: number}] } — horizontal bars growing from left
+- dataDonut: { title: string, segments: [{label: string, value: number, color: string}], centerValue: string, centerLabel: string } — SVG donut chart with center stat
+- dataClosing: { headline: string, tagline: string } — reverse scan line with headline`,
+    schema: P19SlideSchema,
+  },
+  P20: {
+    compositionId: "Presentation20",
+    name: "Kinetic Typography",
+    vibe: "bold statements, motivational, social media, hype reels — pure black, hot pink/cyan/yellow accents, full-screen word slams",
+    transitionFrames: 5,
+    slideTypes: `
+- kineticSplash: { word: string, accent: "pink"|"cyan"|"yellow"|"white" } — full-screen word slam with scale bounce and color flash
+- kineticReveal: { words: string[] (1-6 words), accent: "pink"|"cyan"|"yellow"|"white" } — word-by-word reveal, last word gets accent
+- kineticQuote20: { quote: string, author: string } — quote with back-easing scale, accent line
+- kineticClosing20: { line1: string, line2: string } — two-line CTA with flash effects`,
+    schema: P20SlideSchema,
+  },
 };
 
 async function selectTheme(transcriptText) {
@@ -173,7 +236,7 @@ async function selectTheme(transcriptText) {
         schema: {
           type: "object",
           properties: {
-            themeId: { type: "string", enum: ["P1", "P3", "P17"] },
+            themeId: { type: "string", enum: ["P1", "P3", "P8", "P17", "P18", "P19", "P20"] },
             reasoning: { type: "string" },
           },
           required: ["themeId", "reasoning"],
@@ -189,7 +252,11 @@ async function selectTheme(transcriptText) {
 Theme options:
 - P1 (Dark Tech): startup pitch, AI, software, tech product
 - P3 (Dashboard/KPI): finance, metrics, data, business review, quarterly reports
+- P8 (Clean Minimalist): product launches, SaaS, design, tutorials — Apple/Vercel aesthetic
 - P17 (Academic): lectures, education, research, tutorials
+- P18 (Grunge/Raw): edgy brands, streetwear, music, raw storytelling
+- P19 (Data Infographic): analytics, reports, dashboards, data stories with charts
+- P20 (Kinetic Typography): bold statements, motivational, social media, hype reels
 
 Select the single best theme for the transcript. Respond with JSON.`,
       },
@@ -216,7 +283,7 @@ function validateSegmentCoverage(slides, totalSegments) {
 
   for (let i = 0; i < slides.length; i++) {
     const slide = slides[i];
-    const indices = slide.reuseSlideIndex !== undefined ? slide.segmentIndices : slide.segmentIndices;
+    const indices = slide.segmentIndices;
 
     if (!Array.isArray(indices) || indices.length === 0) {
       errors.push(`slide[${i}]: missing or empty segmentIndices`);

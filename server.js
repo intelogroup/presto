@@ -135,8 +135,18 @@ function maybeCleanup(job, jobId) {
 // --- Remotion render helper ---
 const remotionBin = path.join(__dirname, "node_modules", ".bin", "remotion");
 
+// Allowlist of valid Remotion composition IDs — must match Root.tsx registrations
+const VALID_COMPOSITION_IDS = new Set([
+  "PanZoom", "Advanced", "Showcase", "PictureInPicture",
+  "Presentation",
+  ...Array.from({ length: 19 }, (_, i) => `Presentation${i + 2}`),
+]);
+
 function renderVideo(compositionId, inputProps) {
   return new Promise((resolve, reject) => {
+    if (!VALID_COMPOSITION_IDS.has(compositionId)) {
+      return reject(new Error(`Invalid compositionId: "${compositionId}" is not a registered composition`));
+    }
     const safeCompositionId = compositionId.replace(/[^a-zA-Z0-9_\-]/g, "_");
     const filename = `${safeCompositionId}_${uuidv4()}.mp4`;
     const outputPath = path.join(OUTPUT_DIR, filename);
@@ -225,7 +235,7 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
     const tempFiles = [
       job.videoPath,
       job.trimmedVideoPath,
-      job.wavPath,
+      job.mp3Path,
       job.transcriptPath,
       job.talkingHeadPublicPath,
     ].filter(Boolean);
@@ -378,9 +388,8 @@ setInterval(() => {
     if (job.createdAt && now - job.createdAt > JOB_TTL) {
       const files = [
         job.videoPath,
-        job.wavPath,
+        job.mp3Path,
         job.transcriptPath,
-        job.outputPath,
         job.talkingHeadPublicPath,
         job.trimmedVideoPath,
       ].filter(Boolean);
