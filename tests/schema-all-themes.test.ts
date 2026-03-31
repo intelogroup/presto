@@ -22,6 +22,9 @@ import {
   P14SlideSchema,
   P15SlideSchema,
   P16SlideSchema,
+  P18SlideSchema,
+  P19SlideSchema,
+  P20SlideSchema,
 } from "../src/schema";
 
 const D = 120; // default duration (4s @ 30fps) — above 60-frame minimum
@@ -625,6 +628,9 @@ describe("duration enforcement across all schemas", () => {
     { name: "P14", schema: P14SlideSchema, slide: { type: "broadHero", headline: "H", deck: "D", byline: "B", date: "2024" } },
     { name: "P15", schema: P15SlideSchema, slide: { type: "termHero", command: "$", output: ["OK"], tagline: "T" } },
     { name: "P16", schema: P16SlideSchema, slide: { type: "comicHero", action: "A", hero: "H", tagline: "T" } },
+    { name: "P18", schema: P18SlideSchema, slide: { type: "grungeHero", title: "T", subtitle: "S", tag: "X" } },
+    { name: "P19", schema: P19SlideSchema, slide: { type: "dataHero", title: "T", subtitle: "S", badge: "B" } },
+    { name: "P20", schema: P20SlideSchema, slide: { type: "kineticSplash", word: "W", accent: "pink" } },
   ];
 
   for (const { name, schema, slide } of schemas) {
@@ -644,4 +650,115 @@ describe("duration enforcement across all schemas", () => {
       expect(fail(schema, { ...slide })).toBe(true);
     });
   }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// P18 — Grunge / Textured Raw
+// ═══════════════════════════════════════════════════════════════════════════════
+describe("P18 (Grunge) schema", () => {
+  it("validates grungeHero", () => {
+    expect(ok(P18SlideSchema, { type: "grungeHero", title: "T", subtitle: "S", tag: "TAG", duration: D })).toBe(true);
+  });
+
+  it("validates grungeStat", () => {
+    expect(ok(P18SlideSchema, { type: "grungeStat", value: "73%", label: "L", context: "C", duration: D })).toBe(true);
+  });
+
+  it("validates grungeList", () => {
+    expect(ok(P18SlideSchema, { type: "grungeList", title: "T", items: ["A", "B"], duration: D })).toBe(true);
+  });
+
+  it("validates grungeQuote", () => {
+    expect(ok(P18SlideSchema, { type: "grungeQuote", quote: "Q", author: "A", duration: D })).toBe(true);
+  });
+
+  it("validates grungeQuote with optional role", () => {
+    expect(ok(P18SlideSchema, { type: "grungeQuote", quote: "Q", author: "A", role: "R", duration: D })).toBe(true);
+  });
+
+  it("validates grungeClosing", () => {
+    expect(ok(P18SlideSchema, { type: "grungeClosing", word: "GO", tagline: "T", duration: D })).toBe(true);
+  });
+
+  it("rejects unknown slide type", () => {
+    expect(fail(P18SlideSchema, { type: "unknown", title: "X", duration: D })).toBe(true);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// P19 — Data Infographic
+// ═══════════════════════════════════════════════════════════════════════════════
+describe("P19 (Data Infographic) schema", () => {
+  it("validates dataHero", () => {
+    expect(ok(P19SlideSchema, { type: "dataHero", title: "T", subtitle: "S", badge: "B", duration: D })).toBe(true);
+  });
+
+  it("validates dataCounter", () => {
+    expect(ok(P19SlideSchema, { type: "dataCounter", value: 1000, suffix: "+", label: "L", duration: D })).toBe(true);
+  });
+
+  it("validates dataCounter with optional sublabel", () => {
+    expect(ok(P19SlideSchema, { type: "dataCounter", value: 500, suffix: "%", label: "L", sublabel: "SL", duration: D })).toBe(true);
+  });
+
+  it("validates dataBar", () => {
+    const bars = [{ label: "L", value: 50, max: 100 }];
+    expect(ok(P19SlideSchema, { type: "dataBar", title: "T", bars, duration: D })).toBe(true);
+  });
+
+  it("validates dataDonut", () => {
+    const segments = [{ label: "A", value: 50, color: "#00d4aa" }];
+    expect(ok(P19SlideSchema, { type: "dataDonut", title: "T", segments, centerValue: "CV", centerLabel: "CL", duration: D })).toBe(true);
+  });
+
+  it("validates dataClosing", () => {
+    expect(ok(P19SlideSchema, { type: "dataClosing", headline: "H", tagline: "T", duration: D })).toBe(true);
+  });
+
+  it("rejects unknown slide type", () => {
+    expect(fail(P19SlideSchema, { type: "unknown", title: "X", duration: D })).toBe(true);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// P20 — Kinetic Typography
+// ═══════════════════════════════════════════════════════════════════════════════
+describe("P20 (Kinetic Typography) schema", () => {
+  it("validates kineticSplash", () => {
+    expect(ok(P20SlideSchema, { type: "kineticSplash", word: "STOP", accent: "pink", duration: D })).toBe(true);
+  });
+
+  it("validates kineticSplash with all accent values", () => {
+    for (const accent of ["pink", "cyan", "yellow", "white"]) {
+      expect(ok(P20SlideSchema, { type: "kineticSplash", word: "W", accent, duration: D })).toBe(true);
+    }
+  });
+
+  it("rejects kineticSplash with invalid accent", () => {
+    expect(fail(P20SlideSchema, { type: "kineticSplash", word: "W", accent: "red", duration: D })).toBe(true);
+  });
+
+  it("validates kineticReveal (1-6 words)", () => {
+    expect(ok(P20SlideSchema, { type: "kineticReveal", words: ["A", "B", "C"], accent: "cyan", duration: D })).toBe(true);
+  });
+
+  it("rejects kineticReveal with 0 words", () => {
+    expect(fail(P20SlideSchema, { type: "kineticReveal", words: [], accent: "cyan", duration: D })).toBe(true);
+  });
+
+  it("rejects kineticReveal with 7 words", () => {
+    expect(fail(P20SlideSchema, { type: "kineticReveal", words: ["A", "B", "C", "D", "E", "F", "G"], accent: "cyan", duration: D })).toBe(true);
+  });
+
+  it("validates kineticQuote20", () => {
+    expect(ok(P20SlideSchema, { type: "kineticQuote20", quote: "Q", author: "A", duration: D })).toBe(true);
+  });
+
+  it("validates kineticClosing20", () => {
+    expect(ok(P20SlideSchema, { type: "kineticClosing20", line1: "L1", line2: "L2", duration: D })).toBe(true);
+  });
+
+  it("rejects unknown slide type", () => {
+    expect(fail(P20SlideSchema, { type: "unknown", word: "X", duration: D })).toBe(true);
+  });
 });

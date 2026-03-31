@@ -146,6 +146,9 @@ describe("per-composition transition frames mapping", () => {
     Presentation15: 3,  // P15
     Presentation16: 10, // P16
     Presentation17: 20, // P17
+    Presentation18: 12, // P18
+    Presentation19: 10, // P19
+    Presentation20: 5,  // P20
   };
 
   it("P1 uses compositionId 'Presentation' (not 'Presentation1')", () => {
@@ -160,7 +163,7 @@ describe("per-composition transition frames mapping", () => {
     }
   });
 
-  it("all 17 compositions have transition mappings", () => {
-    expect(Object.keys(COMPOSITION_TRANSITIONS)).toHaveLength(17);
+  it("all 20 compositions have transition mappings", () => {
+    expect(Object.keys(COMPOSITION_TRANSITIONS)).toHaveLength(20);
   });
 });

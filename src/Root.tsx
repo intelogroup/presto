@@ -6,8 +6,8 @@ import { PresentationDemo } from "./PresentationDemo";
 import { Presentation2Demo } from "./Presentation2Demo";
 import { ShowcaseDemo } from "./ShowcaseDemo";
 import { PictureInPictureDemo } from "./PictureInPictureDemo";
-import { Presentation1PropsSchema, Presentation2PropsSchema, Presentation3PropsSchema, Presentation4PropsSchema, Presentation5PropsSchema, Presentation6PropsSchema, Presentation7PropsSchema, Presentation8PropsSchema, Presentation9PropsSchema, Presentation10PropsSchema, Presentation11PropsSchema, Presentation12PropsSchema, Presentation13PropsSchema, Presentation14PropsSchema, Presentation15PropsSchema, Presentation16PropsSchema, Presentation17PropsSchema } from "./schema";
-import { DEFAULT_P1_SLIDES, DEFAULT_P2_SLIDES, DEFAULT_P3_SLIDES, DEFAULT_P4_SLIDES, DEFAULT_P5_SLIDES, DEFAULT_P6_SLIDES, DEFAULT_P7_SLIDES, DEFAULT_P8_SLIDES, DEFAULT_P9_SLIDES, DEFAULT_P10_SLIDES, DEFAULT_P11_SLIDES, DEFAULT_P12_SLIDES, DEFAULT_P13_SLIDES, DEFAULT_P14_SLIDES, DEFAULT_P15_SLIDES, DEFAULT_P16_SLIDES, DEFAULT_P17_SLIDES } from "./defaultProps";
+import { Presentation1PropsSchema, Presentation2PropsSchema, Presentation3PropsSchema, Presentation4PropsSchema, Presentation5PropsSchema, Presentation6PropsSchema, Presentation7PropsSchema, Presentation8PropsSchema, Presentation9PropsSchema, Presentation10PropsSchema, Presentation11PropsSchema, Presentation12PropsSchema, Presentation13PropsSchema, Presentation14PropsSchema, Presentation15PropsSchema, Presentation16PropsSchema, Presentation17PropsSchema, Presentation18PropsSchema, Presentation19PropsSchema, Presentation20PropsSchema } from "./schema";
+import { DEFAULT_P1_SLIDES, DEFAULT_P2_SLIDES, DEFAULT_P3_SLIDES, DEFAULT_P4_SLIDES, DEFAULT_P5_SLIDES, DEFAULT_P6_SLIDES, DEFAULT_P7_SLIDES, DEFAULT_P8_SLIDES, DEFAULT_P9_SLIDES, DEFAULT_P10_SLIDES, DEFAULT_P11_SLIDES, DEFAULT_P12_SLIDES, DEFAULT_P13_SLIDES, DEFAULT_P14_SLIDES, DEFAULT_P15_SLIDES, DEFAULT_P16_SLIDES, DEFAULT_P17_SLIDES, DEFAULT_P18_SLIDES, DEFAULT_P19_SLIDES, DEFAULT_P20_SLIDES } from "./defaultProps";
 import { Presentation3Demo } from "./Presentation3Demo";
 import { Presentation4Demo } from "./Presentation4Demo";
 import { Presentation5Demo } from "./Presentation5Demo";
@@ -23,6 +23,9 @@ import { Presentation14Demo } from "./Presentation14Demo";
 import { Presentation16Demo } from "./Presentation16Demo";
 import { Presentation15Demo } from "./Presentation15Demo";
 import { Presentation17Demo } from "./Presentation17Demo";
+import { Presentation18Demo } from "./Presentation18Demo";
+import { Presentation19Demo } from "./Presentation19Demo";
+import { Presentation20Demo } from "./Presentation20Demo";
 
 function calcDuration(slides: Array<{ duration: number }>, transitionFrames: number = 20): number {
   const total = slides.reduce((sum, s) => sum + s.duration, 0);
@@ -285,6 +288,48 @@ export const RemotionRoot: React.FC = () => {
         calculateMetadata={({ props }) => ({
           durationInFrames: calcDuration(props.slides),
         })}
+      />
+      <Composition
+        id="Presentation18"
+        component={Presentation18Demo}
+        fps={30}
+        width={1920}
+        height={1080}
+        schema={Presentation18PropsSchema}
+        defaultProps={{ slides: DEFAULT_P18_SLIDES }}
+        calculateMetadata={({ props }) => {
+          const total = props.slides.reduce((sum, s) => sum + s.duration, 0);
+          const overlap = Math.max(0, props.slides.length - 1) * 12;
+          return { durationInFrames: total - overlap };
+        }}
+      />
+      <Composition
+        id="Presentation19"
+        component={Presentation19Demo}
+        fps={30}
+        width={1920}
+        height={1080}
+        schema={Presentation19PropsSchema}
+        defaultProps={{ slides: DEFAULT_P19_SLIDES }}
+        calculateMetadata={({ props }) => {
+          const total = props.slides.reduce((sum, s) => sum + s.duration, 0);
+          const overlap = Math.max(0, props.slides.length - 1) * 10;
+          return { durationInFrames: total - overlap };
+        }}
+      />
+      <Composition
+        id="Presentation20"
+        component={Presentation20Demo}
+        fps={30}
+        width={1920}
+        height={1080}
+        schema={Presentation20PropsSchema}
+        defaultProps={{ slides: DEFAULT_P20_SLIDES }}
+        calculateMetadata={({ props }) => {
+          const total = props.slides.reduce((sum, s) => sum + s.duration, 0);
+          const overlap = Math.max(0, props.slides.length - 1) * 5;
+          return { durationInFrames: total - overlap };
+        }}
       />
       <Composition
         id="Showcase"
