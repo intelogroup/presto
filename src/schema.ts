@@ -1380,3 +1380,147 @@ export const Presentation17PropsSchema = z.object({
   faceTrack: FaceTrackSchema,
 });
 export type Presentation17Props = z.infer<typeof Presentation17PropsSchema>;
+
+// ─── Presentation18 (Grunge / Textured Raw) ─────────────────────────────────
+
+export const GrungeHeroSlide18Schema = DurationBase.extend({
+  type: z.literal("grungeHero"),
+  title: z.string(),
+  subtitle: z.string(),
+  tag: z.string(),
+});
+
+export const GrungeStatSlide18Schema = DurationBase.extend({
+  type: z.literal("grungeStat"),
+  value: z.string(),
+  label: z.string(),
+  context: z.string(),
+});
+
+export const GrungeListSlide18Schema = DurationBase.extend({
+  type: z.literal("grungeList"),
+  title: z.string(),
+  items: z.array(z.string()),
+});
+
+export const GrungeQuoteSlide18Schema = DurationBase.extend({
+  type: z.literal("grungeQuote"),
+  quote: z.string(),
+  author: z.string(),
+  role: z.string().optional(),
+});
+
+export const GrungeClosingSlide18Schema = DurationBase.extend({
+  type: z.literal("grungeClosing"),
+  word: z.string(),
+  tagline: z.string(),
+});
+
+export const P18SlideSchema = z.discriminatedUnion("type", [
+  GrungeHeroSlide18Schema,
+  GrungeStatSlide18Schema,
+  GrungeListSlide18Schema,
+  GrungeQuoteSlide18Schema,
+  GrungeClosingSlide18Schema,
+]);
+export type P18Slide = z.infer<typeof P18SlideSchema>;
+export const Presentation18PropsSchema = z.object({ slides: z.array(P18SlideSchema) });
+export type Presentation18Props = z.infer<typeof Presentation18PropsSchema>;
+
+// ─── Presentation19 (Data Infographic) ──────────────────────────────────────
+
+export const DataHeroSlide19Schema = DurationBase.extend({
+  type: z.literal("dataHero"),
+  title: z.string(),
+  subtitle: z.string(),
+  badge: z.string(),
+});
+
+export const DataCounterSlide19Schema = DurationBase.extend({
+  type: z.literal("dataCounter"),
+  value: z.number(),
+  suffix: z.string(),
+  label: z.string(),
+  sublabel: z.string().optional(),
+});
+
+const DataBar19Schema = z.object({
+  label: z.string(),
+  value: z.number(),
+  max: z.number(),
+});
+
+export const DataBarSlide19Schema = DurationBase.extend({
+  type: z.literal("dataBar"),
+  title: z.string(),
+  bars: z.array(DataBar19Schema),
+});
+
+const DonutSegment19Schema = z.object({
+  label: z.string(),
+  value: z.number(),
+  color: z.string(),
+});
+
+export const DataDonutSlide19Schema = DurationBase.extend({
+  type: z.literal("dataDonut"),
+  title: z.string(),
+  segments: z.array(DonutSegment19Schema),
+  centerValue: z.string(),
+  centerLabel: z.string(),
+});
+
+export const DataClosingSlide19Schema = DurationBase.extend({
+  type: z.literal("dataClosing"),
+  headline: z.string(),
+  tagline: z.string(),
+});
+
+export const P19SlideSchema = z.discriminatedUnion("type", [
+  DataHeroSlide19Schema,
+  DataCounterSlide19Schema,
+  DataBarSlide19Schema,
+  DataDonutSlide19Schema,
+  DataClosingSlide19Schema,
+]);
+export type P19Slide = z.infer<typeof P19SlideSchema>;
+export const Presentation19PropsSchema = z.object({ slides: z.array(P19SlideSchema) });
+export type Presentation19Props = z.infer<typeof Presentation19PropsSchema>;
+
+// ─── Presentation20 (Kinetic Typography) ────────────────────────────────────
+
+const KineticAccent20Schema = z.enum(["pink", "cyan", "yellow", "white"]);
+
+export const KineticSplashSlide20Schema = DurationBase.extend({
+  type: z.literal("kineticSplash"),
+  word: z.string(),
+  accent: KineticAccent20Schema,
+});
+
+export const KineticRevealSlide20Schema = DurationBase.extend({
+  type: z.literal("kineticReveal"),
+  words: z.array(z.string()).min(1).max(6),
+  accent: KineticAccent20Schema,
+});
+
+export const KineticQuote20SlideSchema = DurationBase.extend({
+  type: z.literal("kineticQuote20"),
+  quote: z.string(),
+  author: z.string(),
+});
+
+export const KineticClosing20SlideSchema = DurationBase.extend({
+  type: z.literal("kineticClosing20"),
+  line1: z.string(),
+  line2: z.string(),
+});
+
+export const P20SlideSchema = z.discriminatedUnion("type", [
+  KineticSplashSlide20Schema,
+  KineticRevealSlide20Schema,
+  KineticQuote20SlideSchema,
+  KineticClosing20SlideSchema,
+]);
+export type P20Slide = z.infer<typeof P20SlideSchema>;
+export const Presentation20PropsSchema = z.object({ slides: z.array(P20SlideSchema) });
+export type Presentation20Props = z.infer<typeof Presentation20PropsSchema>;

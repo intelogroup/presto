@@ -229,6 +229,9 @@ describe("THEME_CONFIGS", () => {
     P3: { compositionId: "Presentation3", transitionFrames: 10, name: "Dashboard/KPI" },
     P17: { compositionId: "Presentation17", transitionFrames: 20, name: "Prestige Academic" },
     P8: { compositionId: "Presentation8", transitionFrames: 15, name: "Clean Minimalist" },
+    P18: { compositionId: "Presentation18", transitionFrames: 12, name: "Grunge / Textured Raw" },
+    P19: { compositionId: "Presentation19", transitionFrames: 10, name: "Data Infographic" },
+    P20: { compositionId: "Presentation20", transitionFrames: 5, name: "Kinetic Typography" },
   };
 
   it("has correct compositionId for each theme", () => {
@@ -236,6 +239,15 @@ describe("THEME_CONFIGS", () => {
     expect(THEME_CONFIGS.P3.compositionId).toBe("Presentation3");
     expect(THEME_CONFIGS.P17.compositionId).toBe("Presentation17");
     expect(THEME_CONFIGS.P8.compositionId).toBe("Presentation8");
+    expect(THEME_CONFIGS.P18.compositionId).toBe("Presentation18");
+    expect(THEME_CONFIGS.P19.compositionId).toBe("Presentation19");
+    expect(THEME_CONFIGS.P20.compositionId).toBe("Presentation20");
+  });
+
+  it("has all 7 pipeline-supported themes", () => {
+    expect(Object.keys(THEME_CONFIGS).sort()).toEqual(
+      ["P1", "P17", "P18", "P19", "P20", "P3", "P8"]
+    );
   });
 
   it("has positive transitionFrames for each theme", () => {
@@ -246,6 +258,24 @@ describe("THEME_CONFIGS", () => {
 
   it("P1 is NOT 'Presentation1'", () => {
     expect(THEME_CONFIGS.P1.compositionId).not.toBe("Presentation1");
+  });
+
+  it("P18 uses 12-frame transitions", () => {
+    expect(THEME_CONFIGS.P18.transitionFrames).toBe(12);
+  });
+
+  it("P19 uses 10-frame transitions", () => {
+    expect(THEME_CONFIGS.P19.transitionFrames).toBe(10);
+  });
+
+  it("P20 uses 5-frame transitions (near hard-cut)", () => {
+    expect(THEME_CONFIGS.P20.transitionFrames).toBe(5);
+  });
+
+  it("every theme compositionId matches the Root.tsx pattern", () => {
+    for (const [id, cfg] of Object.entries(THEME_CONFIGS)) {
+      expect(cfg.compositionId, `${id} compositionId`).toMatch(/^Presentation\d*$/);
+    }
   });
 });
 

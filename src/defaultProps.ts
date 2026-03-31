@@ -2,7 +2,7 @@
 // Default slide data for both compositions — used as Remotion Studio previews
 // and as fallback when no inputProps are passed to the render server.
 
-import { P1Slide, P2Slide, P3Slide, P4Slide, P5Slide, P6Slide, P7Slide, P8Slide, P9Slide, P10Slide, P11Slide, P12Slide, P13Slide, P14Slide, P15Slide, P16Slide, P17Slide } from "./schema";
+import { P1Slide, P2Slide, P3Slide, P4Slide, P5Slide, P6Slide, P7Slide, P8Slide, P9Slide, P10Slide, P11Slide, P12Slide, P13Slide, P14Slide, P15Slide, P16Slide, P17Slide, P18Slide, P19Slide, P20Slide } from "./schema";
 
 // ─── Presentation1 (dark tech) ────────────────────────────────────────────────
 
@@ -1390,4 +1390,43 @@ export const DEFAULT_P17_SLIDES: P17Slide[] = [
     headline: "Let's get to work.",
     instruction: "Skim the syllabus · Roll call · Then straight into why 80% of firms fail at executing the basics.",
   },
+];
+
+// ─── Presentation18 (Grunge / Textured Raw — 15s) ───────────────────────────
+
+export const DEFAULT_P18_SLIDES: P18Slide[] = [
+  { type: "grungeHero", duration: 100, title: "RAW DATA", subtitle: "The Unfiltered Report", tag: "Q4 2026" },
+  { type: "grungeStat", duration: 90, value: "73%", label: "Growth Rate", context: "Year over year, no filters" },
+  { type: "grungeList", duration: 100, title: "What Worked", items: ["Stripped the process bare", "Cut meetings by half", "Shipped every Friday", "Let the numbers talk"] },
+  { type: "grungeQuote", duration: 90, quote: "Perfection is the enemy of done.", author: "The Team", role: "Collective wisdom" },
+  { type: "grungeClosing", duration: 80, word: "SHIP IT", tagline: "No polish needed" },
+];
+
+// ─── Presentation19 (Data Infographic — 15s) ────────────────────────────────
+
+export const DEFAULT_P19_SLIDES: P19Slide[] = [
+  { type: "dataHero", duration: 90, title: "Year in Numbers", subtitle: "Platform Analytics Dashboard", badge: "Live Data" },
+  { type: "dataCounter", duration: 90, value: 2847000, suffix: "", label: "Requests Served", sublabel: "Up 340% from last year" },
+  { type: "dataBar", duration: 100, title: "Performance by Region", bars: [
+    { label: "Americas", value: 92, max: 100 },
+    { label: "Europe", value: 87, max: 100 },
+    { label: "Asia-Pac", value: 78, max: 100 },
+    { label: "Africa", value: 64, max: 100 },
+  ]},
+  { type: "dataDonut", duration: 100, title: "Revenue Split", segments: [
+    { label: "SaaS", value: 45, color: "#00d4aa" },
+    { label: "Enterprise", value: 30, color: "#6366f1" },
+    { label: "API", value: 25, color: "#f59e0b" },
+  ], centerValue: "$12M", centerLabel: "Total ARR" },
+  { type: "dataClosing", duration: 80, headline: "Data Speaks Louder", tagline: "→ Explore the full dashboard" },
+];
+
+// ─── Presentation20 (Kinetic Typography — 15s) ─────────────────────────────
+
+export const DEFAULT_P20_SLIDES: P20Slide[] = [
+  { type: "kineticSplash", duration: 70, word: "STOP", accent: "pink" },
+  { type: "kineticReveal", duration: 100, words: ["THINK", "BUILD", "SHIP", "REPEAT"], accent: "cyan" },
+  { type: "kineticSplash", duration: 70, word: "FASTER", accent: "yellow" },
+  { type: "kineticQuote20", duration: 110, quote: "Move fast, break nothing, ship everything.", author: "Engineering Manifesto" },
+  { type: "kineticClosing20", duration: 100, line1: "LET'S GO", line2: "The future is now" },
 ];

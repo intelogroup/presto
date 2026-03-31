@@ -97,7 +97,8 @@ async function syncTalkingHead({ slides, videoPath, compositionId, jobId, transi
 
   if (hasVideo) {
     // Sanitize jobId to alphanumeric+dash only before using in a path
-    const safeJobId = jobId.replace(/[^a-zA-Z0-9\-]/g, "_");
+    // Truncate to 200 chars to stay well within filesystem 255-char filename limit
+    const safeJobId = jobId.replace(/[^a-zA-Z0-9\-]/g, "_").slice(0, 200);
     const talkingHeadFilename = `${safeJobId}_talkinghead.mp4`;
     const talkingHeadPublicPath = path.join(PUBLIC_DIR, talkingHeadFilename);
     // Confirm the resolved path stays inside PUBLIC_DIR (defense-in-depth)
