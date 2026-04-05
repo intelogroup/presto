@@ -52,19 +52,28 @@ app.use((req, res, next) => {
 const API_SECRET = process.env.RENDER_API_SECRET;
 const { createHmac, timingSafeEqual } = require("crypto");
 
+// Nonce tracking: nonce → expiresAt (ms). Prevents upload token replay within TTL window.
+// NOTE: in-memory only — replay protection does not survive restarts or span multiple instances.
+// For multi-instance deployments, replace with a shared TTL store (Redis / DynamoDB conditional put).
+const usedNonces = new Map();
+
 function validateUploadToken(header, secret) {
   if (!header || !secret) return false;
   const parts = header.split(":");
   if (parts.length !== 3) return false;
   const [expiresAt, nonce, sig] = parts;
-  if (Date.now() > Number(expiresAt)) return false; // expired
+  const expiresAtMs = Number(expiresAt);
+  if (Date.now() > expiresAtMs) return false; // expired
+  if (usedNonces.has(nonce)) return false;    // already used (replay attack)
   const payload = `${expiresAt}:${nonce}`;
   const expected = createHmac("sha256", secret).update(payload).digest("hex");
   try {
-    return timingSafeEqual(Buffer.from(sig, "hex"), Buffer.from(expected, "hex"));
+    if (!timingSafeEqual(Buffer.from(sig, "hex"), Buffer.from(expected, "hex"))) return false;
   } catch {
     return false;
   }
+  usedNonces.set(nonce, expiresAtMs); // mark as used
+  return true;
 }
 
 app.use((req, res, next) => {
@@ -172,6 +181,9 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
     console.log(`[${jobId}] preprocessing...`);
     const preprocessResult = await preprocessVideo(videoPath, "/tmp");
     const effectiveVideoPath = preprocessResult.outputPath;
+    if (!fs.existsSync(effectiveVideoPath)) {
+      throw new Error(`Preprocess produced no output file at ${path.basename(effectiveVideoPath)}`);
+    }
     if (preprocessResult.trimmed || preprocessResult.compressed) {
       jobs.set(jobId, { ...jobs.get(jobId), trimmedVideoPath: preprocessResult.outputPath });
       console.log(`[${jobId}] preprocessed: ${preprocessResult.originalDuration.toFixed(0)}s → ${preprocessResult.trimmedDuration.toFixed(0)}s, ${preprocessResult.silencesFound} silences removed, compressed=${preprocessResult.compressed}`);
@@ -181,18 +193,29 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
     jobs.set(jobId, { ...jobs.get(jobId), status: "transcribing", step: "transcribing", lastProgressAt: Date.now() });
     console.log(`[${jobId}] transcribing...`);
     const transcript = await transcribe(effectiveVideoPath, jobId);
+    // Persist temp paths immediately so catch-block cleanup can delete them
+    // even if the segments guard below throws.
+    jobs.set(jobId, {
+      ...jobs.get(jobId),
+      mp3Path: transcript._mp3Path,
+      transcriptPath: transcript._transcriptPath,
+    });
+    if (!transcript.segments || transcript.segments.length === 0) {
+      throw new Error("Transcription returned no speech segments — video may be silent or too short");
+    }
 
     // Step 3: Generate slides from transcript
     jobs.set(jobId, {
       ...jobs.get(jobId),
       status: "generating_slides",
       step: "generating_slides",
-      mp3Path: transcript._mp3Path,
-      transcriptPath: transcript._transcriptPath,
       lastProgressAt: Date.now(),
     });
     console.log(`[${jobId}] generating slides (theme selection + content)...`);
     const { compositionId, themeId, slides, transitionFrames } = await generateSlides(transcript, themeOverride);
+    if (!slides || slides.length === 0) {
+      throw new Error("Slide generation returned no slides");
+    }
 
     // Step 4: Sync talking head + face tracking
     jobs.set(jobId, { ...jobs.get(jobId), status: "syncing", step: "syncing", lastProgressAt: Date.now() });
@@ -214,6 +237,13 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
     clearTimeout(timeoutId);
     jobs.set(jobId, { ...jobs.get(jobId), status: "done", step: "done", outputFilename: outputPath });
     console.log("[pipeline done]", "jobId=" + jobId);
+
+    // Clean up intermediate files now that the render is complete.
+    // Keep: output MP4 (for download), talkingHeadPublicPath (needed for rerender).
+    const doneJob = jobs.get(jobId);
+    [doneJob.videoPath, doneJob.trimmedVideoPath, doneJob.mp3Path, doneJob.transcriptPath]
+      .filter(Boolean)
+      .forEach((f) => fs.unlink(f, () => {}));
   } catch (e) {
     clearTimeout(timeoutId);
     const reason = controller.signal.aborted ? "Pipeline timed out after 60 minutes" : e.message;
@@ -225,7 +255,7 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
     const tempFiles = [
       job.videoPath,
       job.trimmedVideoPath,
-      job.wavPath,
+      job.mp3Path,
       job.transcriptPath,
       job.talkingHeadPublicPath,
     ].filter(Boolean);
@@ -378,7 +408,7 @@ setInterval(() => {
     if (job.createdAt && now - job.createdAt > JOB_TTL) {
       const files = [
         job.videoPath,
-        job.wavPath,
+        job.mp3Path,
         job.transcriptPath,
         job.outputPath,
         job.talkingHeadPublicPath,
@@ -404,6 +434,11 @@ setInterval(() => {
       } catch (_) { /* ignore stat errors */ }
     }
   } catch (_) { /* ignore readdir errors */ }
+
+  // Sweep expired nonces (upload tokens are short-lived, typically 5 min TTL)
+  for (const [nonce, expiresAt] of usedNonces) {
+    if (now > expiresAt) usedNonces.delete(nonce);
+  }
 
   if (swept > 0) console.log(`[sweep] Cleaned up ${swept} stale jobs/files`);
 }, SWEEP_INTERVAL);

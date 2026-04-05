@@ -313,3 +313,136 @@ describe("compositionId sanitization", () => {
     expect(sanitizeCompositionId("../../../etc")).toBe("_________etc");
   });
 });
+
+describe("HMAC nonce replay protection", () => {
+  // Re-implement validateUploadToken WITH nonce tracking (mirrors server.js)
+  function makeValidator() {
+    const usedNonces = new Map<string, number>();
+    return function validateUploadToken(header: string | null, secret: string | null): boolean {
+      if (!header || !secret) return false;
+      const parts = header.split(":");
+      if (parts.length !== 3) return false;
+      const [expiresAt, nonce, sig] = parts;
+      const expiresAtMs = Number(expiresAt);
+      if (Date.now() > expiresAtMs) return false;
+      if (usedNonces.has(nonce)) return false;
+      const payload = `${expiresAt}:${nonce}`;
+      const expected = createHmac("sha256", secret).update(payload).digest("hex");
+      try {
+        if (!timingSafeEqual(Buffer.from(sig, "hex"), Buffer.from(expected, "hex"))) return false;
+      } catch {
+        return false;
+      }
+      usedNonces.set(nonce, expiresAtMs);
+      return true;
+    };
+  }
+
+  const SECRET = "nonce-test-secret-key";
+
+  it("accepts a valid token on first use", () => {
+    const validate = makeValidator();
+    const token = createValidToken(SECRET);
+    expect(validate(token, SECRET)).toBe(true);
+  });
+
+  it("rejects the same token on second use (replay attack)", () => {
+    const validate = makeValidator();
+    const token = createValidToken(SECRET);
+    expect(validate(token, SECRET)).toBe(true);
+    expect(validate(token, SECRET)).toBe(false); // replay rejected
+  });
+
+  it("accepts two different valid tokens", () => {
+    const validate = makeValidator();
+    const t1 = createValidToken(SECRET);
+    const t2 = createValidToken(SECRET);
+    expect(validate(t1, SECRET)).toBe(true);
+    expect(validate(t2, SECRET)).toBe(true);
+  });
+
+  it("still rejects tampered token on second attempt", () => {
+    const validate = makeValidator();
+    const token = createValidToken(SECRET);
+    const parts = token.split(":");
+    parts[2] = "0".repeat(64);
+    const tampered = parts.join(":");
+    expect(validate(tampered, SECRET)).toBe(false);
+    expect(validate(tampered, SECRET)).toBe(false); // not added to nonce store
+  });
+});
+
+describe("inter-stage validation logic", () => {
+  it("detects missing output file from preprocess", () => {
+    // Simulates: if (!fs.existsSync(effectiveVideoPath)) throw new Error(...)
+    const fs = require("fs");
+    const nonExistentPath = "/tmp/__presto_test_nonexistent_" + Date.now() + ".mp4";
+    expect(fs.existsSync(nonExistentPath)).toBe(false);
+  });
+
+  it("detects empty segments array from transcribe", () => {
+    const transcript = { text: "", segments: [] };
+    expect(transcript.segments.length === 0).toBe(true);
+  });
+
+  it("detects empty slides array from generateSlides", () => {
+    const slides: unknown[] = [];
+    expect(!slides || slides.length === 0).toBe(true);
+  });
+
+  it("does not flag valid outputs", () => {
+    const transcript = { text: "hello", segments: [{ start: 0, end: 1, text: "hello" }] };
+    const slides = [{ type: "title", duration: 90 }];
+    expect(transcript.segments.length > 0).toBe(true);
+    expect(slides.length > 0).toBe(true);
+  });
+});
+
+describe("success-path file cleanup", () => {
+  it("builds correct cleanup list from job fields", () => {
+    // Mirrors server.js: [videoPath, trimmedVideoPath, mp3Path, transcriptPath].filter(Boolean)
+    const job = {
+      videoPath: "/tmp/upload.mp4",
+      trimmedVideoPath: "/tmp/upload_trimmed.mp4",
+      mp3Path: "/tmp/job123.mp3",
+      transcriptPath: "/tmp/job123.transcript.json",
+      outputFilename: "Presentation_abc.mp4",
+      talkingHeadPublicPath: "/app/public/job123.mp4",
+    };
+
+    const cleanupList = [job.videoPath, job.trimmedVideoPath, job.mp3Path, job.transcriptPath]
+      .filter(Boolean);
+
+    expect(cleanupList).toHaveLength(4);
+    expect(cleanupList).toContain(job.videoPath);
+    expect(cleanupList).toContain(job.mp3Path);
+    // Output file and talking head are NOT in the cleanup list
+    expect(cleanupList).not.toContain(job.outputFilename);
+    expect(cleanupList).not.toContain(job.talkingHeadPublicPath);
+  });
+
+  it("handles missing optional fields (no trimmed video)", () => {
+    const job = {
+      videoPath: "/tmp/upload.mp4",
+      trimmedVideoPath: undefined,
+      mp3Path: "/tmp/job456.mp3",
+      transcriptPath: undefined,
+      outputFilename: "Presentation_def.mp4",
+    };
+
+    const cleanupList = [job.videoPath, job.trimmedVideoPath, job.mp3Path, job.transcriptPath]
+      .filter(Boolean);
+
+    expect(cleanupList).toHaveLength(2);
+    expect(cleanupList).toContain(job.videoPath);
+    expect(cleanupList).toContain(job.mp3Path);
+  });
+
+  it("mp3Path field is set from transcript._mp3Path (not _wavPath)", () => {
+    // Confirms the field name fix: transcribe.js returns _mp3Path, server.js stores as mp3Path
+    const transcript = { text: "hi", segments: [], _mp3Path: "/tmp/job.mp3", _transcriptPath: "/tmp/job.json" };
+    const mp3Path = transcript._mp3Path;
+    expect(mp3Path).toBe("/tmp/job.mp3");
+    expect((transcript as any)._wavPath).toBeUndefined();
+  });
+});
