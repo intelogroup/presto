@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
+const { createClient } = require("@supabase/supabase-js");
 const { transcribe } = require("./pipeline/transcribe");
 const { generateSlides } = require("./pipeline/generateSlides");
 const { syncTalkingHead } = require("./pipeline/syncTalkingHead");
@@ -13,6 +14,13 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const { createWatchdog } = require("./pipeline/watchdog");
+const { renderMediaOnLambda } = require("@remotion/lambda-client");
+
+// Supabase client initialized with service role key for backend writes
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 // nosemgrep: javascript.express.security.audit.express-check-csurf-middleware-usage.express-check-csurf-middleware-usage
 // CSRF not applicable: stateless JSON API authenticated via X-API-Key header, not cookies/sessions
@@ -28,8 +36,8 @@ app.use(express.json());
 // Explicit literals only — never reflect user-supplied Origin header (CWE-346)
 app.use((req, res, next) => {
   const o = req.headers.origin;
-  if (o === "https://presto-lake.vercel.app") {
-    res.setHeader("Access-Control-Allow-Origin", "https://presto-lake.vercel.app");
+  if (o === "https://prestashot.vercel.app") {
+    res.setHeader("Access-Control-Allow-Origin", "https://prestashot.vercel.app");
   } else if (o === "http://localhost:3000") {
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   } else if (o === "http://localhost:3001") {
@@ -114,8 +122,31 @@ const upload = multer({
   limits: { fileSize: 500 * 1024 * 1024 }, // 500MB
 });
 
-// --- In-memory job store ---
-// jobId → { status, step, createdAt, videoPath, wavPath, transcriptPath, outputPath, talkingHeadPublicPath, error, originalName, mimeType }
+// --- Job helper functions (Supabase-backed) ---
+async function getJob(jobId) {
+  const { data, error } = await supabase
+    .from("jobs")
+    .select("*")
+    .eq("job_id", jobId)
+    .single();
+  if (error) return null;
+  return data;
+}
+
+async function upsertJob(jobId, updates) {
+  const timestamp = Date.now();
+  const { error } = await supabase
+    .from("jobs")
+    .upsert({
+      job_id: jobId,
+      last_progress_at: timestamp,
+      ...updates,
+    }, { onConflict: "job_id" });
+  if (error) console.error(`[upsertJob] error: ${error.message}`);
+  return !error;
+}
+
+// Fallback in-memory jobs Map for watchdog compatibility (jobs are also in Supabase)
 const jobs = new Map();
 const watchdog = createWatchdog(jobs, { stallMs: 30 * 60 * 1000 });
 
@@ -144,28 +175,30 @@ function maybeCleanup(job, jobId) {
 // --- Remotion render helper ---
 const remotionBin = path.join(__dirname, "node_modules", ".bin", "remotion");
 
-function renderVideo(compositionId, inputProps) {
-  return new Promise((resolve, reject) => {
-    const safeCompositionId = compositionId.replace(/[^a-zA-Z0-9_\-]/g, "_");
-    const filename = `${safeCompositionId}_${uuidv4()}.mp4`;
-    const outputPath = path.join(OUTPUT_DIR, filename);
-    execFile(
-      remotionBin,
-      [
-        "render",
-        compositionId,
-        outputPath,
-        "--props",
-        JSON.stringify(inputProps),
-        "--concurrency=1",
-      ],
-      { cwd: __dirname, timeout: 30 * 60 * 1000 },
-      (err, _stdout, stderr) => {
-        if (err) return reject(new Error(`Remotion render failed: ${stderr}`));
-        resolve(filename); // return filename only, not full path
-      }
-    );
-  });
+async function renderVideo(compositionId, inputProps) {
+  const safeCompositionId = compositionId.replace(/[^a-zA-Z0-9_\-]/g, "_");
+  const filename = `${safeCompositionId}_${uuidv4()}.mp4`;
+
+  try {
+    const { renderId, bucketName } = await renderMediaOnLambda({
+      region: process.env.AWS_REGION || "us-east-1",
+      functionName: process.env.REMOTION_FUNCTION_NAME,
+      serveUrl: process.env.REMOTION_SERVE_URL,
+      composition: compositionId,
+      inputProps,
+      codec: "h264",
+      framesPerLambda: 20,
+      webhook: {
+        url: `${process.env.SUPABASE_URL}/functions/v1/render-webhook`,
+        secret: process.env.REMOTION_WEBHOOK_SECRET,
+      },
+    });
+
+    // Return the renderId and bucket for later polling
+    return { renderId, bucketName, filename };
+  } catch (err) {
+    throw new Error(`Remotion Lambda render failed: ${err.message}`);
+  }
 }
 
 // --- Pipeline orchestrator ---
@@ -177,7 +210,7 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
 
   try {
     // Step 1: Preprocess — validate, trim silences (>4s → 2s), compress if needed
-    jobs.set(jobId, { ...jobs.get(jobId), status: "preprocessing", step: "preprocessing", lastProgressAt: Date.now() });
+    await upsertJob(jobId, { status: "preprocessing", step: "preprocessing" });
     console.log(`[${jobId}] preprocessing...`);
     const preprocessResult = await preprocessVideo(videoPath, "/tmp");
     const effectiveVideoPath = preprocessResult.outputPath;
@@ -185,31 +218,28 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
       throw new Error(`Preprocess produced no output file at ${path.basename(effectiveVideoPath)}`);
     }
     if (preprocessResult.trimmed || preprocessResult.compressed) {
-      jobs.set(jobId, { ...jobs.get(jobId), trimmedVideoPath: preprocessResult.outputPath });
+      await upsertJob(jobId, { trimmed_video_path: preprocessResult.outputPath });
       console.log(`[${jobId}] preprocessed: ${preprocessResult.originalDuration.toFixed(0)}s → ${preprocessResult.trimmedDuration.toFixed(0)}s, ${preprocessResult.silencesFound} silences removed, compressed=${preprocessResult.compressed}`);
     }
 
     // Step 2: Transcribe the (trimmed) video
-    jobs.set(jobId, { ...jobs.get(jobId), status: "transcribing", step: "transcribing", lastProgressAt: Date.now() });
+    await upsertJob(jobId, { status: "transcribing", step: "transcribing" });
     console.log(`[${jobId}] transcribing...`);
     const transcript = await transcribe(effectiveVideoPath, jobId);
     // Persist temp paths immediately so catch-block cleanup can delete them
     // even if the segments guard below throws.
-    jobs.set(jobId, {
-      ...jobs.get(jobId),
-      mp3Path: transcript._mp3Path,
-      transcriptPath: transcript._transcriptPath,
+    await upsertJob(jobId, {
+      mp3_path: transcript._mp3Path,
+      transcript_path: transcript._transcriptPath,
     });
     if (!transcript.segments || transcript.segments.length === 0) {
       throw new Error("Transcription returned no speech segments — video may be silent or too short");
     }
 
     // Step 3: Generate slides from transcript
-    jobs.set(jobId, {
-      ...jobs.get(jobId),
+    await upsertJob(jobId, {
       status: "generating_slides",
       step: "generating_slides",
-      lastProgressAt: Date.now(),
     });
     console.log(`[${jobId}] generating slides (theme selection + content)...`);
     const { compositionId, themeId, slides, transitionFrames } = await generateSlides(transcript, themeOverride);
@@ -218,7 +248,7 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
     }
 
     // Step 4: Sync talking head + face tracking
-    jobs.set(jobId, { ...jobs.get(jobId), status: "syncing", step: "syncing", lastProgressAt: Date.now() });
+    await upsertJob(jobId, { status: "syncing", step: "syncing" });
     console.log(`[${jobId}] syncing talking head (themeId=${themeId}, compositionId=${compositionId}, transitionFrames=${transitionFrames})...`);
     const { inputProps, talkingHeadPublicPath } = await syncTalkingHead({
       slides,
@@ -227,37 +257,36 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
       jobId,
       transitionFrames,
     });
-    jobs.set(jobId, { ...jobs.get(jobId), talkingHeadPublicPath });
+    await upsertJob(jobId, { talking_head_public_path: talkingHeadPublicPath });
 
     // Step 5: Render with Remotion
-    jobs.set(jobId, { ...jobs.get(jobId), status: "rendering", step: "rendering", lastProgressAt: Date.now() });
+    await upsertJob(jobId, { status: "rendering", step: "rendering" });
     console.log(`[${jobId}] rendering with Remotion (${compositionId})...`);
     const outputPath = await renderVideo(compositionId, inputProps);
 
     clearTimeout(timeoutId);
-    jobs.set(jobId, { ...jobs.get(jobId), status: "done", step: "done", outputFilename: outputPath });
+    await upsertJob(jobId, { status: "done", step: "done", output_filename: outputPath });
     console.log("[pipeline done]", "jobId=" + jobId);
 
     // Clean up intermediate files now that the render is complete.
-    // Keep: output MP4 (for download), talkingHeadPublicPath (needed for rerender).
-    const doneJob = jobs.get(jobId);
-    [doneJob.videoPath, doneJob.trimmedVideoPath, doneJob.mp3Path, doneJob.transcriptPath]
+    const job = await getJob(jobId);
+    [job.video_path, job.trimmed_video_path, job.mp3_path, job.transcript_path]
       .filter(Boolean)
       .forEach((f) => fs.unlink(f, () => {}));
   } catch (e) {
     clearTimeout(timeoutId);
     const reason = controller.signal.aborted ? "Pipeline timed out after 60 minutes" : e.message;
     console.error("[pipeline error]", "jobId=" + jobId, reason);
-    jobs.set(jobId, { ...jobs.get(jobId), status: "error", error: reason });
+    await upsertJob(jobId, { status: "error", error: reason });
 
     // Clean up temp files on failure
-    const job = jobs.get(jobId);
+    const job = await getJob(jobId);
     const tempFiles = [
-      job.videoPath,
-      job.trimmedVideoPath,
-      job.mp3Path,
-      job.transcriptPath,
-      job.talkingHeadPublicPath,
+      job?.video_path,
+      job?.trimmed_video_path,
+      job?.mp3_path,
+      job?.transcript_path,
+      job?.talking_head_public_path,
     ].filter(Boolean);
     tempFiles.forEach((f) => fs.unlink(f, () => {}));
   }
@@ -274,7 +303,7 @@ const uploadLimiter = rateLimit({
 });
 
 // POST /pipeline/start — upload video, start async pipeline
-app.post("/pipeline/start", uploadLimiter, upload.single("video"), (req, res) => {
+app.post("/pipeline/start", uploadLimiter, upload.single("video"), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No video file uploaded" });
 
   // MIME type validation
@@ -302,43 +331,77 @@ app.post("/pipeline/start", uploadLimiter, upload.single("video"), (req, res) =>
   }
 
   // Disk space check
-  execFile("df", ["-B1", "--output=avail", "/tmp"], (err, stdout) => {
-    if (err) {
-      fs.unlink(req.file.path, () => {});
-      return res.status(500).json({ error: "Failed to check disk space" });
-    }
-    const avail = parseInt(stdout.trim().split("\n").pop(), 10);
-    if (avail < 2 * 1024 * 1024 * 1024) {
-      fs.unlink(req.file.path, () => {});
-      return res.status(507).json({ error: "Insufficient disk space" });
-    }
+  return new Promise((resolve) => {
+    execFile("df", ["-B1", "--output=avail", "/tmp"], async (err, stdout) => {
+      if (err) {
+        fs.unlink(req.file.path, () => {});
+        return resolve(res.status(500).json({ error: "Failed to check disk space" }));
+      }
+      const avail = parseInt(stdout.trim().split("\n").pop(), 10);
+      if (avail < 2 * 1024 * 1024 * 1024) {
+        fs.unlink(req.file.path, () => {});
+        return resolve(res.status(507).json({ error: "Insufficient disk space" }));
+      }
 
-    const jobId = uuidv4();
-    const videoPath = req.file.path;
+      const jobId = uuidv4();
+      const videoPath = req.file.path;
+      const createdAt = Date.now();
 
-    jobs.set(jobId, {
-      status: "uploading",
-      step: "uploading",
-      createdAt: Date.now(),
-      videoPath,
-      originalName: req.file.originalname,
-      mimeType: req.file.mimetype,
+      // Insert job into Supabase
+      const { error } = await supabase.from("jobs").insert({
+        job_id: jobId,
+        status: "uploading",
+        step: "uploading",
+        created_at: createdAt,
+        video_path: videoPath,
+        original_name: req.file.originalname,
+        mime_type: req.file.mimetype,
+        theme_override: themeOverride,
+      });
+
+      if (error) {
+        fs.unlink(req.file.path, () => {});
+        return resolve(res.status(500).json({ error: "Failed to create job" }));
+      }
+
+      // Also track in-memory for watchdog
+      jobs.set(jobId, {
+        status: "uploading",
+        step: "uploading",
+        createdAt,
+        videoPath,
+        originalName: req.file.originalname,
+        mimeType: req.file.mimetype,
+      });
+
+      // Fire-and-forget
+      runPipeline(jobId, videoPath, themeOverride);
+
+      resolve(res.json({ jobId }));
     });
-
-    // Fire-and-forget
-    runPipeline(jobId, videoPath, themeOverride);
-
-    res.json({ jobId });
   });
 });
 
 // GET /pipeline/:jobId/status
-app.get("/pipeline/:jobId/status", (req, res) => {
+app.get("/pipeline/:jobId/status", async (req, res) => {
   const { jobId } = req.params;
-  const job = jobs.get(jobId);
+  const job = await getJob(jobId);
   if (!job) return res.status(404).json({ error: "Job not found" });
 
-  maybeCleanup(job, jobId);
+  // TTL cleanup: delete job and temp files after 24hr
+  if (job.created_at && Date.now() - job.created_at > 24 * 60 * 60 * 1000) {
+    const files = [
+      job.video_path,
+      job.mp3_path,
+      job.transcript_path,
+      job.output_path,
+      job.talking_head_public_path,
+      job.trimmed_video_path,
+    ].filter(Boolean);
+    files.forEach((f) => fs.unlink(f, () => {}));
+    await supabase.from("jobs").delete().eq("job_id", jobId);
+    return res.status(404).json({ error: "Job not found" });
+  }
 
   // Return safe subset (no internal paths)
   res.json({
@@ -350,14 +413,14 @@ app.get("/pipeline/:jobId/status", (req, res) => {
 });
 
 // GET /pipeline/:jobId/download — serve MP4 when done
-app.get("/pipeline/:jobId/download", (req, res) => {
+app.get("/pipeline/:jobId/download", async (req, res) => {
   const { jobId } = req.params;
-  const job = jobs.get(jobId);
+  const job = await getJob(jobId);
   if (!job) return res.status(404).json({ error: "Job not found" });
   if (job.status !== "done") return res.status(409).json({ error: "Job not done" });
-  if (!job.outputFilename) return res.status(404).json({ error: "Output file not found" });
+  if (!job.output_filename) return res.status(404).json({ error: "Output file not found" });
   // Use directory listing as allowlist — path comes from filesystem, not from stored/user data
-  const found = fs.readdirSync(OUTPUT_DIR).find((f) => f === job.outputFilename);
+  const found = fs.readdirSync(OUTPUT_DIR).find((f) => f === job.output_filename);
   if (!found) return res.status(404).json({ error: "Output file not found" });
   res.download(OUTPUT_DIR + path.sep + found);
 });
@@ -400,22 +463,28 @@ app.get("/health", (_, res) => res.json({ status: "ok" }));
 const SWEEP_INTERVAL = 60 * 60 * 1000; // 1 hour
 const JOB_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
-setInterval(() => {
+setInterval(async () => {
   const now = Date.now();
   let swept = 0;
 
-  for (const [jobId, job] of jobs) {
-    if (job.createdAt && now - job.createdAt > JOB_TTL) {
+  // Clean up stale jobs from Supabase
+  const { data: staleJobs, error: queryError } = await supabase
+    .from("jobs")
+    .select("*")
+    .lt("created_at", now - JOB_TTL);
+
+  if (!queryError && staleJobs) {
+    for (const job of staleJobs) {
       const files = [
-        job.videoPath,
-        job.mp3Path,
-        job.transcriptPath,
-        job.outputPath,
-        job.talkingHeadPublicPath,
-        job.trimmedVideoPath,
+        job.video_path,
+        job.mp3_path,
+        job.transcript_path,
+        job.output_path,
+        job.talking_head_public_path,
+        job.trimmed_video_path,
       ].filter(Boolean);
       files.forEach((f) => fs.unlink(f, () => {}));
-      jobs.delete(jobId);
+      await supabase.from("jobs").delete().eq("job_id", job.job_id);
       swept++;
     }
   }

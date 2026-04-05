@@ -1,9 +1,16 @@
 const { execFile } = require("child_process");
 const path = require("path");
 const fs = require("fs");
+const { createClient } = require("@supabase/supabase-js");
 const { extractFaceTrack } = require("./faceTrack");
 
 const PUBLIC_DIR = path.join(__dirname, "..", "public");
+
+// Supabase client for Storage uploads (uses service role key for backend writes)
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 /**
  * Probes a media file for duration and video stream presence via ffprobe.
@@ -96,31 +103,64 @@ async function syncTalkingHead({ slides, videoPath, compositionId, jobId, transi
   }
 
   if (hasVideo) {
-    // Sanitize jobId to alphanumeric+dash only before using in a path
+    // Sanitize jobId for storage path
     const safeJobId = jobId.replace(/[^a-zA-Z0-9\-]/g, "_");
     const talkingHeadFilename = `${safeJobId}_talkinghead.mp4`;
-    const talkingHeadPublicPath = path.join(PUBLIC_DIR, talkingHeadFilename);
-    // Confirm the resolved path stays inside PUBLIC_DIR (defense-in-depth)
-    if (!talkingHeadPublicPath.startsWith(PUBLIC_DIR + path.sep) && talkingHeadPublicPath !== PUBLIC_DIR) {
-      throw new Error("Path traversal detected in jobId");
-    }
-    // Run face tracking and video copy in parallel
-    const [faceTrack] = await Promise.all([
+    const storagePath = `talking-heads/${talkingHeadFilename}`;
+
+    // Run face tracking and Supabase Storage upload in parallel
+    const [faceTrack, uploadedSignedUrl] = await Promise.all([
       extractFaceTrack(videoPath).catch((err) => {
         console.warn(`[syncTalkingHead] face tracking failed (falling back to center): ${err.message}`);
         return undefined; // graceful degradation — TalkingHead defaults to center
       }),
-      fs.promises.copyFile(videoPath, talkingHeadPublicPath),
+      (async () => {
+        try {
+          const fileBuffer = await fs.promises.readFile(videoPath);
+          const { error: uploadError } = await supabase.storage
+            .from("talking-heads")
+            .upload(talkingHeadFilename, fileBuffer, { upsert: true });
+
+          if (uploadError) {
+            console.warn(`[syncTalkingHead] Supabase upload failed: ${uploadError.message}, falling back to local copy`);
+            // Fallback: copy to local public dir
+            const talkingHeadPublicPath = path.join(PUBLIC_DIR, talkingHeadFilename);
+            if (!talkingHeadPublicPath.startsWith(PUBLIC_DIR + path.sep) && talkingHeadPublicPath !== PUBLIC_DIR) {
+              throw new Error("Path traversal detected in jobId");
+            }
+            await fs.promises.copyFile(videoPath, talkingHeadPublicPath);
+            return talkingHeadFilename;
+          }
+
+          // Generate 1-hour signed URL for download
+          const { data: signedData, error: signError } = await supabase.storage
+            .from("talking-heads")
+            .createSignedUrl(talkingHeadFilename, 60 * 60); // 1 hour
+
+          if (signError) {
+            console.warn(`[syncTalkingHead] Failed to create signed URL: ${signError.message}`);
+            return talkingHeadFilename;
+          }
+
+          return signedData?.signedUrl || talkingHeadFilename;
+        } catch (err) {
+          console.warn(`[syncTalkingHead] Storage operation failed: ${err.message}`);
+          return null;
+        }
+      })(),
     ]);
+
+    // If both signed URL and local fallback failed, null is handled gracefully
+    const talkingHeadSrc = uploadedSignedUrl || null;
 
     return {
       compositionId,
       inputProps: {
         slides: cleanSlides,
-        talkingHeadSrc: talkingHeadFilename,
+        ...(talkingHeadSrc ? { talkingHeadSrc } : {}),
         ...(faceTrack && faceTrack.length > 0 ? { faceTrack } : {}),
       },
-      talkingHeadPublicPath,
+      talkingHeadPublicPath: talkingHeadSrc || storagePath,
     };
   }
 

@@ -1,0 +1,14 @@
+# Supabase Project Configuration
+project_id = "iahclweybypbfhuwfqme"
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+default_schema = "public"
+[db]
+port = 54322
+major_version = 15
+seed_file = "migrations/0000000000000_init.sql"
+[studio]
+enabled = true
+port = 3001
