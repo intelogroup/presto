@@ -1,5 +1,5 @@
 -- Create jobs table for pipeline job tracking
-CREATE TABLE IF NOT EXISTS jobs (
+CREATE TABLE IF NOT EXISTS public.jobs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   job_id TEXT UNIQUE NOT NULL,
   status TEXT NOT NULL DEFAULT 'uploading',
@@ -21,6 +21,6 @@ CREATE TABLE IF NOT EXISTS jobs (
 );
 
 -- Indexes
-CREATE INDEX IF NOT EXISTS idx_jobs_job_id ON jobs(job_id);
-CREATE INDEX IF NOT EXISTS idx_jobs_created_at ON jobs(created_at);
-CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status);
+CREATE INDEX IF NOT EXISTS idx_jobs_job_id ON public.jobs(job_id);
+CREATE INDEX IF NOT EXISTS idx_jobs_created_at ON public.jobs(created_at);
+CREATE INDEX IF NOT EXISTS idx_jobs_status ON public.jobs(status);
