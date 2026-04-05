@@ -53,6 +53,8 @@ const API_SECRET = process.env.RENDER_API_SECRET;
 const { createHmac, timingSafeEqual } = require("crypto");
 
 // Nonce tracking: nonce → expiresAt (ms). Prevents upload token replay within TTL window.
+// NOTE: in-memory only — replay protection does not survive restarts or span multiple instances.
+// For multi-instance deployments, replace with a shared TTL store (Redis / DynamoDB conditional put).
 const usedNonces = new Map();
 
 function validateUploadToken(header, secret) {
@@ -191,6 +193,13 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
     jobs.set(jobId, { ...jobs.get(jobId), status: "transcribing", step: "transcribing", lastProgressAt: Date.now() });
     console.log(`[${jobId}] transcribing...`);
     const transcript = await transcribe(effectiveVideoPath, jobId);
+    // Persist temp paths immediately so catch-block cleanup can delete them
+    // even if the segments guard below throws.
+    jobs.set(jobId, {
+      ...jobs.get(jobId),
+      mp3Path: transcript._mp3Path,
+      transcriptPath: transcript._transcriptPath,
+    });
     if (!transcript.segments || transcript.segments.length === 0) {
       throw new Error("Transcription returned no speech segments — video may be silent or too short");
     }
@@ -200,8 +209,6 @@ async function runPipeline(jobId, videoPath, themeOverride = null) {
       ...jobs.get(jobId),
       status: "generating_slides",
       step: "generating_slides",
-      mp3Path: transcript._mp3Path,
-      transcriptPath: transcript._transcriptPath,
       lastProgressAt: Date.now(),
     });
     console.log(`[${jobId}] generating slides (theme selection + content)...`);
