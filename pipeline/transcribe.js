@@ -83,7 +83,7 @@ async function transcribe(videoPath, jobId) {
       end: s.end,
       text: s.text,
     })),
-    _wavPath: audioPath,
+    _mp3Path: audioPath,
     _transcriptPath: transcriptPath,
   };
 }
