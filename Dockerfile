@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm install -g npm@11.6.2 && npm ci
 
 # Pre-download Remotion's Chrome headless shell
 RUN npx remotion browser ensure
